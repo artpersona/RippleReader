@@ -1,0 +1,3 @@
+const SOCIAL_ICON_SIZE = 40;
+
+export {SOCIAL_ICON_SIZE};
