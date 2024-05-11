@@ -13,6 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import {colors} from '../common';
 type Props = {
   title?: string;
+  titleStyle?: any;
   showBackButton?: boolean;
   rightIcon?: JSX.Element;
   chevronColor?: string;
@@ -21,6 +22,7 @@ type Props = {
 
 const CustomHeader = ({
   title,
+  titleStyle,
   rightIcon,
   showBackButton,
   chevronColor,
@@ -51,7 +53,7 @@ const CustomHeader = ({
         )}
 
         <View>
-          <Text style={styles.titleText}>{title}</Text>
+          <Text style={[styles.titleText, {...titleStyle}]}>{title}</Text>
         </View>
 
         <View style={styles.rightIcon}>{rightIcon}</View>

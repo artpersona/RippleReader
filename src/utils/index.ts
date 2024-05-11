@@ -1,3 +1,4 @@
 import NavigationRoutes from './NavigationRoutes';
-
-export {NavigationRoutes};
+import {tabIcons} from './tabIcons';
+import {retrieveUserSession, storeUserSession} from './storage';
+export {NavigationRoutes, tabIcons, retrieveUserSession, storeUserSession};

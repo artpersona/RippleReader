@@ -9,12 +9,16 @@ import {colors, height} from '../../common';
 import {TextInput} from 'react-native-paper';
 import CheckBox from '@react-native-community/checkbox';
 import {Button} from 'react-native-paper';
+import {useUserStore} from '../../stores';
+import {loginAPI} from '../../services/authApi';
 
 type Props = {};
 
 function Login({}: Props) {
+  const {setUser} = useUserStore() as any;
   const [showPasswordText, setShowPasswordText] = useState(false);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     control,
@@ -23,8 +27,23 @@ function Login({}: Props) {
     formState: {errors},
   } = useForm();
 
-  const handleLogin = (data: any) => {
-    console.log(data);
+  const handleLogin = async (data: any) => {
+    setLoading(true);
+    await loginAPI(data)
+      .then(() => {
+        setUser(true);
+      })
+      .catch((err: any) => {
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          bottomOffset: 50,
+          text1: err.response.data.message,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleSubmissionError = (error: FieldErrors) => {

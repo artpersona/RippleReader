@@ -37,6 +37,13 @@ const colors = {
   gradientFrom: '#144584',
   gradientTo: '#2561AE',
   loginHeader: '#3A3C4C',
+
+  homeComponent: '#0E61AC',
+  homeIcon: '#80ACD8',
+  header: '#09205A',
+  filter: '#EAF5FD',
+  greyBorder: '#EDEFF2',
+  historyCardLow: '#F2F6F9',
 };
 
 export default colors;
