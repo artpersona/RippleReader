@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState = {
   user: false,
+  isMaintenance: true,
 };
 
 const useUserStore = create(

@@ -30,7 +30,8 @@ function Login({}: Props) {
   const handleLogin = async (data: any) => {
     setLoading(true);
     await loginAPI(data)
-      .then(() => {
+      .then((response: any) => {
+        console.log('response is: ', response);
         setUser(true);
       })
       .catch((err: any) => {

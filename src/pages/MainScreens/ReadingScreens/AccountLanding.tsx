@@ -36,6 +36,13 @@ function AccountLanding({navigation, route}: Props) {
     });
   };
 
+  const navigateToCCF = () => {
+    navigation.navigate(NavigationRoutes.CUSTOMER_CARE, {
+      account,
+      id,
+    });
+  };
+
   useEffect(() => {
     if (id) {
       getAccountDetailsAPI(id)
@@ -113,18 +120,9 @@ function AccountLanding({navigation, route}: Props) {
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity style={styles.clickable} disabled={isCompleted}>
+            <TouchableOpacity style={styles.clickable} onPress={navigateToCCF}>
               <AntDesign name="swap" size={25} color={colors.blueBarWick} />
-              <Text style={styles.clickabletext}>Replace Meter</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.clickable} disabled={isCompleted}>
-              <AntDesign
-                name="infocirlceo"
-                size={25}
-                color={colors.blueBarWick}
-              />
-              <Text style={styles.clickabletext}>Report an Issue</Text>
+              <Text style={styles.clickabletext}>Meter Actions</Text>
             </TouchableOpacity>
           </View>
         </View>

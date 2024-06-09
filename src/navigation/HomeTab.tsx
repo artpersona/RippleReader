@@ -4,19 +4,22 @@ import {CustomTabBar} from '../components';
 import {TestScreen} from '../pages';
 import {NavigationRoutes} from '../utils';
 import HomeStack from './HomeStack';
+import MTHomeStack from './Maintenance/MTHomeStack';
 import ProfileStack from './ProfileStack';
+import {useUserStore} from '../stores';
 
 const Tab = createBottomTabNavigator();
 
 const renderTabBar = (props: any) => <CustomTabBar {...props} />;
 
 function Hometab() {
+  const {isMaintenance} = useUserStore() as any;
   return (
     <>
       <Tab.Navigator initialRouteName="Bible" tabBar={renderTabBar}>
         <Tab.Screen
           name={NavigationRoutes.HOME}
-          component={HomeStack}
+          component={true ? MTHomeStack : HomeStack}
           options={{
             headerShown: false,
           }}

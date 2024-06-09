@@ -23,6 +23,14 @@ const NavigationRoutes = {
   ACCOUNT_LANDING: 'AccountLanding',
   METER_READING: 'MeterReading',
   SOA: 'SOA',
+  FILTER_SCREEN: 'FilterScreen',
+
+  // Meter Maintenance
+  SELECTION: 'Selection',
+  OTHER_ACTIONS_LANDING: 'OtherActionsLanding',
+  ACTION_SCREEN: 'ActionScreen',
+
+  CUSTOMER_CARE: 'CustomerCare',
 };
 
 export default NavigationRoutes;

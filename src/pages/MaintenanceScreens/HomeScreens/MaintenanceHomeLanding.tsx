@@ -10,7 +10,7 @@ import {
 import {
   CustomHeader,
   CustomSearch,
-  AccountCard,
+  SupportCard,
   ListEmpty,
 } from '../../../components';
 import {colors} from '../../../common';
@@ -18,6 +18,7 @@ import PagerView from 'react-native-pager-view';
 import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
 import {width} from '../../../common';
 import useMeterReadingStore from '../../../stores/meterReading.store';
+import useMaintenanceStore from '../../../stores/maintenance.store';
 import {FlatList} from 'react-native-gesture-handler';
 import {NavigationRoutes} from '../../../utils';
 import {useFocusEffect} from '@react-navigation/native';
@@ -27,7 +28,7 @@ type Props = {
   navigation: any;
 };
 
-function HomeLanding({navigation}: Props) {
+function MaintenanceHomeLanding({navigation}: Props) {
   const sliderRight = useSharedValue(0);
   const pagerRef = React.useRef(null) as any;
   const {
@@ -38,6 +39,9 @@ function HomeLanding({navigation}: Props) {
     searchText,
     loading,
   } = useMeterReadingStore() as any;
+
+  const {disconnectionList, reconnectionList, loadMaintenanceList} =
+    useMaintenanceStore() as any;
 
   const onTabPress = (index: number) => {
     loadMeterReaderLists();
@@ -52,25 +56,23 @@ function HomeLanding({navigation}: Props) {
 
   useFocusEffect(
     React.useCallback(() => {
-      loadMeterReaderLists(
-        searchText,
-        activeClusters.length > 0 ? activeClusters.join(',') : '',
-      );
+      loadMaintenanceList(searchText);
     }, [activeClusters, searchText]),
   );
 
   const onChangeText = debounce((text: string) => {
-    loadMeterReaderLists(text, activeClusters);
+    loadMaintenanceList(text);
   }, 300); // 300ms delay
 
   return (
     <View style={styles.bgWhite}>
       <CustomHeader
+        showBackButton={true}
         chevronColor={colors.header}
         titleStyle={{
           color: colors.header,
         }}
-        title="Meter Reading"
+        title="Disconnection / Reconnection"
       />
 
       <View style={styles.content}>
@@ -79,13 +81,13 @@ function HomeLanding({navigation}: Props) {
         <View style={styles.tabControl}>
           <TouchableWithoutFeedback onPress={() => onTabPress(0)}>
             <View style={styles.tabOption}>
-              <Text style={styles.optionText}>For Readings</Text>
+              <Text style={styles.optionText}>Disconnection</Text>
             </View>
           </TouchableWithoutFeedback>
 
           <TouchableWithoutFeedback onPress={() => onTabPress(1)}>
             <View style={styles.tabOption}>
-              <Text style={styles.optionText}>Completed</Text>
+              <Text style={styles.optionText}>Reconnection</Text>
             </View>
           </TouchableWithoutFeedback>
 
@@ -116,43 +118,39 @@ function HomeLanding({navigation}: Props) {
             }}>
             <View key="1">
               <FlatList
-                data={readingList}
+                data={disconnectionList}
                 keyExtractor={(item: any) => item.id.toString()}
                 renderItem={({item}: any) => (
-                  <AccountCard
+                  <SupportCard
                     item={item}
                     onPress={() =>
-                      navigation.navigate(NavigationRoutes.ACCOUNT_LANDING, {
-                        isCompleted: false,
-                        accountNumber: item.account_number,
-                        id: item.id,
+                      navigation.navigate(NavigationRoutes.ACTION_SCREEN, {
+                        account: item,
                       })
                     }
                   />
                 )}
                 ListEmptyComponent={
-                  <ListEmpty message="No meter to read found" />
+                  <ListEmpty message="No support tickets found" />
                 }
               />
             </View>
             <View key="2">
               <FlatList
-                data={completedList}
+                data={reconnectionList}
                 keyExtractor={(item: any) => item.id.toString()}
                 renderItem={({item}: any) => (
-                  <AccountCard
+                  <SupportCard
                     item={item}
                     onPress={() =>
-                      navigation.navigate(NavigationRoutes.ACCOUNT_LANDING, {
-                        isCompleted: true,
-                        accountNumber: item.account_number,
-                        id: item.id,
+                      navigation.navigate(NavigationRoutes.ACTION_SCREEN, {
+                        account: item,
                       })
                     }
                   />
                 )}
                 ListEmptyComponent={
-                  <ListEmpty message="No meter to read found" />
+                  <ListEmpty message="No support tickets found" />
                 }
               />
             </View>
@@ -213,4 +211,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeLanding;
+export default MaintenanceHomeLanding;

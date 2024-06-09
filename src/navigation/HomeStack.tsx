@@ -1,6 +1,13 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationRoutes} from '../utils';
-import {HomeLanding, AccountLanding, MeterReading, SOA} from '../pages';
+import {
+  HomeLanding,
+  AccountLanding,
+  MeterReading,
+  SOA,
+  FilterScreen,
+  CustomerCare,
+} from '../pages';
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
@@ -22,6 +29,15 @@ const HomeStack = () => {
         component={MeterReading}
       />
       <Stack.Screen name={NavigationRoutes.SOA} component={SOA} />
+      <Stack.Screen
+        name={NavigationRoutes.CUSTOMER_CARE}
+        component={CustomerCare}
+      />
+
+      <Stack.Screen
+        name={NavigationRoutes.FILTER_SCREEN}
+        component={FilterScreen}
+      />
     </Stack.Navigator>
   );
 };

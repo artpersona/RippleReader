@@ -23,6 +23,7 @@
     "react-hook-form": "^7.51.1",
     "react-native": "0.73.4",
     "react-native-dashed-line": "^1.1.0",
+    "react-native-element-dropdown": "^2.12.0",
     "react-native-encrypted-storage": "^4.0.3",
     "react-native-gesture-handler": "^2.15.0",
     "react-native-image-picker": "^7.1.2",
