@@ -1,6 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationRoutes} from '../utils';
-import {TestScreen} from '../pages';
+import {ProfileLanding} from '../pages';
 const Stack = createStackNavigator();
 
 const ProfileStack = () => {
@@ -11,7 +11,7 @@ const ProfileStack = () => {
       }}>
       <Stack.Screen
         name={NavigationRoutes.PROFILE_LANDING}
-        component={TestScreen}
+        component={ProfileLanding}
       />
     </Stack.Navigator>
   );

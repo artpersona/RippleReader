@@ -16,6 +16,7 @@ const getHeaderRequest = (
   params: {[key: string]: any} | null,
   endPoint: string,
   method: string,
+  headers?: {[key: string]: any},
 ) => {
   if (user) {
     const Authorization = `Bearer ${user.token}`;
@@ -25,13 +26,13 @@ const getHeaderRequest = (
         method: method,
         url: endPoint,
         data: params,
-        headers: {Authorization, AppName},
+        headers: {Authorization, AppName, ...headers},
       };
     } else {
       return {
         method: method,
         url: endPoint,
-        headers: {Authorization, AppName},
+        headers: {Authorization, AppName, ...headers},
       };
     }
   } else {
@@ -105,12 +106,19 @@ export const postRequest = (
   endPoint: string,
   params: {[key: string]: any},
   returnValue?: string,
-  errorHandler?: (error: any) => void,
+  errorHandler?: ((error: any) => void) | null,
+  extraHeaders?: {[key: string]: any},
 ) => {
   return new Promise((resolve, reject) => {
     retrieveUserSession().then(session => {
       const parsedSession: SessionData = session ? JSON.parse(session) : null;
-      const headers = getHeaderRequest(parsedSession, params, endPoint, 'POST');
+      const headers = getHeaderRequest(
+        parsedSession,
+        params,
+        endPoint,
+        'POST',
+        extraHeaders,
+      );
       const api = getApi();
       api
         .request(headers)

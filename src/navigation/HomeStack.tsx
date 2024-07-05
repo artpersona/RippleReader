@@ -8,9 +8,19 @@ import {
   FilterScreen,
   CustomerCare,
 } from '../pages';
+import useMaintenanceStore from '../stores/maintenance.store';
+import {useEffect} from 'react';
+
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
+  const {loadCCFTypes} = useMaintenanceStore() as any;
+
+  useEffect(() => {
+    loadCCFTypes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Stack.Navigator
       screenOptions={{

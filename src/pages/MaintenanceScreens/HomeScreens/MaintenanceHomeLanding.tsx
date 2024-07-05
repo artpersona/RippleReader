@@ -31,17 +31,13 @@ type Props = {
 function MaintenanceHomeLanding({navigation}: Props) {
   const sliderRight = useSharedValue(0);
   const pagerRef = React.useRef(null) as any;
-  const {
-    loadMeterReaderLists,
-    readingList,
-    completedList,
-    activeClusters,
-    searchText,
-    loading,
-  } = useMeterReadingStore() as any;
+  const {loadMeterReaderLists, activeClusters, searchText, loading} =
+    useMeterReadingStore() as any;
 
   const {disconnectionList, reconnectionList, loadMaintenanceList} =
     useMaintenanceStore() as any;
+
+  console.log('reconnection list: ', reconnectionList);
 
   const onTabPress = (index: number) => {
     loadMeterReaderLists();
@@ -56,7 +52,10 @@ function MaintenanceHomeLanding({navigation}: Props) {
 
   useFocusEffect(
     React.useCallback(() => {
-      loadMaintenanceList(searchText);
+      loadMaintenanceList(
+        searchText,
+        activeClusters.length > 0 ? activeClusters.join(',') : '',
+      );
     }, [activeClusters, searchText]),
   );
 
@@ -119,7 +118,6 @@ function MaintenanceHomeLanding({navigation}: Props) {
             <View key="1">
               <FlatList
                 data={disconnectionList}
-                keyExtractor={(item: any) => item.id.toString()}
                 renderItem={({item}: any) => (
                   <SupportCard
                     item={item}
@@ -138,7 +136,6 @@ function MaintenanceHomeLanding({navigation}: Props) {
             <View key="2">
               <FlatList
                 data={reconnectionList}
-                keyExtractor={(item: any) => item.id.toString()}
                 renderItem={({item}: any) => (
                   <SupportCard
                     item={item}

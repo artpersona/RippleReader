@@ -1,5 +1,12 @@
-import React from 'react';
-import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  Text,
+  Alert,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {
   ControlledDropdown,
   ControlledInput,
@@ -14,29 +21,39 @@ import ImageView from 'react-native-image-viewing';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {createTicket} from '../../../services/maintenanceAPI';
 import Toast from 'react-native-toast-message';
+import useMaintenanceStore from '../../../stores/maintenance.store';
 type Props = {
   route: any;
   navigation: any;
 };
 
-const TYPE_OF_CONCERNS = [
-  'Leakage',
-  'New Connection',
-  'Reconnection',
-  'Disconnection',
-];
 function CustomerCare({route, navigation}: Props) {
+  const {ccfTypes} = useMaintenanceStore() as any;
   const {account} = route.params;
   const {
     control,
     handleSubmit,
-    setValue,
     formState: {errors},
   } = useForm();
 
   const [image, setImage] = React.useState('');
+  const [imageData, setImageData] = React.useState('' as any);
+
   const [visible, setIsVisible] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [typesOfConcern, setTypesOfConcern] = React.useState([]);
+
+  useEffect(() => {
+    if (ccfTypes) {
+      console.log('ccfTypes', ccfTypes);
+      setTypesOfConcern(
+        ccfTypes.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      );
+    }
+  }, [ccfTypes]);
 
   const handleCamera = () => {
     launchImageLibrary(
@@ -51,19 +68,45 @@ function CustomerCare({route, navigation}: Props) {
           return;
         }
         setImage(response.assets[0].uri);
-        console.log('response', response);
+        setImageData(response.assets[0]);
       },
     );
   };
 
   const onSubmit = (data: any) => {
-    const params = {
+    if (!image) {
+      Alert.alert('Please take a photo of the issue');
+      return;
+    }
+
+    const formattedImage = {
+      uri: imageData.uri,
+      type: imageData.type,
+      name: imageData.fileName,
+    };
+
+    const params: {[key: string]: any} = {
       type: data.concern,
       account_id: account.id,
-      details_of_concern: data.findings,
+      details_of_concern: data.details_of_concern,
+      attachment: formattedImage,
     };
+
+    const formData = new FormData();
+    for (const key in params) {
+      if (key === 'attachment') {
+        formData.append(key, {
+          uri: params[key].uri,
+          type: params[key].type,
+          name: params[key].name,
+        });
+      } else {
+        formData.append(key, params[key]);
+      }
+    }
+
     setLoading(true);
-    createTicket(params)
+    createTicket(formData)
       .then((res: any) => {
         Toast.show({
           type: 'success',
@@ -123,21 +166,20 @@ function CustomerCare({route, navigation}: Props) {
           rules={{
             required: 'Type of concern is required',
           }}
-          data={TYPE_OF_CONCERNS.map((item, index) => ({
-            label: item,
-            value: index + 1,
-          }))}
+          data={typesOfConcern}
         />
 
         <ControlledInput
           placeholder="Describe your concern here..."
           mode="outlined"
           style={[commonstyles.inputContainer, styles.bgWhite]}
-          name="findings"
+          name="details_of_concern"
           control={control}
-          outlineColor={errors['findings'] ? colors.danger : colors.inputBorder}
+          outlineColor={
+            errors['details_of_concern'] ? colors.danger : colors.inputBorder
+          }
           activeOutlineColor={
-            errors['findings'] ? colors.danger : colors.tertiary
+            errors['details_of_concern'] ? colors.danger : colors.tertiary
           }
           numberOfLines={3}
           multiline

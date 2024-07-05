@@ -5,6 +5,7 @@ import {
   MaintenanceHomeLanding,
   OtherActionsLanding,
   Selection,
+  FilterScreen,
 } from '../../pages';
 const Stack = createStackNavigator();
 
@@ -26,6 +27,10 @@ const MTHomeStack = () => {
       <Stack.Screen
         name={NavigationRoutes.ACTION_SCREEN}
         component={ActionScreen}
+      />
+      <Stack.Screen
+        name={NavigationRoutes.FILTER_SCREEN}
+        component={FilterScreen}
       />
     </Stack.Navigator>
   );

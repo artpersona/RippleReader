@@ -15,16 +15,16 @@ type Props = {
   route: any;
 };
 
-function SOA({navigation, route}: Props) {
+function SOA({route}: Props) {
   const [loading, setLoading] = useState(false);
 
-  const [soa, setSoa] = useState<any>({});
+  const [soa, setSoa] = useState<any>(null);
+  const [htmlString, setHtmlString] = useState('');
 
   useEffect(() => {
     if (route.params.id) {
       getSOAAPI(route.params.id)
         .then((res: any) => {
-          console.log('res', res);
           setSoa(res);
           setLoading(false);
         })
@@ -33,98 +33,346 @@ function SOA({navigation, route}: Props) {
           setLoading(false);
         });
     }
-    4;
   }, [route.params.id]);
+
+  useEffect(() => {
+    if (soa) {
+      const tempHtmlString = `
+      <html>
+        <head>
+          <style>
+          @page {
+              size: A4;
+              margin: 10mm;
+            }
+            body {
+              color: #044381;
+            }
+            table {
+              color: #044381;
+              font-size: 12px;
+            }
+            .dot-table td {
+              max-width: 200px;
+              overflow: hidden;
+              white-space: nowrap;
+            }
+          </style>
+        </head>
+        <body>
+         
+      
+            <table style="margin: auto;">
+                      <tr>
+                          <td width="70">
+                              <img src="${
+                                soa.logo
+                              }" width="60" style="float: left;">
+                          </td>
+                          <td width="570">
+                              <span style="color: #044381;font-weight: bold; font-size: 20px;line-height: 25px;">${
+                                soa?.project_name
+                              }</span><br>
+                              <span style="color: #044381; line-height: 15px; font-weight: normal; font-size: 15px;">Electronic Statement of Account</span>
+                          </td>
+                      </tr>
+                  </table>
+                  <table style="width:100%;">
+                      <tr>
+                          <td style="text-align: center; font-size: 10px;">
+                              ${soa?.project_location}<br>
+                              ${
+                                soa?.project_tin
+                                  ? 'VAT Reg. TIN: ' + soa?.project_tin + '<br>'
+                                  : ''
+                              }
+                              ${
+                                soa?.project_contact
+                                  ? 'Hotlines: ' + soa?.project_contact
+                                  : ''
+                              }
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                          <br>
+                          <br>
+                              <h2 style="color: #044381;font-weight: bold; font-size: 17px; text-align: center;line-height: 20px;">STATEMENT OF ACCOUNT</h2>
+                              <h2 style="color: #044381;font-weight: bold; font-size: 17px; text-align: center;line-height: 1.3em;">FOR THE MONTH OF ${new Date(
+                                soa?.date_generated,
+                              )
+                                .toLocaleString('default', {month: 'long'})
+                                .toUpperCase()}</h2>
+                          </td>
+                      </tr>
+                  </table>
+                  <br><br>
+                  <div style="border-bottom: 1px solid #E7EBF4;"></div>
+                  <br>
+                  <table width="100%" style="margin: auto;text-align: left;" cellpadding="1">
+                      <tr>
+                          <td>Account Number</td>
+                          <td style="text-align: right;">${
+                            soa?.account_number
+                          }</td>
+                      </tr>
+                      <tr>
+                          <td>Account Name</td>
+                          <td style="text-align: right;">${
+                            soa?.establishment_name ||
+                            soa?.first_name +
+                              ' ' +
+                              soa?.middle_name +
+                              ' ' +
+                              soa?.last_name +
+                              ' ' +
+                              soa?.suffix_name
+                          }</td>
+                      </tr>
+                      <tr>
+                          <td>Address</td>
+                          <td style="text-align: right;">${soa?.address}</td>
+                      </tr>
+                      <tr>
+                          <td>Meter No. & Brand</td>
+                          <td style="text-align: right;">${soa?.serial_no}</td>
+                      </tr>
+                      <tr>
+                          <td>Rate Classification</td>
+                          <td style="text-align: right;">${
+                            soa?.building_type_name
+                          }</td>
+                      </tr>
+                      <tr>
+                          <td>Sequence No.</td>
+                          <td style="text-align: right;">${soa?.soa_number}</td>
+                      </tr>
+                  </table>
+                  <div style="border-bottom: 1px solid #E7EBF4;"></div>
+                  <br>
+                  <table width="100%" class="dot-table" cellpadding="1">
+                      <tr>
+                          <td>Reading Date</td>
+                          <td style="text-align: right;">${new Date(
+                            soa?.reading_date,
+                          ).toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}</td>
+                      </tr>
+                      <tr>
+                          <td>Period Covered</td>
+                          <td style="text-align: right;">${
+                            soa?.previous_reading
+                              ? new Date(
+                                  soa?.previous_reading,
+                                ).toLocaleDateString('en-GB', {
+                                  day: 'numeric',
+                                  month: 'long',
+                                  year: 'numeric',
+                                }) + ' to '
+                              : ''
+                          }${new Date(soa?.reading_date).toLocaleDateString(
+        'en-GB',
+        {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        },
+      )}</td>
+                      </tr>
+                      <tr>
+                          <td>Present Reading</td>
+                          <td style="text-align: right;">${
+                            soa?.present_reading
+                          }</td>
+                      </tr>
+                      <tr>
+                          <td>Previous Reading</td>
+                          <td style="text-align: right;">${
+                            soa?.previous_reading || ''
+                          }</td>
+                      </tr>
+                      <tr>
+                          <td>Consumption</td>
+                          <td style="text-align: right;">${
+                            soa?.consumption
+                          }</td>
+                      </tr>
+                      <tr>
+                          <td>Total Current Bill</td>
+                          <td style="text-align: right;">${soa?.amount}</td>
+                      </tr>
+                  </table>
+                  <div style="border-bottom: 1px solid #E7EBF4;"></div>
+                  <br>
+                  <table width="100%" class="dot-table" cellpadding="1" >
+                      <tr>
+                          <td style="width: 60%;"><strong>Current Charges</strong></td>
+                          <td style="width: 20%;text-align: right;"></td>
+                          <td style="width: 20%;text-align: right;"><strong>₱${
+                            soa?.amount
+                          }</strong></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;">Basic Charge</td>
+                          <td style="width: 20%;text-align: right;">₱${
+                            soa?.basic_charge
+                          }</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td>VAT</td>
+                          <td style="width: 20%;text-align: right;">₱${
+                            soa?.vat_amount
+                          }</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      ${
+                        soa?.discount > 0
+                          ? `
+                      <tr>
+                          <td>Discount</td>
+                          <td style="width: 20%;text-align: right;"> - ₱${soa?.discount}</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      `
+                          : ''
+                      }
+                      <tr>
+                          <td style="width: 60%;"><strong>Other Charges</strong></td>
+                          <td style="width: 20%;text-align: right;"></td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;">Application / Reconnection Fee</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;">Promissory Note Amount</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td>Labor/Materials and Others</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;"><strong>Previous Unpaid Amount</strong></td>
+                          <td></td>
+                          <td style="width: 20%;text-align: right;"><strong>₱${
+                            soa?.balance_from_prev_bill
+                          }</strong></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;">Arrears</td>
+                          <td style="width: 20%;text-align: right;">₱${
+                            soa?.balance_from_prev_bill
+                          }</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;"><strong>TOTAL AMOUNT DUE</strong></td>
+                          <td></td>
+                          <td style="width: 20%;text-align: right;"><strong>₱${
+                            soa?.total_amount + soa?.balance_from_prev_bill
+                          }</strong></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;"><strong>PENALTY</strong></td>
+                          <td style="width: 20%;text-align: right;">₱${
+                            soa?.amount * 0.1
+                          }</td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;"><strong>TOTAL AMOUNT AFTER DUE DATE</strong></td>
+                          <td></td>
+                          <td style="width: 20%;text-align: right;"><strong>₱${
+                            soa?.total_amount +
+                            soa?.balance_from_prev_bill +
+                            soa?.amount * 0.1
+                          }</strong></td>
+                      </tr>
+                  </table>
+                  <div style="border-bottom: 1px dotted #E7EBF4;"></div>
+                  <br>
+                  <table width="100%" class="dot-table" cellpadding="1" >
+                      <tr>
+                          <td style="width: 60%;">Due Date</td>
+                          <td style="width: 20%;text-align: right;">${new Date(
+                            soa?.due_date,
+                          ).toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;">Disconnection Date</td>
+                          <td style="width: 20%;text-align: right;">${new Date(
+                            soa?.disconnection_date,
+                          ).toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;">Reference No</td>
+                          <td style="width: 20%;text-align: right;">${soa?.meter_reading_id
+                            ?.toString()
+                            ?.padStart(8, '0')}</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;">Meter Reader</td>
+                          <td style="width: 20%;text-align: right;">${
+                            soa?.meter_reader
+                          }</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 60%;">Date/Time</td>
+                          <td style="width: 20%;text-align: right;">${new Date(
+                            soa?.reading_date,
+                          ).toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}</td>
+                          <td style="width: 20%;text-align: right;"></td>
+                      </tr>
+                  </table>
+                  <div style="border-bottom: 1px dotted #E7EBF4;"></div>
+                  <br>
+                  <table width="100%" class="dot-table" cellpadding="1" >
+                      <tr>
+                          <td style="font-size: 12px;text-align: center;">
+                              <strong>Important Notice</strong><br>
+                              Pay your water bill by the due date to avoid penalties. Service may be disconnected if there are arrears before the stated disconnection date.<br><br>
+                              For bill inquiries, visit our office or call our hotlines by the 10th of the month. You can also message us at facebook.com/tubignabuainc.
+                          </td>
+                      </tr>
+                  </table>
+                  <div style="border-bottom: 1px dotted #E7EBF4;"></div>
+                  <br>
+            
+        </body>
+      </html>`;
+
+      setHtmlString(tempHtmlString);
+    }
+  }, [soa]);
 
   function printSOA() {
     RNPrint.print({
-      html: `<html lang="en">
-      <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>SOA HTML</title>
-      <style>
-        /* Styles */
-        #mainContainer {
-          width: 83%;
-          height: auto;
-          margin: 0 auto;
-          padding-top: 12%;
-        }
-      
-        #headerContainer {
-          text-align: center;
-        }
-      
-        #detailsContainer {
-          margin-top: 15px;
-        }
-      
-        #paymentContainer {
-          text-align: center;
-        }
-      
-        .boxDetails {
-          flex: 0.5;
-          padding: 5px 15px;
-          border-radius: 5px;
-          border: 1.5px solid #E5E5E5;
-        }
-      
-        .computationRow {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin: 5px 0;
-        }
-      </style>
-      </head>
-      <body>
-      <div id="mainContainer">
-        <div id="headerContainer">
-        <img src="data:image/png;base64, https://firebasestorage.googleapis.com/v0/b/tubig-3a1de.appspot.com/o/image%2034.png?alt=media&token=bfd05d56-32b8-439d-86bc-86a64760e561 " style="width: $imgWidth; height: $imgHeight"/>
-        <h2 style="margin: 5px 0; font-family: 'Poppins-SemiBold'; font-size: 16px; color: #3E3E3E;">Tubig Nabua Inc.</h2>
-          <h3 style="font-family: 'Poppins-Regular'; font-size: 14px; color: #707070;">Electronic Statement of Account</h3>
-        </div>
-        <hr style="border: 1px solid #E5E5E5; margin: 15px 0;">
-        <div id="detailsContainer">
-          <div id="paymentContainer">
-            <h4 style="font-family: 'Poppins-Regular'; font-size: 12px; color: #707070; opacity: 0.75;">Total Amount</h4>
-            <h2 style="font-family: 'Poppins-SemiBold'; font-size: 22px; color: #007BFF;">₱ 907.77</h2>
-          </div>
-          <div id="boxContainers" style="display: flex; gap: 10px; margin-top: 15px;">
-            <div class="boxDetails">
-              <p style="font-family: 'Poppins-Regular'; font-size: 10px; color: #707070;">Account Number</p>
-              <p style="font-family: 'Poppins-Medium'; font-size: 12px; color: #707070; margin-top: 3px;">011-01-01-06150</p>
-            </div>
-            <div class="boxDetails">
-              <p style="font-family: 'Poppins-Regular'; font-size: 10px; color: #707070;">Payment Time</p>
-              <p style="font-family: 'Poppins-Medium'; font-size: 12px; color: #707070; margin-top: 3px;">25 Feb 2023, 13:22</p>
-            </div>
-          </div>
-          <div class="computationDetails" style="margin-top: 15px;">
-            <h4 style="font-family: 'Poppins-Regular'; font-size: 12px; color: #707070;">Computation</h4>
-            <div class="computationRow">
-              <p style="font-family: 'Poppins-Regular'; font-size: 12px; color: #707070;">Previous Account</p>
-              <div style="flex: 1; height: 1px; margin: 0 10px; border-bottom: 1px dashed #1B399D;"></div>
-              <p style="font-family: 'Poppins-Regular'; font-size: 12px; color: #707070;">₱ 907.77</p>
-            </div>
-            <div class="computationRow">
-              <p style="font-family: 'Poppins-Regular'; font-size: 12px; color: #707070;">Other Charges</p>
-              <div style="flex: 1; height: 1px; margin: 0 10px; border-bottom: 1px dashed #1B399D;"></div>
-              <p style="font-family: 'Poppins-Regular'; font-size: 12px; color: #707070;">₱ 0.00</p>
-            </div>
-            <!-- Add other computation rows here -->
-          </div>
-          <hr style="border: 1px solid #E5E5E5; margin: 15px 0;">
-          <div class="computationRow">
-            <p style="font-family: 'Poppins-SemiBold'; font-size: 12px; color: #707070;">Total Amount Due</p>
-            <p style="font-family: 'Poppins-SemiBold'; font-size: 12px; color: #707070;">₱ 907.77</p>
-          </div>
-        </div>
-      </div>
-      </body>
-      </html>`,
+      html: htmlString,
     });
   }
 
@@ -142,17 +390,17 @@ function SOA({navigation, route}: Props) {
           <View style={styles.detailsContainer}>
             <View style={styles.paymentContainer}>
               <Text style={styles.totalAmountText}>Total Amount</Text>
-              <Text style={styles.amountText}>₱ {soa.total_amount}</Text>
+              <Text style={styles.amountText}>₱ {soa?.total_amount}</Text>
             </View>
 
             <View style={styles.boxContainers}>
               <View style={styles.boxDetails}>
                 <Text style={styles.boxLabel}>SOA Number</Text>
-                <Text style={styles.boxValue}>{soa.soa_number}</Text>
+                <Text style={styles.boxValue}>{soa?.soa_number}</Text>
               </View>
               <View style={styles.boxDetails}>
                 <Text style={styles.boxLabel}>Due Date</Text>
-                <Text style={styles.boxValue}>{soa.due_date}</Text>
+                <Text style={styles.boxValue}>{soa?.due_date}</Text>
               </View>
             </View>
 
@@ -170,7 +418,7 @@ function SOA({navigation, route}: Props) {
                   />
                 </View>
                 <Text style={styles.compTitle}>
-                  ₱ {soa.balance_from_prev_bill}
+                  ₱ {soa?.balance_from_prev_bill}
                 </Text>
               </View>
 
@@ -197,7 +445,7 @@ function SOA({navigation, route}: Props) {
                     dashStyle={styles.opa5}
                   />
                 </View>
-                <Text style={styles.compTitle}>₱ {soa.amount}</Text>
+                <Text style={styles.compTitle}>₱ {soa?.amount}</Text>
               </View>
 
               <View style={styles.computationRow}>
@@ -210,7 +458,7 @@ function SOA({navigation, route}: Props) {
                     dashStyle={styles.opa5}
                   />
                 </View>
-                <Text style={styles.compTitle}>₱ {soa.discount}</Text>
+                <Text style={styles.compTitle}>₱ {soa?.discount}</Text>
               </View>
             </View>
 
@@ -226,7 +474,7 @@ function SOA({navigation, route}: Props) {
                   dashStyle={styles.opa5}
                 />
               </View>
-              <Text style={styles.compTotal}>₱ {soa.total_amount}</Text>
+              <Text style={styles.compTotal}>₱ {soa?.total_amount}</Text>
             </View>
           </View>
         </ScrollView>
@@ -246,7 +494,7 @@ function SOA({navigation, route}: Props) {
         />
       </View>
 
-      {renderMainComponent()}
+      {soa && renderMainComponent()}
       <View style={styles.floatingBottomButton}>
         <Button
           mode="contained"

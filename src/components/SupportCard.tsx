@@ -7,7 +7,6 @@ type Props = {
 };
 
 function SupportCard({item, onPress}: Props) {
-  console.log('item is: ', item);
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.accountInfo}>

@@ -7,23 +7,21 @@ import {ControlledInput} from '../../components';
 import commonstyles from '../../styles/commonstyles';
 import {colors, height} from '../../common';
 import {TextInput} from 'react-native-paper';
-import CheckBox from '@react-native-community/checkbox';
 import {Button} from 'react-native-paper';
 import {useUserStore} from '../../stores';
 import {loginAPI} from '../../services/authApi';
+import JWT from 'expo-jwt';
 
 type Props = {};
 
 function Login({}: Props) {
   const {setUser} = useUserStore() as any;
   const [showPasswordText, setShowPasswordText] = useState(false);
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const {
     control,
     handleSubmit,
-    setValue,
     formState: {errors},
   } = useForm();
 
@@ -31,8 +29,17 @@ function Login({}: Props) {
     setLoading(true);
     await loginAPI(data)
       .then((response: any) => {
-        console.log('response is: ', response);
-        setUser(true);
+        const {user} = JWT.decode(response.token, 'GTI_KEY');
+        if (user.roleId === '101' || user.roleId === '102') {
+          setUser(user);
+        } else {
+          Toast.show({
+            type: 'error',
+            position: 'bottom',
+            bottomOffset: 50,
+            text1: 'You are not authorized to access this application',
+          });
+        }
       })
       .catch((err: any) => {
         Toast.show({
@@ -113,29 +120,14 @@ function Login({}: Props) {
           />
         </View>
 
-        <View style={styles.formFooterContainer}>
-          <View style={styles.rememberMeContainer}>
-            <CheckBox
-              disabled={false}
-              value={toggleCheckBox}
-              onValueChange={newValue => setToggleCheckBox(newValue)}
-              boxType="square"
-              style={styles.checkbox}
-              tintColor={colors.lightGray}
-            />
-            <Text style={styles.rememberText}>Remember Me</Text>
-          </View>
-
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </View>
-
         <View style={styles.footerContainer}>
           <Button
             mode="contained"
             onPress={handleSubmit(handleLogin, handleSubmissionError)}
             style={[commonstyles.button, commonstyles.bgPrimary]}
             contentStyle={commonstyles.buttonContent}
-            labelStyle={[commonstyles.buttonLabel, commonstyles.colorWhite]}>
+            labelStyle={[commonstyles.buttonLabel, commonstyles.colorWhite]}
+            loading={loading}>
             Log In
           </Button>
         </View>
@@ -172,7 +164,7 @@ const styles = StyleSheet.create({
   },
   formFooterContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     marginTop: 5,
   },
   form: {

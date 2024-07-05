@@ -13,13 +13,13 @@ const Tab = createBottomTabNavigator();
 const renderTabBar = (props: any) => <CustomTabBar {...props} />;
 
 function Hometab() {
-  const {isMaintenance} = useUserStore() as any;
+  const {user} = useUserStore() as any;
   return (
     <>
       <Tab.Navigator initialRouteName="Bible" tabBar={renderTabBar}>
         <Tab.Screen
           name={NavigationRoutes.HOME}
-          component={true ? MTHomeStack : HomeStack}
+          component={user?.roleId === '102' ? MTHomeStack : HomeStack}
           options={{
             headerShown: false,
           }}

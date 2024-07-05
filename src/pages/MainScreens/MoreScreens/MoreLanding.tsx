@@ -48,24 +48,6 @@ function MoreLanding({navigation}: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.centeredContainer}>
-        <Animated.Text
-          style={[
-            styles.settingText,
-            {
-              right: faqRight,
-            },
-          ]}>
-          Account Settings
-        </Animated.Text>
-        <Animated.Text
-          style={[
-            styles.settingText,
-            {
-              right: contactRight,
-            },
-          ]}>
-          Contact Us
-        </Animated.Text>
         <TouchableOpacity onPress={logout}>
           <Animated.Text
             style={[

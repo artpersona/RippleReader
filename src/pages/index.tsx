@@ -21,6 +21,9 @@ import MaintenanceHomeLanding from './MaintenanceScreens/HomeScreens/Maintenance
 import Selection from './MaintenanceScreens/Selection/Selection';
 import OtherActionsLanding from './MaintenanceScreens/HomeScreens/OtherActionsLanding';
 import ActionScreen from './MaintenanceScreens/HomeScreens/ActionScreen';
+
+// Profile
+import ProfileLanding from './CommonScreens/ProfileLanding';
 // Test
 import TestScreen from './Test';
 
@@ -40,4 +43,5 @@ export {
   FilterScreen,
   MaintenanceHomeLanding,
   OtherActionsLanding,
+  ProfileLanding,
 };

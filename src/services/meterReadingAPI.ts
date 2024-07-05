@@ -2,6 +2,11 @@
 import {postRequest, getRequest} from './request';
 import {RESPONSE_RETURN_VALUE} from './serviceapi';
 
+export const getCCFTypesAPI = () => {
+  const URL = '/api/support/types';
+  return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
+};
+
 export const getReadingListAPI = (search: string, clusters: string) => {
   let URL = 'api/meter-reader/accounts/';
   const queryParams = '?search=' + search + '&clusters=' + clusters;
@@ -30,7 +35,9 @@ export const getAccountDetailsAPI = (accountID: number) => {
 
 export const submitReadingAPI = (params: any) => {
   const URL = 'api/meter-reader/submit';
-  return postRequest(URL, params, RESPONSE_RETURN_VALUE) as any;
+  return postRequest(URL, params, RESPONSE_RETURN_VALUE, null, {
+    'Content-Type': 'multipart/form-data',
+  }) as any;
 };
 
 export const getSOAAPI = (accountID: number) => {

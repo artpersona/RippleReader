@@ -1,70 +1,36 @@
 import React from 'react';
-import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
-import {
-  ControlledDropdown,
-  ControlledInput,
-  CustomHeader,
-} from '../../../components';
+import {Text, StyleSheet, View, ScrollView} from 'react-native';
+import {ControlledInput, CustomHeader} from '../../../components';
 import commonstyles from '../../../styles/commonstyles';
 import {colors} from '../../../common';
 import {useForm} from 'react-hook-form';
 import {Button} from 'react-native-paper';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import ImageView from 'react-native-image-viewing';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {createTicket} from '../../../services/maintenanceAPI';
+import {addActionAPI} from '../../../services/maintenanceAPI';
 import Toast from 'react-native-toast-message';
 type Props = {
   route: any;
   navigation: any;
 };
 
-const TYPE_OF_CONCERNS = [
-  'Leakage',
-  'New Connection',
-  'Reconnection',
-  'Disconnection',
-];
 function ActionScreen({route, navigation}: Props) {
   const {account} = route.params;
   const {
     control,
     handleSubmit,
-    setValue,
     formState: {errors},
   } = useForm();
 
-  const [image, setImage] = React.useState('');
-  const [visible, setIsVisible] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-
-  const handleCamera = () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-        maxHeight: 500,
-        maxWidth: 500,
-      },
-      (response: any) => {
-        if (response.didCancel) {
-          return;
-        }
-        setImage(response.assets[0].uri);
-        console.log('response', response);
-      },
-    );
-  };
 
   const onSubmit = (data: any) => {
     const params = {
-      type: data.concern,
-      account_id: account.id,
-      details_of_concern: data.findings,
+      id: account.id,
+      actions_taken: data.actions_taken,
     };
     setLoading(true);
-    createTicket(params)
-      .then((res: any) => {
+
+    addActionAPI(params)
+      .then(() => {
         Toast.show({
           type: 'success',
           position: 'bottom',
@@ -72,17 +38,20 @@ function ActionScreen({route, navigation}: Props) {
           text1: 'Success',
           text2: 'Ticket has been created',
         });
-        console.log('res', res);
-        setLoading(false);
         navigation.goBack();
       })
       .catch((err: any) => {
-        console.log('err', err);
-        setLoading(false);
-      });
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          bottomOffset: 50,
+          text1: 'Action Failed',
+          text2: 'An error occured while updating the ticket',
+        });
+        console.log(err);
+      })
+      .finally(() => setLoading(false));
   };
-
-  console.log('account is: ', account);
 
   return (
     <View style={styles.container}>
@@ -95,7 +64,9 @@ function ActionScreen({route, navigation}: Props) {
         showBackButton
       />
 
-      <View style={styles.mainContent}>
+      <ScrollView
+        style={styles.mainContent}
+        contentContainerStyle={styles.contentContainer}>
         <View style={styles.usageContainer}>
           <View style={styles.row}>
             <View>
@@ -119,8 +90,16 @@ function ActionScreen({route, navigation}: Props) {
 
         <Text style={styles.title}>Details of Concern</Text>
         <View style={styles.detailsContainer}>
-          <Text style={styles.infoText}>{account.details}</Text>
+          <Text style={styles.infoText}>{account.details_of_concern}</Text>
         </View>
+        {account.findings && account.findings !== '' && (
+          <View style={styles.findingsContainer}>
+            <Text style={styles.title}>Findings</Text>
+            <View style={styles.detailsContainer}>
+              <Text style={styles.infoText}>{account.findings}</Text>
+            </View>
+          </View>
+        )}
 
         <View style={styles.mt10}>
           <Text style={styles.title}>Action Taken</Text>
@@ -129,13 +108,13 @@ function ActionScreen({route, navigation}: Props) {
             placeholder="How did you resolve the issue?"
             mode="outlined"
             style={[commonstyles.inputContainer, styles.bgWhite]}
-            name="findings"
+            name="actions_taken"
             control={control}
             outlineColor={
-              errors['findings'] ? colors.danger : colors.inputBorder
+              errors['actions_taken'] ? colors.danger : colors.inputBorder
             }
             activeOutlineColor={
-              errors['findings'] ? colors.danger : colors.tertiary
+              errors['actions_taken'] ? colors.danger : colors.tertiary
             }
             numberOfLines={3}
             multiline
@@ -144,39 +123,9 @@ function ActionScreen({route, navigation}: Props) {
             }}
           />
         </View>
-      </View>
+      </ScrollView>
 
       <View style={styles.bottomContainer}>
-        {image ? (
-          <View style={styles.photoPreview}>
-            <TouchableOpacity onPress={() => setIsVisible(true)}>
-              <Image source={{uri: image}} style={styles.image} />
-            </TouchableOpacity>
-            <View style={styles.photoDetails}>
-              <Text style={styles.label}>Photo has been selected</Text>
-              <View style={styles.extraDetails}>
-                <TouchableOpacity onPress={() => setIsVisible(true)}>
-                  <Text style={styles.actionText}>View Full Image</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setImage('')}>
-                  <Text style={styles.actionText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        ) : (
-          <Button
-            mode="contained"
-            onPress={handleCamera}
-            icon={() => (
-              <MaterialIcon name="add-a-photo" size={20} color="white" />
-            )}
-            style={[commonstyles.button, commonstyles.bgPrimary]}
-            contentStyle={commonstyles.buttonContent}>
-            Take a photo
-          </Button>
-        )}
-
         <Button
           mode="contained"
           style={[commonstyles.button, commonstyles.bgPrimary]}
@@ -186,22 +135,17 @@ function ActionScreen({route, navigation}: Props) {
           Submit Action
         </Button>
       </View>
-
-      <ImageView
-        images={[
-          {
-            uri: image,
-          },
-        ]}
-        imageIndex={0}
-        visible={visible}
-        onRequestClose={() => setIsVisible(false)}
-      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    paddingBottom: 100,
+  },
+  findingsContainer: {
+    marginTop: 10,
+  },
   mt10: {
     marginTop: 10,
   },

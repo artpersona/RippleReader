@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import {colors} from '../../../common';
 import {CustomHeader} from '../../../components';
@@ -12,6 +13,8 @@ import {getAccountDetailsAPI} from '../../../services/meterReadingAPI';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {NavigationRoutes} from '../../../utils';
+import ImageView from 'react-native-image-viewing';
+
 type Props = {
   navigation: any;
   route: any;
@@ -21,6 +24,7 @@ function AccountLanding({navigation, route}: Props) {
   const {isCompleted, accountNumber, id} = route.params;
   const [account, setAccount] = useState<any>({});
   const [loading, setLoading] = useState(true);
+  const [visible, setIsVisible] = React.useState(false);
 
   const navigateToReadingScreen = () => {
     navigation.navigate(NavigationRoutes.METER_READING, {
@@ -98,6 +102,24 @@ function AccountLanding({navigation, route}: Props) {
                   : 'No reading records yet'}
               </Text>
             </View>
+            {account?.last_reading_attachment && (
+              <View style={styles.photoPreview}>
+                <TouchableOpacity onPress={() => setIsVisible(true)}>
+                  <Image
+                    source={{uri: account?.last_reading_attachment}}
+                    style={styles.image}
+                  />
+                </TouchableOpacity>
+                <View style={styles.photoDetails}>
+                  <Text style={styles.label}>Meter reading attachment</Text>
+                  <View style={styles.extraDetails}>
+                    <TouchableOpacity onPress={() => setIsVisible(true)}>
+                      <Text style={styles.actionText}>View Full Image</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            )}
           </View>
 
           <View style={styles.otherTools}>
@@ -127,11 +149,42 @@ function AccountLanding({navigation, route}: Props) {
           </View>
         </View>
       )}
+
+      <ImageView
+        images={[
+          {
+            uri: account?.last_reading_attachment,
+          },
+        ]}
+        imageIndex={0}
+        visible={visible}
+        onRequestClose={() => setIsVisible(false)}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  photoDetails: {
+    width: '80%',
+  },
+  actionText: {
+    fontFamily: 'Poppins-LightItalic',
+    fontSize: 12,
+    color: colors.homeComponent,
+    textDecorationLine: 'underline',
+  },
+  extraDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 5,
+  },
+  photoPreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  image: {width: 50, height: 50, borderRadius: 5, marginRight: 10},
   otherTools: {
     marginTop: 20,
   },

@@ -2,26 +2,28 @@ import {create} from 'zustand';
 import {
   getReconnectionListAPI,
   getDisconnectionListAPI,
-  getOtherListAPI,
 } from '../services/maintenanceAPI';
+import {getCCFTypesAPI} from '../services/meterReadingAPI';
+
 const initialState = {
   disconnectionList: [],
   reconnectionList: [],
+  ccfTypes: [],
 };
 
 const useMaintenanceStore = create(set => ({
   ...initialState,
-  loadMaintenanceList: (search = '') => {
+  loadMaintenanceList: (search = '', clusters = '') => {
     set({loading: true});
 
-    getDisconnectionListAPI(search)
+    getDisconnectionListAPI(search, clusters)
       .then((res: any) => {
         set({disconnectionList: res});
       })
       .catch(() => {
         set({disconnectionList: []});
       });
-    getReconnectionListAPI(search)
+    getReconnectionListAPI(search, clusters)
       .then((res: any) => {
         set({reconnectionList: res});
         set({loading: false});
@@ -31,6 +33,17 @@ const useMaintenanceStore = create(set => ({
         set({loading: false});
       });
   },
+
+  loadCCFTypes: () => {
+    getCCFTypesAPI()
+      .then((res: any) => {
+        set({ccfTypes: res});
+      })
+      .catch(() => {
+        set({ccfTypes: []});
+      });
+  },
+
   setSearchText: (text: string) => {
     set({searchText: text});
   },

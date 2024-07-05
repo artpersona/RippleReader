@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        color: #044381;
+      }
+      table {
+        color: #044381;
+        font-size: 12px;
+      }
+      .dot-table td {
+        max-width: 200px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const soa = {
+        project_id: 1, // Example project ID
+        project_name: 'Project Name',
+        project_location: 'Project Location',
+        project_tin: '123-456-789',
+        project_contact: '123-456-7890',
+        date_generated: '2024-06-23',
+        account_number: '12345678',
+        establishment_name: '',
+        first_name: 'John',
+        middle_name: 'A.',
+        last_name: 'Doe',
+        suffix_name: '',
+        address: '123 Main St, City, Country',
+        serial_no: '987654321',
+        building_type_name: 'Residential',
+        soa_number: '123456',
+        reading_date: '2024-06-01',
+        present_reading: '500',
+        previous_reading: '450',
+        consumption: '50',
+        amount: 1000.0,
+        basic_charge: 800.0,
+        vat_amount: 100.0,
+        discount: 50.0,
+        balance_from_prev_bill: 200.0,
+        total_amount: 1000.0,
+        due_date: '2024-07-01',
+        disconnection_date: '2024-07-15',
+        meter_reading_id: 12345678,
+        meter_reader: 'Reader Name',
+      };
+
+      document.write(`
+            <table style="margin: auto;">
+                <tr>
+                    <td width="70">
+                        <img src="assets/images/site/logos/${
+                          soa.project_id
+                        }/logo.png" width="60" style="float: left;">
+                    </td>
+                    <td width="570">
+                        <span style="color: #044381;font-weight: bold; font-size: 20px;line-height: 25px;">${
+                          soa.project_name
+                        }</span><br>
+                        <span style="color: #044381; line-height: 15px; font-weight: normal; font-size: 15px;">Electronic Statement of Account</span>
+                    </td>
+                </tr>
+            </table>
+            <table style="width:100%;">
+                <tr>
+                    <td style="text-align: center; font-size: 10px;">
+                        ${soa.project_location}<br>
+                        ${
+                          soa.project_tin
+                            ? 'VAT Reg. TIN: ' + soa.project_tin + '<br>'
+                            : ''
+                        }
+                        ${
+                          soa.project_contact
+                            ? 'Hotlines: ' + soa.project_contact
+                            : ''
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    <br>
+                    <br>
+                        <h2 style="color: #044381;font-weight: bold; font-size: 17px; text-align: center;line-height: 20px;">STATEMENT OF ACCOUNT</h2>
+                        <h2 style="color: #044381;font-weight: bold; font-size: 17px; text-align: center;line-height: 1.3em;">FOR THE MONTH OF ${new Date(
+                          soa.date_generated,
+                        )
+                          .toLocaleString('default', {month: 'long'})
+                          .toUpperCase()}</h2>
+                    </td>
+                </tr>
+            </table>
+            <br><br>
+            <div style="border-bottom: 1px solid #E7EBF4;"></div>
+            <br>
+            <table width="100%" style="margin: auto;text-align: left;" cellpadding="1">
+                <tr>
+                    <td>Account Number</td>
+                    <td style="text-align: right;">${soa.account_number}</td>
+                </tr>
+                <tr>
+                    <td>Account Name</td>
+                    <td style="text-align: right;">${
+                      soa.establishment_name ||
+                      soa.first_name +
+                        ' ' +
+                        soa.middle_name +
+                        ' ' +
+                        soa.last_name +
+                        ' ' +
+                        soa.suffix_name
+                    }</td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td style="text-align: right;">${soa.address}</td>
+                </tr>
+                <tr>
+                    <td>Meter No. & Brand</td>
+                    <td style="text-align: right;">${soa.serial_no}</td>
+                </tr>
+                <tr>
+                    <td>Rate Classification</td>
+                    <td style="text-align: right;">${
+                      soa.building_type_name
+                    }</td>
+                </tr>
+                <tr>
+                    <td>Sequence No.</td>
+                    <td style="text-align: right;">${soa.soa_number}</td>
+                </tr>
+            </table>
+            <div style="border-bottom: 1px solid #E7EBF4;"></div>
+            <br>
+            <table width="100%" class="dot-table" cellpadding="1">
+                <tr>
+                    <td>Reading Date</td>
+                    <td style="text-align: right;">${new Date(
+                      soa.reading_date,
+                    ).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}</td>
+                </tr>
+                <tr>
+                    <td>Period Covered</td>
+                    <td style="text-align: right;">${
+                      soa.previous_reading
+                        ? new Date(soa.previous_reading).toLocaleDateString(
+                            'en-GB',
+                            {day: 'numeric', month: 'long', year: 'numeric'},
+                          ) + ' to '
+                        : ''
+                    }${new Date(soa.reading_date).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })}</td>
+                </tr>
+                <tr>
+                    <td>Present Reading</td>
+                    <td style="text-align: right;">${soa.present_reading}</td>
+                </tr>
+                <tr>
+                    <td>Previous Reading</td>
+                    <td style="text-align: right;">${
+                      soa.previous_reading || ''
+                    }</td>
+                </tr>
+                <tr>
+                    <td>Consumption</td>
+                    <td style="text-align: right;">${soa.consumption}</td>
+                </tr>
+                <tr>
+                    <td>Total Current Bill</td>
+                    <td style="text-align: right;">${soa.amount.toFixed(2)}</td>
+                </tr>
+            </table>
+            <div style="border-bottom: 1px solid #E7EBF4;"></div>
+            <br>
+            <table width="100%" class="dot-table" cellpadding="1" >
+                <tr>
+                    <td style="width: 60%;"><strong>Current Charges</strong></td>
+                    <td style="width: 20%;text-align: right;"></td>
+                    <td style="width: 20%;text-align: right;"><strong>₱${soa.amount.toFixed(
+                      2,
+                    )}</strong></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;">Basic Charge</td>
+                    <td style="width: 20%;text-align: right;">₱${soa.basic_charge.toFixed(
+                      2,
+                    )}</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td>VAT</td>
+                    <td style="width: 20%;text-align: right;">₱${soa.vat_amount.toFixed(
+                      2,
+                    )}</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                ${
+                  soa.discount > 0
+                    ? `
+                <tr>
+                    <td>Discount</td>
+                    <td style="width: 20%;text-align: right;"> - ₱${soa.discount.toFixed(
+                      2,
+                    )}</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                `
+                    : ''
+                }
+                <tr>
+                    <td style="width: 60%;"><strong>Other Charges</strong></td>
+                    <td style="width: 20%;text-align: right;"></td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;">Application / Reconnection Fee</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;">Promissory Note Amount</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td>Labor/Materials and Others</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;"><strong>Previous Unpaid Amount</strong></td>
+                    <td></td>
+                    <td style="width: 20%;text-align: right;"><strong>₱${soa.balance_from_prev_bill.toFixed(
+                      2,
+                    )}</strong></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;">Arrears</td>
+                    <td style="width: 20%;text-align: right;">₱${soa.balance_from_prev_bill.toFixed(
+                      2,
+                    )}</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;"><strong>TOTAL AMOUNT DUE</strong></td>
+                    <td></td>
+                    <td style="width: 20%;text-align: right;"><strong>₱${(
+                      soa.total_amount + soa.balance_from_prev_bill
+                    ).toFixed(2)}</strong></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;"><strong>PENALTY</strong></td>
+                    <td style="width: 20%;text-align: right;">₱${(
+                      soa.amount * 0.1
+                    ).toFixed(2)}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;"><strong>TOTAL AMOUNT AFTER DUE DATE</strong></td>
+                    <td></td>
+                    <td style="width: 20%;text-align: right;"><strong>₱${(
+                      soa.total_amount +
+                      soa.balance_from_prev_bill +
+                      soa.amount * 0.1
+                    ).toFixed(2)}</strong></td>
+                </tr>
+            </table>
+            <div style="border-bottom: 1px dotted #E7EBF4;"></div>
+            <br>
+            <table width="100%" class="dot-table" cellpadding="1" >
+                <tr>
+                    <td style="width: 60%;">Due Date</td>
+                    <td style="width: 20%;text-align: right;">${new Date(
+                      soa.due_date,
+                    ).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;">Disconnection Date</td>
+                    <td style="width: 20%;text-align: right;">${new Date(
+                      soa.disconnection_date,
+                    ).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;">Reference No</td>
+                    <td style="width: 20%;text-align: right;">${soa.meter_reading_id
+                      .toString()
+                      .padStart(8, '0')}</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;">Meter Reader</td>
+                    <td style="width: 20%;text-align: right;">${
+                      soa.meter_reader
+                    }</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 60%;">Date/Time</td>
+                    <td style="width: 20%;text-align: right;">${new Date(
+                      soa.reading_date,
+                    ).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}</td>
+                    <td style="width: 20%;text-align: right;"></td>
+                </tr>
+            </table>
+            <div style="border-bottom: 1px dotted #E7EBF4;"></div>
+            <br>
+            <table width="100%" class="dot-table" cellpadding="1" >
+                <tr>
+                    <td style="font-size: 12px;text-align: center;">
+                        <strong>Important Notice</strong><br>
+                        Pay your water bill by the due date to avoid penalties. Service may be disconnected if there are arrears before the stated disconnection date.<br><br>
+                        For bill inquiries, visit our office or call our hotlines by the 10th of the month. You can also message us at facebook.com/tubignabuainc.
+                    </td>
+                </tr>
+            </table>
+            <div style="border-bottom: 1px dotted #E7EBF4;"></div>
+            <br>
+            <table width="100%" class="dot-table" cellpadding="1" >
+                <tr>
+                    <td valign="middle" style="width: 50%;font-size: 12px;text-align: center;vertical-align: middle;">
+                        Scan the QR code for payments via <strong>GCash, Maya, or Credit/Debit Card</strong> through <strong>Paymongo</strong> or visit <a href="www.onlinepayment.com">www.onlinepayment.com</a> for online payments.
+                    </td>
+                    <td style="width: 50%;font-size: 12px;text-align: center;" valign="middle">
+                        <img src="assets/images/site/logos/${
+                          soa.project_id
+                        }/qr.png" style="width: 120px;margin: auto;">
+                    </td>
+                </tr>
+            </table>
+        `);
+    </script>
+  </body>
+</html>

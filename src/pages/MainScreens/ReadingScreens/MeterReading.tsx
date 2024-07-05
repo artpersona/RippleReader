@@ -21,6 +21,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageView from 'react-native-image-viewing';
 import {submitReadingAPI} from '../../../services/meterReadingAPI';
 import {NavigationRoutes} from '../../../utils';
+import Toast from 'react-native-toast-message';
 type Props = {
   navigation: any;
   route: any;
@@ -29,36 +30,53 @@ type Props = {
 function MeterReading({navigation, route}: Props) {
   const {account, id} = route.params;
   const [image, setImage] = React.useState('');
+  const [imageData, setImageData] = React.useState('' as any);
   const [visible, setIsVisible] = React.useState(false);
   const [meterReading, setMeterReading] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
-  console.log('account', account);
-
   const handleSubmit = () => {
-    const params = {
+    if (!meterReading) {
+      Alert.alert('Please enter a meter reading');
+      return;
+    }
+    if (!image) {
+      Alert.alert('Please take a photo of the meter reading');
+      return;
+    }
+    const formattedImage = {
+      uri: imageData.uri,
+      type: imageData.type,
+      name: imageData.fileName,
+    };
+
+    const params: {[key: string]: any} = {
       account_id: id,
       project_id: account.project_id,
       cluster_id: account.cluster_id,
       meter_id: account.meter_id,
       user_id: 1,
-      attachment: 'Test Attachment',
       reading_datetime: new Date().toISOString(),
       present_reading: parseInt(meterReading, 10),
       consumption:
         parseInt(meterReading, 10) - parseInt(account.last_reading, 10),
       status: 20,
+      attachment: formattedImage,
     };
 
-    if (!meterReading) {
-      alert('Please enter a meter reading');
-      return;
+    const formData = new FormData();
+    for (const key in params) {
+      if (key === 'attachment') {
+        formData.append(key, {
+          uri: params[key].uri,
+          type: params[key].type,
+          name: params[key].name,
+        });
+      } else {
+        formData.append(key, params[key]);
+      }
     }
 
-    if (!image) {
-      alert('Please take a photo of the meter reading');
-      return;
-    }
     setLoading(true);
 
     if (
@@ -72,7 +90,7 @@ function MeterReading({navigation, route}: Props) {
           {
             text: 'Yes',
             onPress: () => {
-              submitHelper(params);
+              submitHelper(formData);
             },
           },
           {
@@ -84,16 +102,24 @@ function MeterReading({navigation, route}: Props) {
           },
         ],
       );
+    } else {
+      submitHelper(formData);
     }
-
-    submitHelper(params);
   };
 
   const submitHelper = (params: any) => {
+    console.log('params : ', params);
     submitReadingAPI(params)
       .then((res: any) => {
-        console.log('res', res);
+        console.log('res is', res);
         setLoading(false);
+        Toast.show({
+          type: 'success',
+          position: 'bottom',
+          bottomOffset: 50,
+          text1: 'Success',
+          text2: 'Reading has been submitted',
+        });
         navigation.navigate(NavigationRoutes.SOA, {
           account,
           id,
@@ -118,7 +144,7 @@ function MeterReading({navigation, route}: Props) {
           return;
         }
         setImage(response.assets[0].uri);
-        console.log('response', response);
+        setImageData(response.assets[0]);
       },
     );
   };
@@ -147,7 +173,7 @@ function MeterReading({navigation, route}: Props) {
                 setMeterReading(text.padStart(8, '0'));
                 return;
               }
-              if (text[0] !== '0') {
+              if (text[0] !== '0' && text.length > 8) {
                 return;
               }
               const numericText = text.replace(/[^0-9]/g, '');
