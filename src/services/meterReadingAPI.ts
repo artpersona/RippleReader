@@ -3,7 +3,7 @@ import {postRequest, getRequest} from './request';
 import {RESPONSE_RETURN_VALUE} from './serviceapi';
 
 export const getCCFTypesAPI = () => {
-  const URL = '/api/support/types';
+  const URL = '/api/support/types?is_user=true';
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 

@@ -7,11 +7,10 @@ type Props = {
 };
 
 function SupportCard({item, onPress}: Props) {
+  console.log('wew item: ', item);
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.accountInfo}>
-        {/* Banner will go here */}
-
         <View style={styles.dataRow}>
           <Text style={styles.label}>CONTROL NO:</Text>
           <Text style={styles.value}>{item.control_no}</Text>
@@ -27,11 +26,28 @@ function SupportCard({item, onPress}: Props) {
           <Text style={styles.value}>{item.address}</Text>
         </View>
       </View>
+
+      {item?.ccfType && (
+        <View style={styles.typeContainer}>
+          <Text style={styles.typeText}>{item.ccfType}</Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
+  typeText: {
+    fontFamily: 'Poppins-Medium',
+    color: colors.white,
+    fontSize: 12,
+  },
+  typeContainer: {
+    backgroundColor: colors.primary,
+    padding: 5,
+    borderRadius: 5,
+    marginTop: 5,
+  },
   value: {
     fontFamily: 'Poppins-Medium',
     fontSize: 14,
@@ -60,10 +76,12 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
-
     elevation: 2,
     borderRadius: 5,
     marginVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
 });
 

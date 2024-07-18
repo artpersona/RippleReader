@@ -30,6 +30,7 @@ const NavigationRoutes = {
   OTHER_ACTIONS_LANDING: 'OtherActionsLanding',
   ACTION_SCREEN: 'ActionScreen',
 
+  CUSTOMER_CARE_LANDING: 'CustomerCareLanding',
   CUSTOMER_CARE: 'CustomerCare',
 };
 

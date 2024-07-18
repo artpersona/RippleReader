@@ -120,7 +120,14 @@ function CustomerCare({route, navigation}: Props) {
         navigation.goBack();
       })
       .catch((err: any) => {
-        console.log('err', err);
+        console.log('err is: ', err);
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          bottomOffset: 50,
+          text1: err.response.data.message || 'Error',
+          text2: 'An error occurred',
+        });
         setLoading(false);
       });
   };

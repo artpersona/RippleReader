@@ -15,7 +15,7 @@ import AccountLanding from './MainScreens/ReadingScreens/AccountLanding';
 import MeterReading from './MainScreens/ReadingScreens/MeterReading';
 import SOA from './MainScreens/ReadingScreens/SOA';
 import CustomerCare from './MainScreens/ReadingScreens/CustomerCare';
-
+import CustomerCareLanding from './MainScreens/ReadingScreens/CustomerCareLanding';
 // Maintenance
 import MaintenanceHomeLanding from './MaintenanceScreens/HomeScreens/MaintenanceHomeLanding';
 import Selection from './MaintenanceScreens/Selection/Selection';
@@ -28,6 +28,7 @@ import ProfileLanding from './CommonScreens/ProfileLanding';
 import TestScreen from './Test';
 
 export {
+  CustomerCareLanding,
   ActionScreen,
   Selection,
   CustomerCare,

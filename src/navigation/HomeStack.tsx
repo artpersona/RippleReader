@@ -7,6 +7,7 @@ import {
   SOA,
   FilterScreen,
   CustomerCare,
+  CustomerCareLanding,
 } from '../pages';
 import useMaintenanceStore from '../stores/maintenance.store';
 import {useEffect} from 'react';
@@ -42,6 +43,11 @@ const HomeStack = () => {
       <Stack.Screen
         name={NavigationRoutes.CUSTOMER_CARE}
         component={CustomerCare}
+      />
+
+      <Stack.Screen
+        name={NavigationRoutes.CUSTOMER_CARE_LANDING}
+        component={CustomerCareLanding}
       />
 
       <Stack.Screen

@@ -41,9 +41,9 @@ function AccountLanding({navigation, route}: Props) {
   };
 
   const navigateToCCF = () => {
-    navigation.navigate(NavigationRoutes.CUSTOMER_CARE, {
-      account,
+    navigation.navigate(NavigationRoutes.CUSTOMER_CARE_LANDING, {
       id,
+      account,
     });
   };
 
@@ -144,7 +144,7 @@ function AccountLanding({navigation, route}: Props) {
 
             <TouchableOpacity style={styles.clickable} onPress={navigateToCCF}>
               <AntDesign name="swap" size={25} color={colors.blueBarWick} />
-              <Text style={styles.clickabletext}>Meter Actions</Text>
+              <Text style={styles.clickabletext}>Customer Care</Text>
             </TouchableOpacity>
           </View>
         </View>

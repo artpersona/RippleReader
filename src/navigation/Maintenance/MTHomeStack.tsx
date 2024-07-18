@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationRoutes} from '../../utils';
 import {
@@ -7,9 +9,16 @@ import {
   Selection,
   FilterScreen,
 } from '../../pages';
+import useMaintenanceStore from '../../stores/maintenance.store';
+import {useEffect} from 'react';
 const Stack = createStackNavigator();
 
 const MTHomeStack = () => {
+  const {loadCCFTypes} = useMaintenanceStore() as any;
+
+  useEffect(() => {
+    loadCCFTypes();
+  }, []);
   return (
     <Stack.Navigator
       screenOptions={{

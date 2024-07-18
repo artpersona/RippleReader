@@ -6,6 +6,7 @@ import CustomSearch from './CustomSearch';
 import AccountCard from './AccountCard';
 import ListEmpty from './ListEmpty';
 import SupportCard from './SupportCard';
+import TicketThread from './TicketThread';
 export {
   CustomHeader,
   ControlledInput,
@@ -15,4 +16,5 @@ export {
   ListEmpty,
   ControlledDropdown,
   SupportCard,
+  TicketThread,
 };

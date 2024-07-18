@@ -1,33 +1,35 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, ActivityIndicator} from 'react-native';
-import {CustomHeader, CustomSearch, AccountCard} from '../../../components';
+import {
+  CustomHeader,
+  CustomSearch,
+  SupportCard,
+  ListEmpty,
+} from '../../../components';
 import {colors} from '../../../common';
-import Animated, {useSharedValue} from 'react-native-reanimated';
 import useMeterReadingStore from '../../../stores/meterReading.store';
 
 import {FlatList} from 'react-native-gesture-handler';
 import {NavigationRoutes} from '../../../utils';
 import {useFocusEffect} from '@react-navigation/native';
 import {debounce} from 'lodash';
+import useMaintenanceStore from '../../../stores/maintenance.store';
 
 type Props = {
   navigation: any;
 };
 
 function OtherActionsLanding({navigation}: Props) {
-  const sliderRight = useSharedValue(0);
-  const {
-    loadMeterReaderLists,
-    readingList,
-    activeClusters,
-    searchText,
-    loading,
-  } = useMeterReadingStore() as any;
+  const {activeClusters, searchText, loading} = useMeterReadingStore() as any;
+  const {otherActionsList, loadOtherActionsList, ccfTypes} =
+    useMaintenanceStore() as any;
+
+  const [formattedOtherActions, setFormattedOtherActions] = useState<any[]>([]);
 
   useFocusEffect(
     React.useCallback(() => {
-      loadMeterReaderLists(
+      loadOtherActionsList(
         searchText,
         activeClusters.length > 0 ? activeClusters.join(',') : '',
       );
@@ -35,8 +37,22 @@ function OtherActionsLanding({navigation}: Props) {
   );
 
   const onChangeText = debounce((text: string) => {
-    loadMeterReaderLists(text, activeClusters);
+    loadOtherActionsList(text, activeClusters);
   }, 300);
+
+  useEffect(() => {
+    if (otherActionsList) {
+      const formattedList = otherActionsList.map((item: any) => {
+        console.log('ccft types', ccfTypes, item.type);
+        const ccfType = ccfTypes.find((ccf: any) => ccf.id === item.type);
+        return {
+          ...item,
+          ccfType: ccfType?.name,
+        };
+      });
+      setFormattedOtherActions(formattedList);
+    }
+  }, [otherActionsList, ccfTypes]);
 
   return (
     <View style={styles.bgWhite}>
@@ -62,20 +78,20 @@ function OtherActionsLanding({navigation}: Props) {
 
           {!loading && (
             <FlatList
-              data={readingList}
-              keyExtractor={(item: any) => item.id.toString()}
+              data={formattedOtherActions}
               renderItem={({item}: any) => (
-                <AccountCard
+                <SupportCard
                   item={item}
                   onPress={() =>
-                    navigation.navigate(NavigationRoutes.ACCOUNT_LANDING, {
-                      isCompleted: false,
-                      accountNumber: item.account_number,
-                      id: item.id,
+                    navigation.navigate(NavigationRoutes.ACTION_SCREEN, {
+                      account: item,
                     })
                   }
                 />
               )}
+              ListEmptyComponent={
+                <ListEmpty message="No support tickets found" />
+              }
             />
           )}
         </View>

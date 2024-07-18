@@ -37,8 +37,6 @@ function MaintenanceHomeLanding({navigation}: Props) {
   const {disconnectionList, reconnectionList, loadMaintenanceList} =
     useMaintenanceStore() as any;
 
-  console.log('reconnection list: ', reconnectionList);
-
   const onTabPress = (index: number) => {
     loadMeterReaderLists();
     if (index === 0) {

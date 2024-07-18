@@ -17,9 +17,9 @@ export const getReconnectionListAPI = (search: string, clusters: string) => {
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 
-export const getOtherListAPI = (search: string) => {
+export const getOtherListAPI = (search: string, clusters: string) => {
   let URL = 'api/support/other-services';
-  const queryParams = '?search=' + search;
+  const queryParams = '?search=' + search + '&clusters=' + clusters;
   URL += queryParams;
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
@@ -34,4 +34,9 @@ export const createTicket = (params: any) => {
   return postRequest(URL, params, RESPONSE_RETURN_VALUE, null, {
     'Content-Type': 'multipart/form-data',
   }) as any;
+};
+
+export const getAccountTickets = (account_id: string) => {
+  const URL = 'api/support/tickets?account_id=' + account_id;
+  return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
