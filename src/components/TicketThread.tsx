@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import ImageView from 'react-native-image-viewing';
 import {colors} from '../common';
+import {moderateScale} from 'react-native-size-matters';
 
 type Props = {
   item: any;
@@ -211,18 +212,18 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 10,
+    fontSize: moderateScale(10),
     color: colors.mutedText,
   },
 
   value: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.black,
   },
   label: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.mutedText,
   },
   issueTextContainer: {
@@ -247,7 +248,7 @@ const styles = StyleSheet.create({
   statusText: {
     fontFamily: 'Poppins-Regular',
     textTransform: 'uppercase',
-    fontSize: 12,
+    fontSize: moderateScale(12),
   },
   statusContainer: {
     minWidth: 100,

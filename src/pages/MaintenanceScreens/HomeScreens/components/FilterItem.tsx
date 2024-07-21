@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {colors} from '../../../../common';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   id: number;
   name: string;
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 16,
+    fontSize: moderateScale(16),
   },
   container: {
     paddingVertical: 15,

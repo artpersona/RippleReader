@@ -3,10 +3,10 @@ import {Text, StyleSheet, Pressable, View} from 'react-native';
 import {tabIcons} from '../utils/tabIcons';
 import {colors} from '../common';
 import {height} from '../common';
-
 import {NavigationRoutes} from '../utils';
+import {moderateScale} from 'react-native-size-matters';
 
-function CustomTabBar({state, descriptors, navigation, theme}: any) {
+function CustomTabBar({state, descriptors, navigation}: any) {
   const activeTintColor = colors.tertiary;
 
   return (
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   label: {
-    fontSize: 11.5,
+    fontSize: moderateScale(11.5),
     marginTop: 3,
     fontFamily: 'Poppins-Light',
     textTransform: 'uppercase',

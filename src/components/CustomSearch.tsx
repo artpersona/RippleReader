@@ -8,6 +8,8 @@ import {useNavigation} from '@react-navigation/native';
 import {NavigationRoutes} from '../utils';
 import useMeterReadingStore from '../stores/meterReading.store';
 import {Badge} from 'react-native-paper';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   onChangeText: (text: string) => void;
 };
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
   },
   inputText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 12,
+    fontSize: moderateScale(12),
   },
   filterIcon: {
     flex: 0.18,

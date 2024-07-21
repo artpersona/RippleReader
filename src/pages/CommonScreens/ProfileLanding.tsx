@@ -9,6 +9,7 @@ import commonstyles from '../../styles/commonstyles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useUserStore} from '../../stores';
 import {ControlledInput} from '../../components';
+import {moderateScale} from 'react-native-size-matters';
 
 type Props = {};
 
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 22,
+    fontSize: moderateScale(22),
     textAlign: 'center',
     marginTop: 10,
   },

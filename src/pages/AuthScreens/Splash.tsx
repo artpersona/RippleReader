@@ -6,6 +6,8 @@ import MeterLogo from '../../assets/svg/meter_logo.svg';
 import {ActivityIndicator} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import {NavigationRoutes} from '../../utils';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   navigation: any;
 };
@@ -48,12 +50,12 @@ const styles = StyleSheet.create({
   subText: {
     fontFamily: 'Poppins-LightItalic',
     color: colors.white,
-    fontSize: 16,
+    fontSize: moderateScale(16),
   },
   logoTitle: {
     fontFamily: 'SourceSerif4-Regular',
     color: colors.white,
-    fontSize: 32,
+    fontSize: moderateScale(32),
   },
   container: {
     flex: 1,

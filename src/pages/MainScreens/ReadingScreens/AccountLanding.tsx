@@ -14,6 +14,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {NavigationRoutes} from '../../../utils';
 import ImageView from 'react-native-image-viewing';
+import {moderateScale} from 'react-native-size-matters';
 
 type Props = {
   navigation: any;
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontFamily: 'Poppins-LightItalic',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.homeComponent,
     textDecorationLine: 'underline',
   },
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
   },
   clickabletext: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     marginLeft: 10,
     color: colors.homeComponent,
   },
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
   },
   otherText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: '#A5C5DC',
     marginBottom: 10,
   },
@@ -225,17 +226,17 @@ const styles = StyleSheet.create({
   },
   previousText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 11,
+    fontSize: moderateScale(11),
     color: colors.historyLabel,
   },
   value: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.historyLabel,
   },
   label: {
     fontFamily: 'Poppins-Light',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.historyLabel,
     textTransform: 'uppercase',
   },

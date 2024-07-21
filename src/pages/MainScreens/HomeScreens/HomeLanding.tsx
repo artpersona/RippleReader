@@ -77,13 +77,13 @@ function HomeLanding({navigation}: Props) {
         <CustomSearch onChangeText={onChangeText} />
 
         <View style={styles.tabControl}>
-          <TouchableWithoutFeedback onPress={() => onTabPress(0)}>
+          <TouchableWithoutFeedback onPress={() => onTabPress(0)} disabled>
             <View style={styles.tabOption}>
               <Text style={styles.optionText}>For Readings</Text>
             </View>
           </TouchableWithoutFeedback>
 
-          <TouchableWithoutFeedback onPress={() => onTabPress(1)}>
+          <TouchableWithoutFeedback onPress={() => onTabPress(1)} disabled>
             <View style={styles.tabOption}>
               <Text style={styles.optionText}>Completed</Text>
             </View>

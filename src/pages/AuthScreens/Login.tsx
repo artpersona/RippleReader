@@ -11,6 +11,7 @@ import {Button} from 'react-native-paper';
 import {useUserStore} from '../../stores';
 import {loginAPI} from '../../services/authApi';
 import JWT from 'expo-jwt';
+import {moderateScale} from 'react-native-size-matters';
 
 type Props = {};
 
@@ -42,6 +43,7 @@ function Login({}: Props) {
         }
       })
       .catch((err: any) => {
+        console.log('err is: ', err);
         Toast.show({
           type: 'error',
           position: 'bottom',
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.primary,
   },
   checkbox: {
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
   },
   rememberText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     marginLeft: 10,
     color: colors.mediumGray,
   },
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 28,
+    fontSize: moderateScale(28),
     color: colors.loginHeader,
   },
   container: {

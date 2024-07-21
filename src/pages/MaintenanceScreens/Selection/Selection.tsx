@@ -5,6 +5,8 @@ import {colors} from '../../../common';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import {NavigationRoutes} from '../../../utils';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   navigation: any;
 };
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontFamily: 'Poppins-SemiBold',
     color: colors.primary,
-    fontSize: 16,
+    fontSize: moderateScale(16),
     marginTop: 15,
   },
   buttonContainer: {
@@ -75,7 +77,7 @@ const styles = StyleSheet.create({
   subHeader: {
     fontFamily: 'Poppins-Regular',
     color: '#898A8D',
-    fontSize: 12,
+    fontSize: moderateScale(12),
   },
   mainContent: {
     marginHorizontal: 20,

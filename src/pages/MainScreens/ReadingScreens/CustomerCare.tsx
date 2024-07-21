@@ -22,6 +22,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {createTicket} from '../../../services/maintenanceAPI';
 import Toast from 'react-native-toast-message';
 import useMaintenanceStore from '../../../stores/maintenance.store';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   route: any;
   navigation: any;
@@ -254,13 +256,13 @@ function CustomerCare({route, navigation}: Props) {
 const styles = StyleSheet.create({
   detailsValue: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.homeComponent,
     marginTop: 3,
   },
   detailsLabel: {
     fontFamily: 'Poppins-Light',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.homeComponent,
   },
   usageContainer: {
@@ -284,7 +286,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontFamily: 'Poppins-LightItalic',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.homeComponent,
     textDecorationLine: 'underline',
   },
@@ -314,13 +316,13 @@ const styles = StyleSheet.create({
   value: {
     fontFamily: 'Poppins-SemiBold',
     color: colors.black,
-    fontSize: 16,
+    fontSize: moderateScale(16),
   },
 
   label: {
     fontFamily: 'Poppins-Regular',
     color: colors.black,
-    fontSize: 12,
+    fontSize: moderateScale(12),
   },
 
   accountDetails: {

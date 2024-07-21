@@ -1,16 +1,18 @@
 import {StyleSheet} from 'react-native';
 import {colors} from '../common';
+import {moderateScale} from 'react-native-size-matters';
+
 const styles = StyleSheet.create({
   headerText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 22,
+    fontSize: moderateScale(22),
     color: colors.primary,
   },
   inputContainer: {
     marginBottom: 12,
     backgroundColor: colors.inputBackground,
     minHeight: 44,
-    fontSize: 12,
+    fontSize: moderateScale(12),
     fontFamily: 'Roboto-Light',
     color: 'yellow',
   },

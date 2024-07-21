@@ -22,6 +22,8 @@ import ImageView from 'react-native-image-viewing';
 import {submitReadingAPI} from '../../../services/meterReadingAPI';
 import {NavigationRoutes} from '../../../utils';
 import Toast from 'react-native-toast-message';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   navigation: any;
   route: any;
@@ -282,13 +284,13 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontFamily: 'Poppins-LightItalic',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.homeComponent,
     textDecorationLine: 'underline',
   },
   label: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.homeComponent,
   },
   extraDetails: {
@@ -319,13 +321,13 @@ const styles = StyleSheet.create({
   },
   detailsValue: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.homeComponent,
     marginTop: 3,
   },
   detailsLabel: {
     fontFamily: 'Poppins-Light',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.homeComponent,
   },
   usageContainer: {
@@ -346,7 +348,7 @@ const styles = StyleSheet.create({
   },
   usageText: {
     fontFamily: 'Poppins-Light',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.homeComponent,
   },
   input: {
@@ -366,12 +368,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     elevation: 3,
     fontFamily: 'Poppins-Regular',
-    fontSize: 20,
+    fontSize: moderateScale(20),
     color: colors.homeComponent,
   },
   mainLabel: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.homeComponent,
   },
   meterInput: {

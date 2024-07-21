@@ -1,6 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {colors} from '../common';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   message: string;
 };
@@ -17,7 +19,7 @@ const styles = StyleSheet.create({
   missingText: {
     color: colors.mediumGray,
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     marginTop: 30,
     textAlign: 'center',
   },

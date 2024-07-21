@@ -1,6 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {colors} from '../common';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   item: any;
   onPress: () => void;
@@ -34,13 +36,13 @@ function AccountCard({item, onPress}: Props) {
 const styles = StyleSheet.create({
   value: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.secondary,
   },
   label: {
     fontFamily: 'Poppins-Light',
     color: colors.homeComponent,
-    fontSize: 12,
+    fontSize: moderateScale(12),
   },
   dataRow: {
     marginTop: 5,

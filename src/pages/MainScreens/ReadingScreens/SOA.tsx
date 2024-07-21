@@ -9,6 +9,7 @@ import {Button} from 'react-native-paper';
 import commonstyles from '../../../styles/commonstyles';
 import RNPrint from 'react-native-print';
 import {getSOAAPI} from '../../../services/meterReadingAPI';
+import {moderateScale} from 'react-native-size-matters';
 
 type Props = {
   navigation: any;
@@ -515,7 +516,7 @@ export default SOA;
 const styles = StyleSheet.create({
   paymentLabel: {
     color: colors.white,
-    fontSize: 12,
+    fontSize: moderateScale(12),
     fontFamily: 'Poppins-Regular',
   },
   paymentButton: {
@@ -541,12 +542,12 @@ const styles = StyleSheet.create({
   },
   compTotal: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.historyLabel,
   },
   compTitle: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.historyLabel,
   },
   opa5: {opacity: 0.5},
@@ -563,7 +564,7 @@ const styles = StyleSheet.create({
   },
   computationLabel: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.historyLabel,
   },
   computationDetails: {
@@ -571,13 +572,13 @@ const styles = StyleSheet.create({
   },
   boxValue: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.historyLabel,
     marginTop: 3,
   },
   boxLabel: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 10,
+    fontSize: moderateScale(10),
     color: colors.historyLabel,
   },
   boxDetails: {
@@ -595,7 +596,7 @@ const styles = StyleSheet.create({
   },
   amountText: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 22,
+    fontSize: moderateScale(22),
     color: colors.historyMoney,
   },
   paymentContainer: {
@@ -603,7 +604,7 @@ const styles = StyleSheet.create({
   },
   totalAmountText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.historyLabel,
     opacity: 0.75,
   },
@@ -615,13 +616,13 @@ const styles = StyleSheet.create({
   },
   eSoaText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.historyLabel,
   },
   projectName: {
     marginVertical: 5,
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     color: colors.historyLabel,
   },
   headerContainer: {

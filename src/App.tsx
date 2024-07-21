@@ -4,9 +4,8 @@ import {SafeAreaView, StyleSheet, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {colors} from './common';
 import Toast from 'react-native-toast-message';
-
 import MainStack from './navigation/MainNavigation';
-
+import {moderateScale} from 'react-native-size-matters';
 const MyStatusBar = ({backgroundColor, ...props}: any) => (
   <View style={[styles.statusBar, {backgroundColor}]}>
     <SafeAreaView>
@@ -44,12 +43,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: moderateScale(24),
     fontWeight: '600',
   },
   sectionDescription: {
     marginTop: 8,
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: '400',
   },
   highlight: {

@@ -1,6 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {colors} from '../common';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   item: any;
   onPress: () => void;
@@ -40,7 +42,7 @@ const styles = StyleSheet.create({
   typeText: {
     fontFamily: 'Poppins-Medium',
     color: colors.white,
-    fontSize: 12,
+    fontSize: moderateScale(12),
   },
   typeContainer: {
     backgroundColor: colors.primary,
@@ -50,13 +52,13 @@ const styles = StyleSheet.create({
   },
   value: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.secondary,
   },
   label: {
     fontFamily: 'Poppins-Light',
     color: colors.homeComponent,
-    fontSize: 12,
+    fontSize: moderateScale(12),
   },
   dataRow: {
     marginTop: 5,

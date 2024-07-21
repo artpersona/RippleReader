@@ -7,6 +7,8 @@ import useMeterReadingStore from '../../../stores/meterReading.store';
 import FilterItem from './components/FilterItem';
 import commonstyles from '../../../styles/commonstyles';
 import {Button} from 'react-native-paper';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   navigation?: any;
 };
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 12,
+    fontSize: moderateScale(12),
     color: colors.header,
     textTransform: 'capitalize',
     marginBottom: 20,

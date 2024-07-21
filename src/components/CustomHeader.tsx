@@ -11,6 +11,8 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import {colors} from '../common';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   title?: string;
   titleStyle?: any;
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   titleText: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontFamily: 'Poppins-Regular',
     color: colors.primary,
   },

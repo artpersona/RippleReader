@@ -23,6 +23,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import {NavigationRoutes} from '../../../utils';
 import {useFocusEffect} from '@react-navigation/native';
 import {debounce} from 'lodash';
+import {moderateScale} from 'react-native-size-matters';
 
 type Props = {
   navigation: any;
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: colors.homeComponent,
   },
   tabOption: {

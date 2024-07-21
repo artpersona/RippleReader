@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 import {useController} from 'react-hook-form';
 import {colors} from '../common';
 import {Dropdown} from 'react-native-element-dropdown';
+import {moderateScale} from 'react-native-size-matters';
 
 const ControlledDropdown = (props: any) => {
   const {control, name, rules, errors} = props;
@@ -57,11 +58,11 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   placeholderStyle: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontFamily: 'Poppins-Regular',
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
   },
   iconStyle: {
     width: 20,
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
+    fontSize: moderateScale(16),
   },
 });
 

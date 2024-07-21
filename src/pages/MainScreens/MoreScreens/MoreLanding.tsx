@@ -9,6 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {width} from '../../../common';
 import {useUserStore} from '../../../stores';
+import {moderateScale} from 'react-native-size-matters';
 
 type Props = {
   navigation: any;
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'rgba(255, 255, 255, 0.6)',
     fontFamily: 'Poppins-Regular',
-    fontSize: 16,
+    fontSize: moderateScale(16),
   },
   centeredContainer: {
     flex: 0.4,
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     color: colors.white,
     fontFamily: 'Poppins-Regular',
-    fontSize: 20,
+    fontSize: moderateScale(20),
     textAlign: 'center',
   },
   container: {

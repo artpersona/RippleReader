@@ -22,6 +22,7 @@ function Hometab() {
           component={user?.roleId === '102' ? MTHomeStack : HomeStack}
           options={{
             headerShown: false,
+            tabBarHideOnKeyboard: true,
           }}
         />
         <Tab.Screen
@@ -29,6 +30,7 @@ function Hometab() {
           component={ProfileStack}
           options={{
             headerShown: false,
+            tabBarHideOnKeyboard: true,
           }}
         />
         <Tab.Screen name={NavigationRoutes.MORE} component={TestScreen} />

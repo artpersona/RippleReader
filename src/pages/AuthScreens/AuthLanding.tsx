@@ -8,6 +8,8 @@ import {Button} from 'react-native-paper';
 import commonstyles from '../../styles/commonstyles';
 import Animated from 'react-native-reanimated';
 import {NavigationRoutes} from '../../utils';
+import {moderateScale} from 'react-native-size-matters';
+
 type Props = {
   navigation: any;
 };
@@ -32,7 +34,7 @@ function AuthLanding({navigation}: Props) {
       <View style={styles.bottomContainer}>
         <View style={styles.handlebar} />
         <View style={styles.footerContent}>
-          <Text style={styles.titleText}>Water Reader App made easier</Text>
+          <Text style={styles.titleText}>Water Reader App</Text>
           <Text style={styles.descText}>
             Streamlines the process of reading and managing utility meters,
             improves efficiency and accuracy, and enhances customer service
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
   descText: {
     color: colors.mediumGray,
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: moderateScale(12),
     textAlign: 'center',
     marginTop: 10,
   },
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
     color: colors.tertiary,
     fontFamily: 'Poppins-Medium',
     textAlign: 'center',
-    fontSize: 28,
+    fontSize: moderateScale(18),
     width: '80%',
     alignSelf: 'center',
   },
@@ -117,7 +119,7 @@ const styles = StyleSheet.create({
   logoTitle: {
     fontFamily: 'SourceSerif4-SemiBold',
     color: colors.white,
-    fontSize: 19,
+    fontSize: moderateScale(19),
     marginLeft: 5,
   },
   container: {
