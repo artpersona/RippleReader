@@ -20,6 +20,7 @@ type Props = {
   rightIcon?: JSX.Element;
   chevronColor?: string;
   isTransparent?: boolean;
+  backAction?: () => void | null;
 };
 
 const CustomHeader = ({
@@ -29,6 +30,7 @@ const CustomHeader = ({
   showBackButton,
   chevronColor,
   isTransparent = false,
+  backAction,
 }: Props) => {
   const {height} = useWindowDimensions();
   const navigation = useNavigation();
@@ -44,7 +46,7 @@ const CustomHeader = ({
       <View style={styles.customHeaderWrapper}>
         {showBackButton && (
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => (backAction ? backAction() : navigation.goBack())}
             style={styles.backButton}>
             <Feather
               name="chevron-left"

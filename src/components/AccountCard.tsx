@@ -12,8 +12,6 @@ function AccountCard({item, onPress}: Props) {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.accountInfo}>
-        {/* Banner will go here */}
-
         <View style={styles.dataRow}>
           <Text style={styles.label}>ACCOUNT NO:</Text>
           <Text style={styles.value}>{item.account_number}</Text>

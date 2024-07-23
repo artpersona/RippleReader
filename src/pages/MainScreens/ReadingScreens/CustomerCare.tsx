@@ -6,6 +6,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import {
   ControlledDropdown,
@@ -23,6 +24,7 @@ import {createTicket} from '../../../services/maintenanceAPI';
 import Toast from 'react-native-toast-message';
 import useMaintenanceStore from '../../../stores/maintenance.store';
 import {moderateScale} from 'react-native-size-matters';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 type Props = {
   route: any;
@@ -117,7 +119,7 @@ function CustomerCare({route, navigation}: Props) {
           text1: 'Success',
           text2: 'Ticket has been created',
         });
-        console.log('res', res);
+        console.log('res in support', res);
         setLoading(false);
         navigation.goBack();
       })
@@ -144,59 +146,71 @@ function CustomerCare({route, navigation}: Props) {
         title={'Meter Actions'}
         showBackButton
       />
+      <KeyboardAwareScrollView
+        enableAutomaticScroll
+        enableOnAndroid
+        extraHeight={100}
+        extraScrollHeight={100}
+        style={{flexGrow: 1}}>
+        <View style={styles.mainContent}>
+          <View style={styles.usageContainer}>
+            <View style={styles.row}>
+              <View>
+                <Text style={styles.detailsLabel}>Account Number</Text>
+                <Text style={styles.detailsValue}>
+                  {account.account_number}
+                </Text>
+              </View>
 
-      <View style={styles.mainContent}>
-        <View style={styles.usageContainer}>
-          <View style={styles.row}>
-            <View>
-              <Text style={styles.detailsLabel}>Account Number</Text>
-              <Text style={styles.detailsValue}>{account.account_number}</Text>
+              <View>
+                <Text style={styles.detailsLabel}>Account Name</Text>
+                <Text style={styles.detailsValue}>{account.account_name}</Text>
+              </View>
             </View>
 
-            <View>
-              <Text style={styles.detailsLabel}>Account Name</Text>
-              <Text style={styles.detailsValue}>{account.account_name}</Text>
+            <View style={styles.row}>
+              <View>
+                <Text style={styles.detailsLabel}>Address</Text>
+                <Text style={styles.detailsValue}>{account.address}</Text>
+              </View>
             </View>
           </View>
 
-          <View style={styles.row}>
-            <View>
-              <Text style={styles.detailsLabel}>Address</Text>
-              <Text style={styles.detailsValue}>{account.address}</Text>
-            </View>
-          </View>
+          <Text style={styles.title}>Type of Concern</Text>
+          <ControlledDropdown
+            control={control}
+            errors={errors}
+            name="concern"
+            rules={{
+              required: 'Type of concern is required',
+            }}
+            data={typesOfConcern}
+          />
+
+          <ControlledInput
+            placeholder="Describe your concern here..."
+            mode="outlined"
+            style={[commonstyles.inputContainer, styles.bgWhite]}
+            name="details_of_concern"
+            control={control}
+            blurOnSubmit={true}
+            onSubmitEditing={() => {
+              Keyboard.dismiss();
+            }}
+            outlineColor={
+              errors['details_of_concern'] ? colors.danger : colors.inputBorder
+            }
+            activeOutlineColor={
+              errors['details_of_concern'] ? colors.danger : colors.tertiary
+            }
+            numberOfLines={3}
+            multiline
+            rules={{
+              required: 'Description is required',
+            }}
+          />
         </View>
-
-        <Text style={styles.title}>Type of Concern</Text>
-        <ControlledDropdown
-          control={control}
-          errors={errors}
-          name="concern"
-          rules={{
-            required: 'Type of concern is required',
-          }}
-          data={typesOfConcern}
-        />
-
-        <ControlledInput
-          placeholder="Describe your concern here..."
-          mode="outlined"
-          style={[commonstyles.inputContainer, styles.bgWhite]}
-          name="details_of_concern"
-          control={control}
-          outlineColor={
-            errors['details_of_concern'] ? colors.danger : colors.inputBorder
-          }
-          activeOutlineColor={
-            errors['details_of_concern'] ? colors.danger : colors.tertiary
-          }
-          numberOfLines={3}
-          multiline
-          rules={{
-            required: 'Description is required',
-          }}
-        />
-      </View>
+      </KeyboardAwareScrollView>
 
       <View style={styles.bottomContainer}>
         {image ? (

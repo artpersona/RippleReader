@@ -64,6 +64,7 @@ function MeterReading({navigation, route}: Props) {
         parseInt(meterReading, 10) - parseInt(account.last_reading, 10),
       status: 20,
       attachment: formattedImage,
+      previous_reading_id: account.last_reading_id,
     };
 
     const formData = new FormData();
@@ -78,6 +79,8 @@ function MeterReading({navigation, route}: Props) {
         formData.append(key, params[key]);
       }
     }
+
+    console.log('form data is: ', formData);
 
     setLoading(true);
 
@@ -110,7 +113,6 @@ function MeterReading({navigation, route}: Props) {
   };
 
   const submitHelper = (params: any) => {
-    console.log('params : ', params);
     submitReadingAPI(params)
       .then((res: any) => {
         console.log('res is', res);
@@ -125,6 +127,7 @@ function MeterReading({navigation, route}: Props) {
         navigation.navigate(NavigationRoutes.SOA, {
           account,
           id,
+          fromBilling: true,
         });
       })
       .catch((error: any) => {
@@ -170,6 +173,7 @@ function MeterReading({navigation, route}: Props) {
             placeholder="00000000"
             keyboardType="numeric"
             value={meterReading}
+            returnKeyType="done"
             onChangeText={text => {
               if (text.length < meterReading.length) {
                 setMeterReading(text.padStart(8, '0'));

@@ -18,10 +18,24 @@ const getHeaderRequest = (
   method: string,
   headers?: {[key: string]: any},
 ) => {
+  console.log('headers', headers);
+
   if (user) {
     const Authorization = `Bearer ${user.token}`;
-    const AppName = 'WORKS';
+    const AppName = 'RIPPLE';
+
     if (params) {
+      // if (headers && headers['Content-Type'] === 'multipart/form-data') {
+      //   return {
+      //     method: method,
+      //     url: endPoint,
+      //     data: params,
+      //     headers: {Authorization, AppName, ...headers},
+      //     transformRequest: (data: any) => {
+      //       return data; // thats enough
+      //     },
+      //   };
+      // }
       return {
         method: method,
         url: endPoint,
@@ -29,6 +43,16 @@ const getHeaderRequest = (
         headers: {Authorization, AppName, ...headers},
       };
     } else {
+      // if (headers && headers['Content-Type'] === 'multipart/form-data') {
+      //   return {
+      //     method: method,
+      //     url: endPoint,
+      //     headers: {Authorization, AppName, ...headers},
+      //     transformRequest: (data: any) => {
+      //       return data; // thats enough
+      //     },
+      //   };
+      // }
       return {
         method: method,
         url: endPoint,
@@ -36,11 +60,22 @@ const getHeaderRequest = (
       };
     }
   } else {
+    // if (headers && headers['Content-Type'] === 'multipart/form-data') {
+    //   return {
+    //     method: method,
+    //     data: params,
+    //     url: endPoint,
+    //     headers: {AppName: 'RIPPLE', ...headers},
+    //     transformRequest: (data: any) => {
+    //       return data; // thats enough
+    //     },
+    //   };
+    // }
     return {
       method: method,
       data: params,
       url: endPoint,
-      headers: {AppName: 'WORKS'},
+      headers: {AppName: 'RIPPLE', ...headers},
     };
   }
 };

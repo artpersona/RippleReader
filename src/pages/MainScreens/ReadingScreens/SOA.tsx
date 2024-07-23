@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, BackHandler} from 'react-native';
 import SOABg from '../../../assets/svg/soa_bg.svg';
 import Nabua from '../../../assets/svg/nabua_logo.svg';
 import {CustomHeader} from '../../../components';
@@ -16,7 +16,7 @@ type Props = {
   route: any;
 };
 
-function SOA({route}: Props) {
+function SOA({route, navigation}: Props) {
   const [loading, setLoading] = useState(false);
 
   const [soa, setSoa] = useState<any>(null);
@@ -483,9 +483,62 @@ function SOA({route}: Props) {
     );
   };
 
+  useEffect(() => {
+    const backAction = () => {
+      if (route?.params?.fromBilling) {
+        navigation.navigate('HomeLanding');
+        return true;
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener(
+  //     'beforeRemove',
+  //     (e: NavigationBeforeRemoveEvent) => {
+  //       // Check where the navigation is going
+
+  //       if (route?.params?.fromBilling && !hasNavigated) {
+  //         // Prevent the default navigation action
+  //         e.preventDefault();
+  //         // Set state to prevent future navigation
+  //         setHasNavigated(true);
+  //         // Navigate to HomeLanding
+  //         navigation.navigate('HomeLanding');
+  //         return;
+  //       }
+
+  //       // Default action
+  //       navigation.dispatch(e.data.action);
+  //     },
+  //   );
+
+  //   // Cleanup listener on component unmount
+  //   return unsubscribe;
+  // }, [hasNavigated, navigation, route?.params?.fromBilling]);
+
   return (
     <View style={styles.container}>
-      <CustomHeader showBackButton isTransparent={true} title="eSOA" />
+      <CustomHeader
+        showBackButton
+        backAction={
+          route?.params?.fromBilling
+            ? () => {
+                navigation.navigate('HomeLanding');
+              }
+            : null
+        }
+        isTransparent={true}
+        title="eSOA"
+      />
       <View style={styles.shadow}>
         <SOABg
           width={'100%'}
