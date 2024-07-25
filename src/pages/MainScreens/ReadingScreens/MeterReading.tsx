@@ -136,7 +136,23 @@ function MeterReading({navigation, route}: Props) {
   };
 
   const handleCamera = () => {
-    launchImageLibrary(
+    // launchImageLibrary(
+    //   {
+    //     mediaType: 'photo',
+    //     includeBase64: false,
+    //     maxHeight: 500,
+    //     maxWidth: 500,
+    //   },
+    //   (response: any) => {
+    //     if (response.didCancel) {
+    //       return;
+    //     }
+    //     setImage(response.assets[0].uri);
+    //     setImageData(response.assets[0]);
+    //   },
+    // );
+
+    launchCamera(
       {
         mediaType: 'photo',
         includeBase64: false,
@@ -163,8 +179,13 @@ function MeterReading({navigation, route}: Props) {
         title={'Meter Reading'}
         showBackButton
       />
-      <ScrollView style={styles.mainContent}>
-        <MeterReadingHero width={'100%'} style={styles.hero} />
+      <ScrollView
+        style={styles.mainContent}
+        contentContainerStyle={{
+          paddingBottom: height * 0.25,
+        }}
+        showsVerticalScrollIndicator={false}>
+        <MeterReadingHero width={'80%'} style={styles.hero} />
         <View style={styles.meterInput}>
           <Text style={styles.mainLabel}>Water Meter Consumption</Text>
           <TextInput
@@ -324,13 +345,13 @@ const styles = StyleSheet.create({
   },
   detailsValue: {
     fontFamily: 'Poppins-Medium',
-    fontSize: moderateScale(14),
+    fontSize: moderateScale(12),
     color: colors.homeComponent,
     marginTop: 3,
   },
   detailsLabel: {
     fontFamily: 'Poppins-Light',
-    fontSize: moderateScale(12),
+    fontSize: moderateScale(10),
     color: colors.homeComponent,
   },
   usageContainer: {
@@ -371,8 +392,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     elevation: 3,
     fontFamily: 'Poppins-Regular',
-    fontSize: moderateScale(20),
+    fontSize: moderateScale(17),
     color: colors.homeComponent,
+    textAlignVertical: 'center',
   },
   mainLabel: {
     fontFamily: 'Poppins-Regular',
@@ -384,8 +406,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   hero: {
-    marginTop: 16,
     transform: [{scale: 1.15}],
+    alignSelf: 'center',
   },
   mainContent: {
     marginHorizontal: 16,

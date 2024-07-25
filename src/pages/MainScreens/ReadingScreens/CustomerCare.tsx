@@ -60,7 +60,23 @@ function CustomerCare({route, navigation}: Props) {
   }, [ccfTypes]);
 
   const handleCamera = () => {
-    launchImageLibrary(
+    // launchImageLibrary(
+    //   {
+    //     mediaType: 'photo',
+    //     includeBase64: false,
+    //     maxHeight: 500,
+    //     maxWidth: 500,
+    //   },
+    //   (response: any) => {
+    //     if (response.didCancel) {
+    //       return;
+    //     }
+    //     setImage(response.assets[0].uri);
+    //     setImageData(response.assets[0]);
+    //   },
+    // );
+
+    launchCamera(
       {
         mediaType: 'photo',
         includeBase64: false,
