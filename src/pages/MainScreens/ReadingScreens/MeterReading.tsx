@@ -80,8 +80,6 @@ function MeterReading({navigation, route}: Props) {
       }
     }
 
-    console.log('form data is: ', formData);
-
     setLoading(true);
 
     if (
@@ -113,6 +111,7 @@ function MeterReading({navigation, route}: Props) {
   };
 
   const submitHelper = (params: any) => {
+    console.log('params: ', params);
     submitReadingAPI(params)
       .then((res: any) => {
         console.log('res is', res);
