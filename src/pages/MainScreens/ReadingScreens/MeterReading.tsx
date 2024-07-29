@@ -17,7 +17,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
 import commonstyles from '../../../styles/commonstyles';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera} from 'react-native-image-picker';
 import ImageView from 'react-native-image-viewing';
 import {submitReadingAPI} from '../../../services/meterReadingAPI';
 import {NavigationRoutes} from '../../../utils';
@@ -136,22 +136,6 @@ function MeterReading({navigation, route}: Props) {
   };
 
   const handleCamera = () => {
-    // launchImageLibrary(
-    //   {
-    //     mediaType: 'photo',
-    //     includeBase64: false,
-    //     maxHeight: 500,
-    //     maxWidth: 500,
-    //   },
-    //   (response: any) => {
-    //     if (response.didCancel) {
-    //       return;
-    //     }
-    //     setImage(response.assets[0].uri);
-    //     setImageData(response.assets[0]);
-    //   },
-    // );
-
     launchCamera(
       {
         mediaType: 'photo',

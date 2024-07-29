@@ -143,10 +143,8 @@ function TicketThread({item}: Props) {
         )}
       </View>
 
-      {item.findings && (
+      {item.findings && item.status !== '10' && (
         <>
-          <View style={styles.separator} />
-
           <View style={styles.separator} />
           <View style={styles.findingsContainer}>
             <View style={styles.labelRow}>

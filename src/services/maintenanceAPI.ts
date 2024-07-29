@@ -19,7 +19,8 @@ export const getReconnectionListAPI = (search: string, clusters: string) => {
 
 export const getOtherListAPI = (search: string, clusters: string) => {
   let URL = 'api/support/other-services';
-  const queryParams = '?search=' + search + '&clusters=' + clusters;
+  const queryParams =
+    '?search=' + search + '&clusters=' + clusters + '&is_user=' + 0;
   URL += queryParams;
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };

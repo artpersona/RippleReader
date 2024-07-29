@@ -25,7 +25,7 @@ import Toast from 'react-native-toast-message';
 import useMaintenanceStore from '../../../stores/maintenance.store';
 import {moderateScale} from 'react-native-size-matters';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-
+import {useUserStore} from '../../../stores';
 type Props = {
   route: any;
   navigation: any;
@@ -33,12 +33,15 @@ type Props = {
 
 function CustomerCare({route, navigation}: Props) {
   const {ccfTypes} = useMaintenanceStore() as any;
+  const {user} = useUserStore() as any;
   const {account} = route.params;
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm();
+
+  console.log('account', account);
 
   const [image, setImage] = React.useState('');
   const [imageData, setImageData] = React.useState('' as any);
@@ -75,7 +78,6 @@ function CustomerCare({route, navigation}: Props) {
     //     setImageData(response.assets[0]);
     //   },
     // );
-
     launchCamera(
       {
         mediaType: 'photo',
@@ -110,6 +112,8 @@ function CustomerCare({route, navigation}: Props) {
       account_id: account.id,
       details_of_concern: data.details_of_concern,
       attachment: formattedImage,
+      user_id: user.userId,
+      mobile_user_id: 0,
     };
 
     const formData = new FormData();

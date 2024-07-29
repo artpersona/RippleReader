@@ -8,6 +8,7 @@ import {Button} from 'react-native-paper';
 import {addActionAPI} from '../../../services/maintenanceAPI';
 import Toast from 'react-native-toast-message';
 import {moderateScale} from 'react-native-size-matters';
+import {useUserStore} from '../../../stores';
 
 type Props = {
   route: any;
@@ -16,6 +17,7 @@ type Props = {
 
 function ActionScreen({route, navigation}: Props) {
   const {account} = route.params;
+  const {user} = useUserStore() as any;
   const {
     control,
     handleSubmit,
@@ -23,11 +25,12 @@ function ActionScreen({route, navigation}: Props) {
   } = useForm();
 
   const [loading, setLoading] = React.useState(false);
-
+  console.log('user is: ', user);
   const onSubmit = (data: any) => {
     const params = {
       id: account.id,
       actions_taken: data.actions_taken,
+      actions_taken_user_id: user.userId,
     };
     setLoading(true);
 
