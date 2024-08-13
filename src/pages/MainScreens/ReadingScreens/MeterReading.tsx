@@ -42,6 +42,12 @@ function MeterReading({navigation, route}: Props) {
       Alert.alert('Please enter a meter reading');
       return;
     }
+
+    if (parseInt(meterReading, 10) < parseInt(account.last_reading, 10)) {
+      Alert.alert('Meter reading cannot be less than the previous reading');
+      return;
+    }
+
     if (!image) {
       Alert.alert('Please take a photo of the meter reading');
       return;
@@ -111,7 +117,6 @@ function MeterReading({navigation, route}: Props) {
   };
 
   const submitHelper = (params: any) => {
-    console.log('params: ', params);
     submitReadingAPI(params)
       .then((res: any) => {
         console.log('res is', res);
@@ -124,8 +129,7 @@ function MeterReading({navigation, route}: Props) {
           text2: 'Reading has been submitted',
         });
         navigation.navigate(NavigationRoutes.SOA, {
-          account,
-          id,
+          soa_id: res.soa_id,
           fromBilling: true,
         });
       })

@@ -36,8 +36,7 @@ function AccountLanding({navigation, route}: Props) {
 
   const navigateToSOAScreen = () => {
     navigation.navigate(NavigationRoutes.SOA, {
-      account,
-      id,
+      soa_id: account.soa_id,
     });
   };
 

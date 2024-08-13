@@ -40,7 +40,12 @@ export const submitReadingAPI = (params: any) => {
   }) as any;
 };
 
-export const getSOAAPI = (accountID: number) => {
+export const getSOAAPI = (soa_id: number) => {
+  const URL = `api/billing/soa?soa_id=${soa_id}`;
+  return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
+};
+
+export const getAccountSOAAPI = (accountID: number) => {
   const URL = `api/meter-reader/accounts/${accountID}/soa`;
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };

@@ -19,6 +19,7 @@
     "@react-navigation/stack": "^6.3.28",
     "@tsconfig/react-native": "^3.0.3",
     "axios": "^1.6.7",
+    "dayjs": "^1.11.12",
     "expo-jwt": "^1.7.1",
     "lodash": "^4.17.21",
     "react": "18.2.0",

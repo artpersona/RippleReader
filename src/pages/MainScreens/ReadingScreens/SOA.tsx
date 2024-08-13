@@ -4,12 +4,12 @@ import SOABg from '../../../assets/svg/soa_bg.svg';
 import Nabua from '../../../assets/svg/nabua_logo.svg';
 import {CustomHeader} from '../../../components';
 import {colors, height} from '../../../common';
-import DashedLine from 'react-native-dashed-line';
 import {Button} from 'react-native-paper';
 import commonstyles from '../../../styles/commonstyles';
 import RNPrint from 'react-native-print';
 import {getSOAAPI} from '../../../services/meterReadingAPI';
 import {moderateScale} from 'react-native-size-matters';
+import dayjs from 'dayjs';
 
 type Props = {
   navigation: any;
@@ -17,27 +17,28 @@ type Props = {
 };
 
 function SOA({route, navigation}: Props) {
+  const [soaData, setSoaData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-
-  const [soa, setSoa] = useState<any>(null);
   const [htmlString, setHtmlString] = useState('');
 
   useEffect(() => {
-    if (route.params.id) {
-      getSOAAPI(route.params.id)
-        .then((res: any) => {
-          setSoa(res);
+    (async () => {
+      setLoading(true);
+      if (route.params.soa_id) {
+        try {
+          const data = await getSOAAPI(route.params.soa_id);
+          setSoaData(data);
           setLoading(false);
-        })
-        .catch((error: any) => {
-          console.log('error', error);
+        } catch (e) {
+          console.log('error', e);
           setLoading(false);
-        });
-    }
-  }, [route.params.id]);
+        }
+      }
+    })();
+  }, [route.params.soa_id]);
 
   useEffect(() => {
-    if (soa) {
+    if (soaData) {
       const tempHtmlString = `
       <html>
         <head>
@@ -67,12 +68,12 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td width="70">
                               <img src="${
-                                soa.logo
+                                soaData?.logo
                               }" width="60" style="float: left;">
                           </td>
                           <td width="570">
                               <span style="color: #044381;font-weight: bold; font-size: 20px;line-height: 25px;">${
-                                soa?.project_name
+                                soaData?.project_name
                               }</span><br>
                               <span style="color: #044381; line-height: 15px; font-weight: normal; font-size: 15px;">Electronic Statement of Account</span>
                           </td>
@@ -81,15 +82,17 @@ function SOA({route, navigation}: Props) {
                   <table style="width:100%;">
                       <tr>
                           <td style="text-align: center; font-size: 10px;">
-                              ${soa?.project_location}<br>
+                              ${soaData?.project_location}<br>
                               ${
-                                soa?.project_tin
-                                  ? 'VAT Reg. TIN: ' + soa?.project_tin + '<br>'
+                                soaData?.project_tin
+                                  ? 'VAT Reg. TIN: ' +
+                                    soaData?.project_tin +
+                                    '<br>'
                                   : ''
                               }
                               ${
-                                soa?.project_contact
-                                  ? 'Hotlines: ' + soa?.project_contact
+                                soaData?.project_contact
+                                  ? 'Hotlines: ' + soaData?.project_contact
                                   : ''
                               }
                           </td>
@@ -100,7 +103,7 @@ function SOA({route, navigation}: Props) {
                           <br>
                               <h2 style="color: #044381;font-weight: bold; font-size: 17px; text-align: center;line-height: 20px;">STATEMENT OF ACCOUNT</h2>
                               <h2 style="color: #044381;font-weight: bold; font-size: 17px; text-align: center;line-height: 1.3em;">FOR THE MONTH OF ${new Date(
-                                soa?.date_generated,
+                                soaData?.date_generated,
                               )
                                 .toLocaleString('default', {month: 'long'})
                                 .toUpperCase()}</h2>
@@ -114,39 +117,45 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td>Account Number</td>
                           <td style="text-align: right;">${
-                            soa?.account_number
+                            soaData?.account_number
                           }</td>
                       </tr>
                       <tr>
                           <td>Account Name</td>
                           <td style="text-align: right;">${
-                            soa?.establishment_name ||
-                            soa?.first_name +
+                            soaData?.establishment_name ||
+                            soaData?.first_name +
                               ' ' +
-                              soa?.middle_name +
+                              soaData?.middle_name +
                               ' ' +
-                              soa?.last_name +
+                              soaData?.last_name +
                               ' ' +
-                              soa?.suffix_name
+                              soaData?.suffix_name
                           }</td>
                       </tr>
                       <tr>
                           <td>Address</td>
-                          <td style="text-align: right;">${soa?.address}</td>
+                          <td style="text-align: right;">${
+                            soaData?.address
+                          }</td>
                       </tr>
                       <tr>
                           <td>Meter No. & Brand</td>
-                          <td style="text-align: right;">${soa?.serial_no}</td>
+                          <td style="text-align: right;">${
+                            soaData?.serial_no
+                          }</td>
                       </tr>
                       <tr>
                           <td>Rate Classification</td>
                           <td style="text-align: right;">${
-                            soa?.building_type_name
+                            soaData?.building_type_name
                           }</td>
                       </tr>
                       <tr>
                           <td>Sequence No.</td>
-                          <td style="text-align: right;">${soa?.soa_number}</td>
+                          <td style="text-align: right;">${
+                            soaData?.soa_number
+                          }</td>
                       </tr>
                   </table>
                   <div style="border-bottom: 1px solid #E7EBF4;"></div>
@@ -155,7 +164,7 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td>Reading Date</td>
                           <td style="text-align: right;">${new Date(
-                            soa?.reading_date,
+                            soaData?.reading_date,
                           ).toLocaleDateString('en-GB', {
                             day: 'numeric',
                             month: 'long',
@@ -165,16 +174,16 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td>Period Covered</td>
                           <td style="text-align: right;">${
-                            soa?.previous_reading
+                            soaData?.previous_reading
                               ? new Date(
-                                  soa?.previous_reading,
+                                  soaData?.previous_reading,
                                 ).toLocaleDateString('en-GB', {
                                   day: 'numeric',
                                   month: 'long',
                                   year: 'numeric',
                                 }) + ' to '
                               : ''
-                          }${new Date(soa?.reading_date).toLocaleDateString(
+                          }${new Date(soaData?.reading_date).toLocaleDateString(
         'en-GB',
         {
           day: 'numeric',
@@ -186,24 +195,24 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td>Present Reading</td>
                           <td style="text-align: right;">${
-                            soa?.present_reading
+                            soaData?.present_reading
                           }</td>
                       </tr>
                       <tr>
                           <td>Previous Reading</td>
                           <td style="text-align: right;">${
-                            soa?.previous_reading || ''
+                            soaData?.previous_reading || ''
                           }</td>
                       </tr>
                       <tr>
                           <td>Consumption</td>
                           <td style="text-align: right;">${
-                            soa?.consumption
+                            soaData?.consumption
                           }</td>
                       </tr>
                       <tr>
                           <td>Total Current Bill</td>
-                          <td style="text-align: right;">${soa?.amount}</td>
+                          <td style="text-align: right;">${soaData?.amount}</td>
                       </tr>
                   </table>
                   <div style="border-bottom: 1px solid #E7EBF4;"></div>
@@ -213,29 +222,29 @@ function SOA({route, navigation}: Props) {
                           <td style="width: 60%;"><strong>Current Charges</strong></td>
                           <td style="width: 20%;text-align: right;"></td>
                           <td style="width: 20%;text-align: right;"><strong>₱${
-                            soa?.amount
+                            soaData?.amount
                           }</strong></td>
                       </tr>
                       <tr>
                           <td style="width: 60%;">Basic Charge</td>
                           <td style="width: 20%;text-align: right;">₱${
-                            soa?.basic_charge
+                            soaData?.basic_charge
                           }</td>
                           <td style="width: 20%;text-align: right;"></td>
                       </tr>
                       <tr>
                           <td>VAT</td>
                           <td style="width: 20%;text-align: right;">₱${
-                            soa?.vat_amount
+                            soaData?.vat_amount
                           }</td>
                           <td style="width: 20%;text-align: right;"></td>
                       </tr>
                       ${
-                        soa?.discount > 0
+                        soaData?.discount > 0
                           ? `
                       <tr>
                           <td>Discount</td>
-                          <td style="width: 20%;text-align: right;"> - ₱${soa?.discount}</td>
+                          <td style="width: 20%;text-align: right;"> - ₱${soaData?.discount}</td>
                           <td style="width: 20%;text-align: right;"></td>
                       </tr>
                       `
@@ -265,13 +274,13 @@ function SOA({route, navigation}: Props) {
                           <td style="width: 60%;"><strong>Previous Unpaid Amount</strong></td>
                           <td></td>
                           <td style="width: 20%;text-align: right;"><strong>₱${
-                            soa?.balance_from_prev_bill
+                            soaData?.balance_from_prev_bill
                           }</strong></td>
                       </tr>
                       <tr>
                           <td style="width: 60%;">Arrears</td>
                           <td style="width: 20%;text-align: right;">₱${
-                            soa?.balance_from_prev_bill
+                            soaData?.balance_from_prev_bill
                           }</td>
                           <td style="width: 20%;text-align: right;"></td>
                       </tr>
@@ -279,13 +288,14 @@ function SOA({route, navigation}: Props) {
                           <td style="width: 60%;"><strong>TOTAL AMOUNT DUE</strong></td>
                           <td></td>
                           <td style="width: 20%;text-align: right;"><strong>₱${
-                            soa?.total_amount + soa?.balance_from_prev_bill
+                            soaData?.total_amount +
+                            soaData?.balance_from_prev_bill
                           }</strong></td>
                       </tr>
                       <tr>
                           <td style="width: 60%;"><strong>PENALTY</strong></td>
                           <td style="width: 20%;text-align: right;">₱${
-                            soa?.amount * 0.1
+                            soaData?.amount * 0.1
                           }</td>
                           <td></td>
                       </tr>
@@ -293,9 +303,9 @@ function SOA({route, navigation}: Props) {
                           <td style="width: 60%;"><strong>TOTAL AMOUNT AFTER DUE DATE</strong></td>
                           <td></td>
                           <td style="width: 20%;text-align: right;"><strong>₱${
-                            soa?.total_amount +
-                            soa?.balance_from_prev_bill +
-                            soa?.amount * 0.1
+                            soaData?.total_amount +
+                            soaData?.balance_from_prev_bill +
+                            soaData?.amount * 0.1
                           }</strong></td>
                       </tr>
                   </table>
@@ -305,7 +315,7 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td style="width: 60%;">Due Date</td>
                           <td style="width: 20%;text-align: right;">${new Date(
-                            soa?.due_date,
+                            soaData?.due_date,
                           ).toLocaleDateString('en-GB', {
                             day: 'numeric',
                             month: 'long',
@@ -316,7 +326,7 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td style="width: 60%;">Disconnection Date</td>
                           <td style="width: 20%;text-align: right;">${new Date(
-                            soa?.disconnection_date,
+                            soaData?.disconnection_date,
                           ).toLocaleDateString('en-GB', {
                             day: 'numeric',
                             month: 'long',
@@ -326,7 +336,7 @@ function SOA({route, navigation}: Props) {
                       </tr>
                       <tr>
                           <td style="width: 60%;">Reference No</td>
-                          <td style="width: 20%;text-align: right;">${soa?.meter_reading_id
+                          <td style="width: 20%;text-align: right;">${soaData?.meter_reading_id
                             ?.toString()
                             ?.padStart(8, '0')}</td>
                           <td style="width: 20%;text-align: right;"></td>
@@ -334,14 +344,14 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td style="width: 60%;">Meter Reader</td>
                           <td style="width: 20%;text-align: right;">${
-                            soa?.meter_reader
+                            soaData?.meter_reader
                           }</td>
                           <td style="width: 20%;text-align: right;"></td>
                       </tr>
                       <tr>
                           <td style="width: 60%;">Date/Time</td>
                           <td style="width: 20%;text-align: right;">${new Date(
-                            soa?.reading_date,
+                            soaData?.reading_date,
                           ).toLocaleDateString('en-GB', {
                             day: 'numeric',
                             month: 'long',
@@ -369,119 +379,13 @@ function SOA({route, navigation}: Props) {
 
       setHtmlString(tempHtmlString);
     }
-  }, [soa]);
+  }, [soaData]);
 
   function printSOA() {
     RNPrint.print({
       html: htmlString,
     });
   }
-
-  const renderMainComponent = () => {
-    return (
-      <View style={styles.mainContainer}>
-        <ScrollView style={styles.flex1}>
-          <View style={styles.headerContainer}>
-            <Nabua width={50} height={50} />
-            <Text style={styles.projectName}>Tubig Nabua Inc.</Text>
-            <Text style={styles.eSoaText}>Electronic Statement of Account</Text>
-          </View>
-          <View style={styles.divider} />
-
-          <View style={styles.detailsContainer}>
-            <View style={styles.paymentContainer}>
-              <Text style={styles.totalAmountText}>Total Amount</Text>
-              <Text style={styles.amountText}>₱ {soa?.total_amount}</Text>
-            </View>
-
-            <View style={styles.boxContainers}>
-              <View style={styles.boxDetails}>
-                <Text style={styles.boxLabel}>SOA Number</Text>
-                <Text style={styles.boxValue}>{soa?.soa_number}</Text>
-              </View>
-              <View style={styles.boxDetails}>
-                <Text style={styles.boxLabel}>Due Date</Text>
-                <Text style={styles.boxValue}>{soa?.due_date}</Text>
-              </View>
-            </View>
-
-            <View style={styles.computationDetails}>
-              <Text style={styles.computationLabel}>Computation</Text>
-
-              <View style={styles.computationRow}>
-                <Text style={styles.compTitle}>Previous Account</Text>
-                <View style={styles.dottedSeparator}>
-                  <DashedLine
-                    dashLength={3}
-                    dashThickness={1}
-                    dashColor="#1B399D"
-                    dashStyle={styles.opa5}
-                  />
-                </View>
-                <Text style={styles.compTitle}>
-                  ₱ {soa?.balance_from_prev_bill}
-                </Text>
-              </View>
-
-              <View style={styles.computationRow}>
-                <Text style={styles.compTitle}>Other Charges</Text>
-                <View style={styles.dottedSeparator}>
-                  <DashedLine
-                    dashLength={3}
-                    dashThickness={1}
-                    dashColor="#1B399D"
-                    dashStyle={styles.opa5}
-                  />
-                </View>
-                <Text style={styles.compTitle}>₱ 0.00</Text>
-              </View>
-
-              <View style={styles.computationRow}>
-                <Text style={styles.compTitle}>Total Consumption</Text>
-                <View style={styles.dottedSeparator}>
-                  <DashedLine
-                    dashLength={3}
-                    dashThickness={1}
-                    dashColor="#1B399D"
-                    dashStyle={styles.opa5}
-                  />
-                </View>
-                <Text style={styles.compTitle}>₱ {soa?.amount}</Text>
-              </View>
-
-              <View style={styles.computationRow}>
-                <Text style={styles.compTitle}>Discount</Text>
-                <View style={styles.dottedSeparator}>
-                  <DashedLine
-                    dashLength={3}
-                    dashThickness={1}
-                    dashColor="#1B399D"
-                    dashStyle={styles.opa5}
-                  />
-                </View>
-                <Text style={styles.compTitle}>₱ {soa?.discount}</Text>
-              </View>
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.computationRow}>
-              <Text style={styles.compTotal}>Total Amount Due</Text>
-              <View style={styles.dottedSeparator}>
-                <DashedLine
-                  dashLength={3}
-                  dashThickness={1}
-                  dashColor="#1B399D"
-                  dashStyle={styles.opa5}
-                />
-              </View>
-              <Text style={styles.compTotal}>₱ {soa?.total_amount}</Text>
-            </View>
-          </View>
-        </ScrollView>
-      </View>
-    );
-  };
 
   useEffect(() => {
     const backAction = () => {
@@ -498,32 +402,8 @@ function SOA({route, navigation}: Props) {
     );
 
     return () => backHandler.remove();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener(
-  //     'beforeRemove',
-  //     (e: NavigationBeforeRemoveEvent) => {
-  //       // Check where the navigation is going
-
-  //       if (route?.params?.fromBilling && !hasNavigated) {
-  //         // Prevent the default navigation action
-  //         e.preventDefault();
-  //         // Set state to prevent future navigation
-  //         setHasNavigated(true);
-  //         // Navigate to HomeLanding
-  //         navigation.navigate('HomeLanding');
-  //         return;
-  //       }
-
-  //       // Default action
-  //       navigation.dispatch(e.data.action);
-  //     },
-  //   );
-
-  //   // Cleanup listener on component unmount
-  //   return unsubscribe;
-  // }, [hasNavigated, navigation, route?.params?.fromBilling]);
 
   return (
     <View style={styles.container}>
@@ -539,16 +419,282 @@ function SOA({route, navigation}: Props) {
         isTransparent={true}
         title="eSOA"
       />
-      <View style={styles.shadow}>
-        <SOABg
-          width={'100%'}
-          height={height * 0.67}
-          preserveAspectRatio={'none'}
-          style={styles.mtNeg15}
-        />
-      </View>
+      <ScrollView
+        style={styles.flex1}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentStyle}>
+        <View style={styles.shadow}>
+          <SOABg
+            width={'100%'}
+            height={height * 0.67}
+            preserveAspectRatio={'none'}
+            style={[styles.mtNeg15, styles.soaBG]}
+          />
+        </View>
 
-      {soa && renderMainComponent()}
+        <View style={styles.mainContainer}>
+          <View style={styles.headerContainer}>
+            <Nabua width={50} height={50} />
+            <View>
+              <Text style={styles.projectName}>{soaData?.project_name}</Text>
+              <Text style={styles.eSoaText}>
+                Electronic Statement of Account
+              </Text>
+              <Text style={styles.locationText}>
+                {soaData?.project_location}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.detailsContainer}>
+            <View style={styles.paymentContainer}>
+              <Text style={styles.totalAmountText}>Statement of Account</Text>
+              <Text style={styles.amountText}>
+                For the month of{' '}
+                {new Date(soaData?.date_generated_raw).toLocaleString(
+                  'default',
+                  {
+                    month: 'long',
+                  },
+                )}
+              </Text>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.computationDetails}>
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Account Number</Text>
+                <Text style={styles.compTitle}>{soaData?.account_number}</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Account Name</Text>
+                <Text style={styles.compTitle}>{soaData?.account_name}</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Address</Text>
+                <Text style={styles.compTitle}>
+                  {soaData?.address !== '' ? soaData?.address : 'N/A'}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Meter No. & Brand</Text>
+                <Text style={styles.compTitle}>{soaData?.serial_no}</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Rate Classification</Text>
+                <Text style={styles.compTitle}>
+                  {soaData?.building_type_name}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Sequence No.</Text>
+                <Text style={styles.compTitle}>{soaData?.soa_number}</Text>
+              </View>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.computationDetails}>
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Reading Date</Text>
+                <Text style={styles.compTitle}>{soaData?.reading_date}</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Period Covered</Text>
+                {soaData?.previous_reading ? (
+                  <Text style={styles.compTitle}>{`${dayjs(
+                    soaData?.previous_reading?.reading_datetime,
+                  ).format('MMM DD')} - ${dayjs(soaData?.reading_date).format(
+                    'MMM DD',
+                  )}`}</Text>
+                ) : (
+                  <Text style={styles.compTitle}>{soaData?.reading_date}</Text>
+                )}
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Present Reading</Text>
+                <Text style={styles.compTitle}>{soaData?.present_reading}</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Previous Reading</Text>
+                <Text style={styles.compTitle}>
+                  {soaData?.previous_reading?.present_reading ?? 'N/A'}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Consumption</Text>
+                <Text style={styles.compTitle}>{soaData?.consumption}</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Total Current Bill</Text>
+                <Text style={styles.compTitle}>{soaData?.amount}</Text>
+              </View>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.computationDetails}>
+              <View style={styles.computationRow}>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  Current Charges
+                </Text>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  {soaData?.amount}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Basic Charge</Text>
+                <Text style={styles.compTitle}>{soaData?.basic_charge}</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>VAT</Text>
+                <Text style={styles.compTitle}>{soaData?.vat_amount}</Text>
+              </View>
+
+              {parseInt(soaData?.discount, 10) > 0 && (
+                <View style={styles.computationRow}>
+                  <Text style={styles.compTitle}>VAT</Text>
+                  <Text style={[styles.compTitle, styles.red]}>
+                    {soaData?.discount}
+                  </Text>
+                </View>
+              )}
+
+              <View style={styles.computationRow}>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  Other Charges
+                </Text>
+                <Text style={[styles.compTitle, styles.bold]}>N/A</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>
+                  Application / Reconnection Fee
+                </Text>
+                <Text style={styles.compTitle}>N/A</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Promissory Note Amount</Text>
+                <Text style={styles.compTitle}>N/A</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>
+                  Labor / Materials and Others
+                </Text>
+                <Text style={styles.compTitle}>N/A</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  Previous Unpaid Amount
+                </Text>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  {soaData?.balance_from_prev_bill}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Arrears</Text>
+                <Text style={styles.compTitle}>
+                  {soaData?.balance_from_prev_bill}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  TOTAL AMOUNT DUE
+                </Text>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  {(
+                    parseFloat(soaData?.total_amount) +
+                    parseFloat(soaData?.balance_from_prev_bill)
+                  ).toFixed(2)}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={[styles.compTitle, styles.bold]}>PENALTY</Text>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  {(parseFloat(soaData?.amount) * 0.1).toFixed(2)}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  TOTAL AMOUNT AFTER DUE DATE
+                </Text>
+                <Text style={[styles.compTitle, styles.bold]}>
+                  {(
+                    parseFloat(soaData?.total_amount) +
+                    parseFloat(soaData?.balance_from_prev_bill) +
+                    parseFloat(soaData?.amount) * 0.1
+                  ).toFixed(2)}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.computationDetails}>
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Due Date</Text>
+                <Text style={styles.compTitle}>{soaData?.due_date}</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Disconnection Date</Text>
+                <Text style={styles.compTitle}>
+                  {soaData?.disconnection_date}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Reference No.</Text>
+                <Text style={styles.compTitle}>
+                  {soaData?.meter_reading_id.toString().padStart(8, '0')}
+                </Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Meter Reader</Text>
+                <Text style={styles.compTitle}>{soaData?.meter_reader}</Text>
+              </View>
+
+              <View style={styles.computationRow}>
+                <Text style={styles.compTitle}>Date/Time</Text>
+                <Text style={styles.compTitle}>{soaData?.reading_date}</Text>
+              </View>
+            </View>
+            <View style={styles.divider} />
+
+            <View style={styles.noticeContainer}>
+              <Text style={styles.noticeTitle}>Important Notice</Text>
+              <Text style={styles.noticeContent}>
+                Pay your water bill by the due date to avoid penalties. Service
+                may be disconnected if there are arrears before the stated
+                disconnection date. For bill inquiries, visit our office or call
+                our hotlines by the 10th of the month. You can also message us
+                at facebook.com/tubignabuainc.
+              </Text>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
       <View style={styles.floatingBottomButton}>
         <Button
           mode="contained"
@@ -567,6 +713,50 @@ function SOA({route, navigation}: Props) {
 export default SOA;
 
 const styles = StyleSheet.create({
+  locationText: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: moderateScale(10),
+    color: colors.historyLabel,
+    opacity: 0.75,
+  },
+  soaBG: {
+    position: 'absolute',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    paddingBottom: 20,
+  },
+  red: {
+    color: colors.danger,
+  },
+  noticeContent: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: moderateScale(10),
+    color: colors.historyLabel,
+    textAlign: 'justify',
+    lineHeight: 20,
+  },
+  noticeTitle: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: moderateScale(12),
+    color: colors.historyLabel,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  noticeContainer: {
+    marginTop: 20,
+  },
+  bold: {
+    fontFamily: 'Poppins-Bold',
+  },
+  contentStyle: {
+    paddingBottom: height * 0.2,
+  },
   paymentLabel: {
     color: colors.white,
     fontSize: moderateScale(12),
@@ -591,7 +781,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 20,
-    backgroundColor: 'transparent',
+    backgroundColor: 'white',
   },
   compTotal: {
     fontFamily: 'Poppins-SemiBold',
@@ -649,11 +839,13 @@ const styles = StyleSheet.create({
   },
   amountText: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: moderateScale(22),
+    fontSize: moderateScale(14),
     color: colors.historyMoney,
+    textTransform: 'uppercase',
   },
   paymentContainer: {
     alignItems: 'center',
+    marginTop: height * 0.03,
   },
   totalAmountText: {
     fontFamily: 'Poppins-Regular',
@@ -661,15 +853,16 @@ const styles = StyleSheet.create({
     color: colors.historyLabel,
     opacity: 0.75,
   },
+
   detailsContainer: {},
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: colors.historyCardLow,
-    marginVertical: 15,
+    marginVertical: 5,
   },
   eSoaText: {
     fontFamily: 'Poppins-Regular',
-    fontSize: moderateScale(14),
+    fontSize: moderateScale(12),
     color: colors.historyLabel,
   },
   projectName: {
@@ -682,7 +875,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flex1: {
-    flex: 1,
+    flexGrow: 1,
   },
   testComponent: {
     height: 300,
@@ -694,11 +887,20 @@ const styles = StyleSheet.create({
     marginTop: -15,
   },
   mainContainer: {
-    position: 'absolute',
-    width: '83%',
-    height: height * 0.55,
+    width: '90%',
     alignSelf: 'center',
-    top: height * 0.12,
+    top: height * 0.05,
+    paddingHorizontal: '7%',
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    paddingBottom: 20,
   },
   container: {
     flex: 1,
