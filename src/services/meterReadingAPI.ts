@@ -23,8 +23,11 @@ export const getCompletedListAPI = (search: string, clusters: string) => {
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 
-export const getClustersAPI = () => {
-  const URL = 'api/meter-reader/clusters';
+export const getClustersAPI = (includeCount: boolean) => {
+  let URL = 'api/meter-reader/clusters';
+  if (includeCount) {
+    URL = URL + '?include_count=true';
+  }
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 

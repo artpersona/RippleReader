@@ -15,14 +15,15 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {NavigationRoutes} from '../../../utils';
 import ImageView from 'react-native-image-viewing';
 import {moderateScale} from 'react-native-size-matters';
-
+import {useUserStore} from '../../../stores';
 type Props = {
   navigation: any;
   route: any;
 };
 
 function AccountLanding({navigation, route}: Props) {
-  const {isCompleted, accountNumber, id} = route.params;
+  const {isCompleted, accountNumber, id, offlineData} = route.params;
+  const {isConnected} = useUserStore() as any;
   const [account, setAccount] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [visible, setIsVisible] = React.useState(false);
@@ -48,19 +49,25 @@ function AccountLanding({navigation, route}: Props) {
   };
 
   useEffect(() => {
-    if (id) {
-      getAccountDetailsAPI(id)
-        .then((res: any) => {
-          console.log('res', res);
-          setAccount(res);
-          setLoading(false);
-        })
-        .catch((error: any) => {
-          console.log('error', error);
-          setLoading(false);
-        });
+    if (isConnected) {
+      if (id) {
+        getAccountDetailsAPI(id)
+          .then((res: any) => {
+            console.log('res', res);
+            setAccount(res);
+            setLoading(false);
+          })
+          .catch((error: any) => {
+            console.log('error', error);
+            setLoading(false);
+          });
+      }
+    } else {
+      console.log('pasok offline data: ', offlineData);
+      setAccount(offlineData);
+      setLoading(false);
     }
-  }, [id]);
+  }, [id, isConnected, offlineData]);
   return (
     <View style={styles.container}>
       <CustomHeader
@@ -142,10 +149,14 @@ function AccountLanding({navigation, route}: Props) {
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity style={styles.clickable} onPress={navigateToCCF}>
-              <AntDesign name="swap" size={25} color={colors.blueBarWick} />
-              <Text style={styles.clickabletext}>Customer Care</Text>
-            </TouchableOpacity>
+            {!isConnected && (
+              <TouchableOpacity
+                style={styles.clickable}
+                onPress={navigateToCCF}>
+                <AntDesign name="swap" size={25} color={colors.blueBarWick} />
+                <Text style={styles.clickabletext}>Customer Care</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       )}

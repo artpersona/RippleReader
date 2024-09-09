@@ -8,14 +8,17 @@ import {
   FilterScreen,
   CustomerCare,
   CustomerCareLanding,
+  HomeOffline,
 } from '../pages';
 import useMaintenanceStore from '../stores/maintenance.store';
 import {useEffect} from 'react';
+import {useUserStore} from '../stores';
 
 const Stack = createStackNavigator();
 
 const HomeStack = () => {
   const {loadCCFTypes} = useMaintenanceStore() as any;
+  const {isConnected} = useUserStore() as any;
 
   useEffect(() => {
     loadCCFTypes();
@@ -29,7 +32,7 @@ const HomeStack = () => {
       }}>
       <Stack.Screen
         name={NavigationRoutes.HOME_LANDING}
-        component={HomeLanding}
+        component={!isConnected ? HomeLanding : HomeOffline}
       />
       <Stack.Screen
         name={NavigationRoutes.ACCOUNT_LANDING}
@@ -39,21 +42,23 @@ const HomeStack = () => {
         name={NavigationRoutes.METER_READING}
         component={MeterReading}
       />
-      <Stack.Screen name={NavigationRoutes.SOA} component={SOA} />
-      <Stack.Screen
-        name={NavigationRoutes.CUSTOMER_CARE}
-        component={CustomerCare}
-      />
-
-      <Stack.Screen
-        name={NavigationRoutes.CUSTOMER_CARE_LANDING}
-        component={CustomerCareLanding}
-      />
-
-      <Stack.Screen
-        name={NavigationRoutes.FILTER_SCREEN}
-        component={FilterScreen}
-      />
+      {isConnected && (
+        <>
+          <Stack.Screen name={NavigationRoutes.SOA} component={SOA} />
+          <Stack.Screen
+            name={NavigationRoutes.CUSTOMER_CARE}
+            component={CustomerCare}
+          />
+          <Stack.Screen
+            name={NavigationRoutes.CUSTOMER_CARE_LANDING}
+            component={CustomerCareLanding}
+          />
+          <Stack.Screen
+            name={NavigationRoutes.FILTER_SCREEN}
+            component={FilterScreen}
+          />
+        </>
+      )}
     </Stack.Navigator>
   );
 };

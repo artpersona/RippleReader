@@ -10,6 +10,7 @@ import Animated, {
 import {width} from '../../../common';
 import {useUserStore} from '../../../stores';
 import {moderateScale} from 'react-native-size-matters';
+import {NavigationRoutes} from '../../../utils';
 
 type Props = {
   navigation: any;
@@ -58,6 +59,21 @@ function MoreLanding({navigation}: Props) {
               },
             ]}>
             Log out
+          </Animated.Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate(NavigationRoutes.DOWNLOAD_LANDING)
+          }>
+          <Animated.Text
+            style={[
+              styles.settingText,
+              {
+                right: logoutRight,
+              },
+            ]}>
+            Offline Services
           </Animated.Text>
         </TouchableOpacity>
       </View>

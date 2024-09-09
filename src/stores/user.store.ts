@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const initialState = {
   user: false,
   isMaintenance: true,
+  isConnected: null,
 };
 
 const useUserStore = create(
@@ -13,6 +14,7 @@ const useUserStore = create(
       ...initialState,
       setUser: (user: boolean) => set({user}),
       logout: () => set({user: false}),
+      setConnectionStatus: (isConnected: boolean) => set({isConnected}),
     }),
     {
       name: 'user-storage',

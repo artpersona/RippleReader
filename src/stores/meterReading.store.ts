@@ -28,7 +28,7 @@ const useMeterReadingStore = create(set => ({
     });
   },
   loadClusters: () => {
-    getClustersAPI().then((res: any) => {
+    getClustersAPI(false).then((res: any) => {
       set({clusters: res});
     });
   },

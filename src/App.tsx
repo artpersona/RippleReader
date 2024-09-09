@@ -6,6 +6,8 @@ import {colors} from './common';
 import Toast from 'react-native-toast-message';
 import MainStack from './navigation/MainNavigation';
 import {moderateScale} from 'react-native-size-matters';
+import NetworkMonitor from './components/NetworkMonitor';
+import NetInfo from '@react-native-community/netinfo';
 const MyStatusBar = ({backgroundColor, ...props}: any) => (
   <View style={[styles.statusBar, {backgroundColor}]}>
     <SafeAreaView>
@@ -15,6 +17,18 @@ const MyStatusBar = ({backgroundColor, ...props}: any) => (
 );
 
 function App(): React.JSX.Element {
+  // Subscribe
+  const unsubscribe = NetInfo.addEventListener(state => {
+    // console.log('Connection type', state.type);
+    // console.log('Is connected?', state.isConnected);
+    alert(
+      'Connection type: ' + state.type + '\nIs connected? ' + state.isConnected,
+    );
+  });
+
+  // Unsubscribe
+  unsubscribe();
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <MyStatusBar backgroundColor={colors.tertiary} barStyle="light-content" />
@@ -23,6 +37,7 @@ function App(): React.JSX.Element {
         <MainStack />
       </NavigationContainer>
       <Toast />
+      <NetworkMonitor />
     </SafeAreaView>
   );
 }

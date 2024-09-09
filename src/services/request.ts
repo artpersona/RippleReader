@@ -18,8 +18,6 @@ const getHeaderRequest = (
   method: string,
   headers?: {[key: string]: any},
 ) => {
-  console.log('headers', headers);
-
   if (user) {
     const Authorization = `Bearer ${user.token}`;
     const AppName = 'RIPPLE';

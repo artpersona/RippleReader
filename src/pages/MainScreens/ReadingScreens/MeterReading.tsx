@@ -17,12 +17,14 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
 import commonstyles from '../../../styles/commonstyles';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {launchCamera} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageView from 'react-native-image-viewing';
 import {submitReadingAPI} from '../../../services/meterReadingAPI';
 import {NavigationRoutes} from '../../../utils';
 import Toast from 'react-native-toast-message';
 import {moderateScale} from 'react-native-size-matters';
+import {useUserStore} from '../../../stores';
+import useDownloadStore from '../../../stores/download.store';
 
 type Props = {
   navigation: any;
@@ -31,6 +33,8 @@ type Props = {
 
 function MeterReading({navigation, route}: Props) {
   const {account, id} = route.params;
+  const {isConnected} = useUserStore() as any;
+  const {addReadingAction} = useDownloadStore() as any;
   const [image, setImage] = React.useState('');
   const [imageData, setImageData] = React.useState('' as any);
   const [visible, setIsVisible] = React.useState(false);
@@ -86,7 +90,7 @@ function MeterReading({navigation, route}: Props) {
       }
     }
 
-    setLoading(true);
+    // setLoading(true);
 
     if (
       parseInt(meterReading, 10) - parseInt(account.last_reading, 10) >
@@ -99,7 +103,7 @@ function MeterReading({navigation, route}: Props) {
           {
             text: 'Yes',
             onPress: () => {
-              submitHelper(formData);
+              submitHelper(formData, params);
             },
           },
           {
@@ -112,35 +116,59 @@ function MeterReading({navigation, route}: Props) {
         ],
       );
     } else {
-      submitHelper(formData);
+      submitHelper(formData, params);
     }
   };
 
-  const submitHelper = (params: any) => {
-    submitReadingAPI(params)
-      .then((res: any) => {
-        console.log('res is', res);
-        setLoading(false);
-        Toast.show({
-          type: 'success',
-          position: 'bottom',
-          bottomOffset: 50,
-          text1: 'Success',
-          text2: 'Reading has been submitted',
-        });
-        navigation.navigate(NavigationRoutes.SOA, {
-          soa_id: res.soa_id,
-          fromBilling: true,
-        });
-      })
-      .catch((error: any) => {
-        console.log('error', error);
-        setLoading(false);
-      });
+  const submitHelper = (formData: any, params: any) => {
+    const details = {
+      accountDetails: account,
+      readingDetails: params,
+    };
+    addReadingAction(formData, details);
+    // if (!isConnected) {
+    //   addReadingAction(formData, params);
+    // }
+    // submitReadingAPI(formData)
+    //   .then((res: any) => {
+    //     console.log('res is', res);
+    //     setLoading(false);
+    //     Toast.show({
+    //       type: 'success',
+    //       position: 'bottom',
+    //       bottomOffset: 50,
+    //       text1: 'Success',
+    //       text2: 'Reading has been submitted',
+    //     });
+    //     navigation.navigate(NavigationRoutes.SOA, {
+    //       soa_id: res.soa_id,
+    //       fromBilling: true,
+    //     });
+    //   })
+    //   .catch((error: any) => {
+    //     console.log('error', error);
+    //     setLoading(false);
+    //   });
   };
 
   const handleCamera = () => {
-    launchCamera(
+    // launchCamera(
+    //   {
+    //     mediaType: 'photo',
+    //     includeBase64: false,
+    //     maxHeight: 500,
+    //     maxWidth: 500,
+    //   },
+    //   (response: any) => {
+    //     if (response.didCancel) {
+    //       return;
+    //     }
+    //     setImage(response.assets[0].uri);
+    //     setImageData(response.assets[0]);
+    //   },
+    // );
+
+    launchImageLibrary(
       {
         mediaType: 'photo',
         includeBase64: false,

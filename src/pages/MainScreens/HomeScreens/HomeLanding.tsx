@@ -63,7 +63,6 @@ function HomeLanding({navigation}: Props) {
     loadMeterReaderLists(text, activeClusters);
   }, 300); // 300ms delay
 
-  console.log('completed list', completedList);
   return (
     <View style={styles.bgWhite}>
       <CustomHeader

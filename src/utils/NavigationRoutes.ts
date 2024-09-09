@@ -32,6 +32,11 @@ const NavigationRoutes = {
 
   CUSTOMER_CARE_LANDING: 'CustomerCareLanding',
   CUSTOMER_CARE: 'CustomerCare',
+
+  // Offline Support
+  DOWNLOAD_SCREEN: 'DownloadScreen',
+  DOWNLOAD_LANDING: 'DownloadLanding',
+  TASKQUEUE: 'TaskQueue',
 };
 
 export default NavigationRoutes;

@@ -5,6 +5,7 @@ import Login from './AuthScreens/Login';
 
 // Home Screen
 import HomeLanding from './MainScreens/HomeScreens/HomeLanding';
+import HomeOffline from './MainScreens/HomeScreens/HomeOffline';
 import FilterScreen from './MainScreens/HomeScreens/FilterScreen';
 
 // More Screen
@@ -27,7 +28,16 @@ import ProfileLanding from './CommonScreens/ProfileLanding';
 // Test
 import TestScreen from './Test';
 
+// Download screen
+import DownloadList from './DownloadScreens/DownloadList';
+import DownloadLanding from './DownloadScreens/DownloadLanding';
+import TaskQueue from './DownloadScreens/TaskQueue';
+
 export {
+  DownloadLanding,
+  TaskQueue,
+  HomeOffline,
+  DownloadList,
   CustomerCareLanding,
   ActionScreen,
   Selection,
