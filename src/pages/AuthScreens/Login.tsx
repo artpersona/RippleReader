@@ -13,7 +13,7 @@ import {loginAPI} from '../../services/authApi';
 import JWT from 'expo-jwt';
 import {moderateScale} from 'react-native-size-matters';
 import Config from 'react-native-config';
-import { storeUserSession } from '../../utils';
+import {storeUserSession} from '../../utils';
 
 type Props = {};
 
@@ -32,6 +32,8 @@ function Login({}: Props) {
     setLoading(true);
     await loginAPI(data)
       .then((response: any) => {
+        console.log('response in login is: ', response);
+        console.log('JWT Token: ', Config?.JWT_API_KEY);
         const {user} = JWT.decode(response.token, Config?.JWT_API_KEY ?? '');
         if (user.roleId === '101' || user.roleId === '102') {
           storeUserSession(response.token, data.email, data.password);
