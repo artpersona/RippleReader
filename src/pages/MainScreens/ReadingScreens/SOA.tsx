@@ -566,7 +566,7 @@ function SOA({route, navigation}: Props) {
 
               {parseInt(soaData?.discount, 10) > 0 && (
                 <View style={styles.computationRow}>
-                  <Text style={styles.compTitle}>VAT</Text>
+                  <Text style={styles.compTitle}>Discount</Text>
                   <Text style={[styles.compTitle, styles.red]}>
                     {soaData?.discount}
                   </Text>

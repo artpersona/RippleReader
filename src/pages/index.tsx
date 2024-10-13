@@ -14,6 +14,7 @@ import MoreLanding from './MainScreens/MoreScreens/MoreLanding';
 // Reading Screen
 import AccountLanding from './MainScreens/ReadingScreens/AccountLanding';
 import MeterReading from './MainScreens/ReadingScreens/MeterReading';
+import MeterReadingOffline from './MainScreens/ReadingScreens/MeterReadingOffline';
 import SOA from './MainScreens/ReadingScreens/SOA';
 import CustomerCare from './MainScreens/ReadingScreens/CustomerCare';
 import CustomerCareLanding from './MainScreens/ReadingScreens/CustomerCareLanding';
@@ -32,8 +33,13 @@ import TestScreen from './Test';
 import DownloadList from './DownloadScreens/DownloadList';
 import DownloadLanding from './DownloadScreens/DownloadLanding';
 import TaskQueue from './DownloadScreens/TaskQueue';
+import QueueFilterSelector from './MainScreens/HomeScreens/QueueFilterSelector';
+import QueueStatusSelector from './MainScreens/HomeScreens/QueueStatusSelector';
 
 export {
+  QueueStatusSelector,
+  QueueFilterSelector,
+  MeterReadingOffline,
   DownloadLanding,
   TaskQueue,
   HomeOffline,

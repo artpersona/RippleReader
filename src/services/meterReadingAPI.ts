@@ -38,6 +38,7 @@ export const getAccountDetailsAPI = (accountID: number) => {
 
 export const submitReadingAPI = (params: any) => {
   const URL = 'api/meter-reader/submit';
+  console.log('type of params: ', typeof params);
   return postRequest(URL, params, RESPONSE_RETURN_VALUE, null, {
     'Content-Type': 'multipart/form-data',
   }) as any;

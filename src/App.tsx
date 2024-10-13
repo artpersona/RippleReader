@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Platform} from 'react-native';
 import {SafeAreaView, StyleSheet, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -8,6 +8,8 @@ import MainStack from './navigation/MainNavigation';
 import {moderateScale} from 'react-native-size-matters';
 import NetworkMonitor from './components/NetworkMonitor';
 import NetInfo from '@react-native-community/netinfo';
+import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+import {useUserStore} from './stores';
 const MyStatusBar = ({backgroundColor, ...props}: any) => (
   <View style={[styles.statusBar, {backgroundColor}]}>
     <SafeAreaView>
@@ -17,25 +19,35 @@ const MyStatusBar = ({backgroundColor, ...props}: any) => (
 );
 
 function App(): React.JSX.Element {
+  const {setConnectionStatus} = useUserStore() as any;
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: colors.primary,
+      background: 'lightgray',
+    },
+  };
+
   // Subscribe
-  const unsubscribe = NetInfo.addEventListener(state => {
-    // console.log('Connection type', state.type);
-    // console.log('Is connected?', state.isConnected);
-    alert(
-      'Connection type: ' + state.type + '\nIs connected? ' + state.isConnected,
-    );
-  });
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      console.log('Connection status ff:', state.isConnected);
+      setConnectionStatus(state.isConnected);
+    });
 
-  // Unsubscribe
-  unsubscribe();
-
+    // Unsubscribe
+    return unsubscribe();
+  }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
       <MyStatusBar backgroundColor={colors.tertiary} barStyle="light-content" />
+      <PaperProvider theme={theme}>
+        <NavigationContainer>
+          <MainStack />
+        </NavigationContainer>
+      </PaperProvider>
 
-      <NavigationContainer>
-        <MainStack />
-      </NavigationContainer>
       <Toast />
       <NetworkMonitor />
     </SafeAreaView>

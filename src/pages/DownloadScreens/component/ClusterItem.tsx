@@ -8,18 +8,31 @@ import {
 } from 'react-native';
 import {colors} from '../../../common';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import useDownloadStore from '../../../stores/download.store';
 
 type Props = {
   cluster: any;
-  onPress: () => void;
 };
 
-function ClusterItem({cluster, onPress}: Props) {
+function ClusterItem({cluster}: Props) {
+  const {downloadClusterData, syncSessionDownloadedData} =
+    useDownloadStore() as any;
   const status = cluster.pending
     ? 'pending'
     : cluster.isDownloaded
     ? 'downloaded'
     : 'empty';
+
+  console.log('cluster', cluster);
+
+  const handlePress = async () => {
+    try {
+      const downloadedData = await downloadClusterData(cluster.id);
+      syncSessionDownloadedData(cluster.id, downloadedData);
+    } catch (e) {
+      console.log('error in downloading', e);
+    }
+  };
 
   let bgColor;
   let txtColor;
@@ -51,7 +64,7 @@ function ClusterItem({cluster, onPress}: Props) {
           borderColor: txtColor,
         },
       ]}
-      onPress={onPress}
+      onPress={handlePress}
       disabled={cluster.pending || cluster.isDownloaded}>
       <View style={styles.detailsContainer}>
         <Text

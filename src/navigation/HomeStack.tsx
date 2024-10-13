@@ -9,6 +9,7 @@ import {
   CustomerCare,
   CustomerCareLanding,
   HomeOffline,
+  MeterReadingOffline,
 } from '../pages';
 import useMaintenanceStore from '../stores/maintenance.store';
 import {useEffect} from 'react';
@@ -32,7 +33,7 @@ const HomeStack = () => {
       }}>
       <Stack.Screen
         name={NavigationRoutes.HOME_LANDING}
-        component={!isConnected ? HomeLanding : HomeOffline}
+        component={isConnected ? HomeLanding : HomeOffline}
       />
       <Stack.Screen
         name={NavigationRoutes.ACCOUNT_LANDING}
@@ -41,6 +42,10 @@ const HomeStack = () => {
       <Stack.Screen
         name={NavigationRoutes.METER_READING}
         component={MeterReading}
+      />
+      <Stack.Screen
+        name={NavigationRoutes.OFFLINE_READING}
+        component={MeterReadingOffline}
       />
       {isConnected && (
         <>

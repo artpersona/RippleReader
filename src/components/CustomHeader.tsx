@@ -20,7 +20,7 @@ type Props = {
   rightIcon?: JSX.Element;
   chevronColor?: string;
   isTransparent?: boolean;
-  backAction?: () => void | null;
+  backAction?: (() => void) | null;
 };
 
 const CustomHeader = ({

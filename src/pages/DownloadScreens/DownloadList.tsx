@@ -14,8 +14,7 @@ import useDownloadStore from '../../stores/download.store';
 type Props = {};
 
 function DownloadList({}: Props) {
-  const {downloadClusters, loadClusters, downloadClusterData} =
-    useDownloadStore() as any;
+  const {downloadClusters, loadClusters} = useDownloadStore() as any;
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -60,13 +59,7 @@ function DownloadList({}: Props) {
         {!loading && (
           <>
             {downloadClusters.map((cluster: any) => {
-              return (
-                <ClusterItem
-                  key={cluster.id}
-                  cluster={cluster}
-                  onPress={() => downloadClusterData(cluster.id)}
-                />
-              );
+              return <ClusterItem key={cluster.id} cluster={cluster} />;
             })}
           </>
         )}

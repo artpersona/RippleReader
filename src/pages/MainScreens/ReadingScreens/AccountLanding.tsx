@@ -53,7 +53,6 @@ function AccountLanding({navigation, route}: Props) {
       if (id) {
         getAccountDetailsAPI(id)
           .then((res: any) => {
-            console.log('res', res);
             setAccount(res);
             setLoading(false);
           })
@@ -149,7 +148,7 @@ function AccountLanding({navigation, route}: Props) {
               </TouchableOpacity>
             )}
 
-            {!isConnected && (
+            {isConnected && (
               <TouchableOpacity
                 style={styles.clickable}
                 onPress={navigateToCCF}>

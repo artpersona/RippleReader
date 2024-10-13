@@ -33,7 +33,8 @@ function HomeOffline({navigation}: Props) {
   }, [activeKey, downloadedClusterData]);
 
   useEffect(() => {
-    if (downloadClusters) {
+    if (downloadClusters && downloadClusters.length > 0) {
+      console.log('download cluster are: ', downloadClusters);
       const tempClusters = downloadClusters
         .filter((cluster: any) => cluster.isDownloaded)
         .map((cluster: any) => {
@@ -44,7 +45,9 @@ function HomeOffline({navigation}: Props) {
           };
         });
       setClusterList(tempClusters);
-      setActiveKey(tempClusters[0].value);
+      if (tempClusters.length > 0) {
+        setActiveKey(tempClusters[0].value);
+      }
     }
   }, [downloadClusters]);
 
@@ -70,7 +73,7 @@ function HomeOffline({navigation}: Props) {
         />
         <FlatList
           data={activeList}
-          keyExtractor={(item: any) => item.id.toString()}
+          // keyExtractor={(item: any) => item.id.toString()}
           renderItem={({item}: any) => (
             <AccountCard
               item={item}

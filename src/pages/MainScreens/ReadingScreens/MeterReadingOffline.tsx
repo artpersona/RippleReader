@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -17,37 +17,46 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
 import commonstyles from '../../../styles/commonstyles';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {
-  launchCamera,
-  //  launchImageLibrary
-} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageView from 'react-native-image-viewing';
-import {submitReadingAPI} from '../../../services/meterReadingAPI';
-import {NavigationRoutes} from '../../../utils';
 import Toast from 'react-native-toast-message';
 import {moderateScale} from 'react-native-size-matters';
-import {useUserStore} from '../../../stores';
 import useDownloadStore from '../../../stores/download.store';
-import {CommonActions} from '@react-navigation/native';
+import {NavigationRoutes} from '../../../utils';
 
 type Props = {
   navigation: any;
   route: any;
 };
 
-function MeterReading({navigation, route}: Props) {
-  const {account, id} = route.params;
-  const {isConnected} = useUserStore() as any;
-  const {addReadingAction} = useDownloadStore() as any;
+function MeterReadingOffline({navigation, route}: Props) {
+  const {account, offlineReading} = route.params;
+  const {modifyReadingAction} = useDownloadStore() as any;
+  const [hasNewImage, setHasNewImage] = useState(false);
   const [image, setImage] = React.useState('');
   const [imageData, setImageData] = React.useState('' as any);
   const [visible, setIsVisible] = React.useState(false);
   const [meterReading, setMeterReading] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
+  useEffect(() => {
+    if (offlineReading) {
+      setImageData(offlineReading.attachment);
+      setImage(offlineReading.attachment.base64);
+      setMeterReading(
+        offlineReading.present_reading.toString().padStart(8, '0'),
+      );
+    }
+  }, [offlineReading]);
+
   const handleSubmit = async () => {
     if (!meterReading) {
       Alert.alert('Please enter a meter reading');
+      return;
+    }
+
+    if (parseInt(meterReading, 10) < 1) {
+      Alert.alert('Meter reading cannot be zero');
       return;
     }
 
@@ -70,7 +79,7 @@ function MeterReading({navigation, route}: Props) {
     // convert image to base64
 
     const params: {[key: string]: any} = {
-      account_id: id,
+      //   account_id: id,
       project_id: account.project_id,
       cluster_id: account.cluster_id,
       meter_id: account.meter_id,
@@ -82,6 +91,7 @@ function MeterReading({navigation, route}: Props) {
       status: 20,
       attachment: formattedImage,
       previous_reading_id: account.last_reading_id,
+      previous_reading: parseInt(account.last_reading, 10),
     };
 
     console.log('params is: ', params);
@@ -99,7 +109,7 @@ function MeterReading({navigation, route}: Props) {
       }
     }
 
-    params.previous_reading = account.last_reading;
+    // setLoading(true);
 
     if (
       parseInt(meterReading, 10) - parseInt(account.last_reading, 10) >
@@ -134,69 +144,19 @@ function MeterReading({navigation, route}: Props) {
       accountDetails: account,
       readingDetails: params,
     };
-    if (!isConnected) {
-      addReadingAction(params, details);
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [
-            {
-              name: NavigationRoutes.MAIN_LANDING,
-            },
-
-            {
-              name: NavigationRoutes.TASKQUEUE,
-            },
-          ],
-        }),
-      );
-    } else {
-      setLoading(true);
-
-      submitReadingAPI(formData)
-        .then((res: any) => {
-          console.log('res is', res);
-          setLoading(false);
-          Toast.show({
-            type: 'success',
-            position: 'bottom',
-            bottomOffset: 50,
-            text1: 'Success',
-            text2: 'Reading has been submitted',
-          });
-          navigation.navigate(NavigationRoutes.SOA, {
-            soa_id: res.soa_id,
-            fromBilling: true,
-          });
-        })
-        .catch((error: any) => {
-          console.log('error', error);
-          setLoading(false);
-        });
-    }
+    modifyReadingAction(formData, details);
+    Toast.show({
+      type: 'success',
+      text1: 'Queued action updated',
+    });
+    navigation.navigate(NavigationRoutes.TASKQUEUE);
   };
 
   const handleCamera = () => {
-    launchCamera(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-        maxHeight: 500,
-        maxWidth: 500,
-      },
-      (response: any) => {
-        if (response.didCancel) {
-          return;
-        }
-        setImage(response.assets[0].uri);
-        setImageData(response.assets[0]);
-      },
-    );
-
-    // launchImageLibrary(
+    // launchCamera(
     //   {
     //     mediaType: 'photo',
-    //     includeBase64: true,
+    //     includeBase64: false,
     //     maxHeight: 500,
     //     maxWidth: 500,
     //   },
@@ -206,8 +166,26 @@ function MeterReading({navigation, route}: Props) {
     //     }
     //     setImage(response.assets[0].uri);
     //     setImageData(response.assets[0]);
+    // setHasNewImage(true);
     //   },
     // );
+
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        includeBase64: true,
+        maxHeight: 500,
+        maxWidth: 500,
+      },
+      (response: any) => {
+        if (response.didCancel) {
+          return;
+        }
+        setImage(response.assets[0].uri);
+        setImageData(response.assets[0]);
+        setHasNewImage(true);
+      },
+    );
   };
 
   return (
@@ -217,7 +195,7 @@ function MeterReading({navigation, route}: Props) {
         titleStyle={{
           color: colors.header,
         }}
-        title={'Meter Reading'}
+        title={'Update   Reading'}
         showBackButton
       />
       <ScrollView
@@ -292,7 +270,12 @@ function MeterReading({navigation, route}: Props) {
         {image ? (
           <View style={styles.photoPreview}>
             <TouchableOpacity onPress={() => setIsVisible(true)}>
-              <Image source={{uri: image}} style={styles.image} />
+              <Image
+                source={{
+                  uri: hasNewImage ? image : `data:image/gif;base64,${image}`,
+                }}
+                style={styles.image}
+              />
             </TouchableOpacity>
             <View style={styles.photoDetails}>
               <Text style={styles.label}>Photo has been selected</Text>
@@ -325,14 +308,14 @@ function MeterReading({navigation, route}: Props) {
           onPress={handleSubmit}
           loading={loading}
           contentStyle={commonstyles.buttonContent}>
-          Submit Reading
+          Update Reading
         </Button>
       </View>
 
       <ImageView
         images={[
           {
-            uri: image,
+            uri: hasNewImage ? image : `data:image/gif;base64,${image}`,
           },
         ]}
         imageIndex={0}
@@ -459,4 +442,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MeterReading;
+export default MeterReadingOffline;

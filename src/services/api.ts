@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const getApi = () => {
-  const baseURL = 'http://192.168.42.35:8000';
+  // const baseURL = 'http://192.168.1.5:8000';
+  const baseURL = 'https://tubigpilipinas.gtindustries.ph/';
   const api = axios.create({
     baseURL: baseURL,
     responseType: 'json',

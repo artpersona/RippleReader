@@ -22,6 +22,7 @@ const NavigationRoutes = {
   // Reading Screen
   ACCOUNT_LANDING: 'AccountLanding',
   METER_READING: 'MeterReading',
+  OFFLINE_READING: 'OfflineReading',
   SOA: 'SOA',
   FILTER_SCREEN: 'FilterScreen',
 
@@ -37,6 +38,8 @@ const NavigationRoutes = {
   DOWNLOAD_SCREEN: 'DownloadScreen',
   DOWNLOAD_LANDING: 'DownloadLanding',
   TASKQUEUE: 'TaskQueue',
+  QueueClusterFilter: 'QueueClusterFilter',
+  QueueStatusFilter: 'QueueStatusFilter',
 };
 
 export default NavigationRoutes;
