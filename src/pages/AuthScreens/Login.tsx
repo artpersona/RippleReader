@@ -12,6 +12,8 @@ import {useUserStore} from '../../stores';
 import {loginAPI} from '../../services/authApi';
 import JWT from 'expo-jwt';
 import {moderateScale} from 'react-native-size-matters';
+import Config from 'react-native-config';
+import { storeUserSession } from '../../utils';
 
 type Props = {};
 
@@ -30,8 +32,9 @@ function Login({}: Props) {
     setLoading(true);
     await loginAPI(data)
       .then((response: any) => {
-        const {user} = JWT.decode(response.token, 'GTI_KEY');
+        const {user} = JWT.decode(response.token, Config?.JWT_API_KEY ?? '');
         if (user.roleId === '101' || user.roleId === '102') {
+          storeUserSession(response.token, data.email, data.password);
           setUser(user);
         } else {
           Toast.show({
@@ -43,7 +46,7 @@ function Login({}: Props) {
         }
       })
       .catch((err: any) => {
-        console.log('err is: ', err);
+        console.log('error in login is: ', err);
         Toast.show({
           type: 'error',
           position: 'bottom',

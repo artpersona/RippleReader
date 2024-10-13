@@ -3,7 +3,7 @@ import {retrieveUserSession} from '../utils';
 import getApi from './api';
 import {ApiResponse, SessionData} from '../types';
 import {AxiosResponse} from 'axios';
-
+import {useUserStore} from '../stores';
 const getResponse = (
   response: AxiosResponse<ApiResponse, any>,
   returnValue?: any,
@@ -23,17 +23,6 @@ const getHeaderRequest = (
     const AppName = 'RIPPLE';
 
     if (params) {
-      // if (headers && headers['Content-Type'] === 'multipart/form-data') {
-      //   return {
-      //     method: method,
-      //     url: endPoint,
-      //     data: params,
-      //     headers: {Authorization, AppName, ...headers},
-      //     transformRequest: (data: any) => {
-      //       return data; // thats enough
-      //     },
-      //   };
-      // }
       return {
         method: method,
         url: endPoint,
@@ -41,16 +30,6 @@ const getHeaderRequest = (
         headers: {Authorization, AppName, ...headers},
       };
     } else {
-      // if (headers && headers['Content-Type'] === 'multipart/form-data') {
-      //   return {
-      //     method: method,
-      //     url: endPoint,
-      //     headers: {Authorization, AppName, ...headers},
-      //     transformRequest: (data: any) => {
-      //       return data; // thats enough
-      //     },
-      //   };
-      // }
       return {
         method: method,
         url: endPoint,
@@ -58,17 +37,6 @@ const getHeaderRequest = (
       };
     }
   } else {
-    // if (headers && headers['Content-Type'] === 'multipart/form-data') {
-    //   return {
-    //     method: method,
-    //     data: params,
-    //     url: endPoint,
-    //     headers: {AppName: 'RIPPLE', ...headers},
-    //     transformRequest: (data: any) => {
-    //       return data; // thats enough
-    //     },
-    //   };
-    // }
     return {
       method: method,
       data: params,
@@ -93,6 +61,9 @@ export const putRequest = (
         .request(headers)
         .then(response => resolve(getResponse(response, returnValue)))
         .catch(error => {
+          if (error.response.status === 401) {
+            useUserStore.getState().logout();
+          }
           reject(errorHandler ? errorHandler(error) : error);
         });
     });
@@ -129,6 +100,9 @@ export const getRequest = (
           ),
         )
         .catch((error: any) => {
+          if (error.response.status === 401) {
+            useUserStore.getState().logout();
+          }
           reject(errorHandler ? errorHandler(error) : error);
         });
     });
@@ -157,6 +131,9 @@ export const postRequest = (
         .request(headers)
         .then(response => resolve(getResponse(response, returnValue)))
         .catch(error => {
+          if (error.response.status === 401) {
+            useUserStore.getState().logout();
+          }
           reject(errorHandler ? errorHandler(error) : error);
         });
     });
@@ -183,6 +160,9 @@ export const deleteRequest = (
         .request(headers)
         .then(response => resolve(getResponse(response, returnValue)))
         .catch(error => {
+          if (error.response.status === 401) {
+            useUserStore.getState().logout();
+          }
           reject(errorHandler ? errorHandler(error) : error);
         });
     });

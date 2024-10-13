@@ -31,3 +31,11 @@ export const retrieveUserSession = async () => {
     console.error(error, 'Retrieve User Session Error');
   }
 };
+
+export const clearUserSession = async () => {
+  try {
+    await EncryptedStorage.removeItem('tubig_meter_session');
+  } catch (error) {
+    console.error(error, 'Clear User Session Error');
+  }
+};

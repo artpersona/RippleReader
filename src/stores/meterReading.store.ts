@@ -4,7 +4,32 @@ import {
   getCompletedListAPI,
   getClustersAPI,
 } from '../services/meterReadingAPI';
-const initialState = {
+
+interface MeterReadingState {
+  readingList: any[];
+  completedList: any[];
+  clusters: any[];
+  activeClusters: any[];
+  tempClusters: any[];
+  searchText: string;
+  loading: boolean;
+  clearStore: () => void;
+  loadMeterReaderLists: (search: string, cluster: string) => void;
+  loadClusters: () => void;
+  setTempClusters: (clusters: any) => void;
+  setActiveClusters: (clusters: any) => void;
+  setSearchText: (text: string) => void;
+}
+
+const initialState: Omit<
+  MeterReadingState,
+  | 'clearStore'
+  | 'loadMeterReaderLists'
+  | 'loadClusters'
+  | 'setTempClusters'
+  | 'setActiveClusters'
+  | 'setSearchText'
+> = {
   readingList: [],
   completedList: [],
   clusters: [],
@@ -14,8 +39,9 @@ const initialState = {
   loading: false,
 };
 
-const useMeterReadingStore = create(set => ({
+const useMeterReadingStore = create<MeterReadingState>(set => ({
   ...initialState,
+  clearStore: () => set({...initialState}),
   loadMeterReaderLists: (search = '', cluster = '') => {
     set({loading: true});
 

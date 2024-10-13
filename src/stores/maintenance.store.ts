@@ -6,15 +6,39 @@ import {
 } from '../services/maintenanceAPI';
 import {getCCFTypesAPI} from '../services/meterReadingAPI';
 
-const initialState = {
+interface MaintenanceState {
+  disconnectionList: any[];
+  reconnectionList: any[];
+  otherActionsList: any[];
+  ccfTypes: any[];
+  searchText: string;
+  loading: boolean;
+  clearStore: () => void;
+  loadMaintenanceList: (search: string, clusters: string) => void;
+  loadOtherActionsList: (search: string, clusters: string) => void;
+  loadCCFTypes: () => void;
+  setSearchText: (text: string) => void;
+}
+
+const initialState: Omit<
+  MaintenanceState,
+  | 'clearStore'
+  | 'loadMaintenanceList'
+  | 'loadOtherActionsList'
+  | 'loadCCFTypes'
+  | 'setSearchText'
+> = {
   disconnectionList: [],
   reconnectionList: [],
   otherActionsList: [],
   ccfTypes: [],
+  searchText: '',
+  loading: false,
 };
 
-const useMaintenanceStore = create(set => ({
+const useMaintenanceStore = create<MaintenanceState>(set => ({
   ...initialState,
+  clearStore: () => set({...initialState}),
   loadMaintenanceList: (search = '', clusters = '') => {
     set({loading: true});
 

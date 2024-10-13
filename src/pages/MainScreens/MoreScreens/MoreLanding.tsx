@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {colors, height} from '../../../common';
@@ -18,7 +19,7 @@ type Props = {
 
 function MoreLanding({navigation}: Props) {
   let hiddenValue = -(width * 0.7);
-  const {logout} = useUserStore() as any;
+  const {logout} = useUserStore();
 
   const faqRight = useSharedValue(hiddenValue);
   const contactRight = useSharedValue(hiddenValue);
