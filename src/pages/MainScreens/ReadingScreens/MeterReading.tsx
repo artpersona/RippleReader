@@ -19,7 +19,7 @@ import commonstyles from '../../../styles/commonstyles';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {
   launchCamera,
-  //  launchImageLibrary
+  // launchImageLibrary
 } from 'react-native-image-picker';
 import ImageView from 'react-native-image-viewing';
 import {submitReadingAPI} from '../../../services/meterReadingAPI';
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
     color: colors.homeComponent,
   },
   input: {
-    height: 50,
+    height: moderateScale(50),
     borderColor: '#EAF5FD',
     borderWidth: 2,
     borderRadius: 5,

@@ -39,6 +39,16 @@ function SOA({route, navigation}: Props) {
 
   useEffect(() => {
     if (soaData) {
+      const totalAmount = Number(soaData?.total_amount || 0);
+      const previousBalance = Number(soaData?.balance_from_prev_bill || 0);
+      const total = totalAmount + previousBalance;
+
+      // Format as PHP currency
+      const formattedTotal = new Intl.NumberFormat('en-PH', {
+        style: 'currency',
+        currency: 'PHP',
+      }).format(total);
+
       const tempHtmlString = `
       <html>
         <head>
@@ -176,7 +186,7 @@ function SOA({route, navigation}: Props) {
                           <td style="text-align: right;">${
                             soaData?.previous_reading
                               ? new Date(
-                                  soaData?.previous_reading,
+                                  soaData?.previous_reading?.reading_datetime,
                                 ).toLocaleDateString('en-GB', {
                                   day: 'numeric',
                                   month: 'long',
@@ -201,7 +211,7 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td>Previous Reading</td>
                           <td style="text-align: right;">${
-                            soaData?.previous_reading || ''
+                            soaData?.previous_reading?.present_reading || ''
                           }</td>
                       </tr>
                       <tr>
@@ -287,10 +297,7 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td style="width: 60%;"><strong>TOTAL AMOUNT DUE</strong></td>
                           <td></td>
-                          <td style="width: 20%;text-align: right;"><strong>₱${
-                            soaData?.total_amount +
-                            soaData?.balance_from_prev_bill
-                          }</strong></td>
+                          <td style="width: 20%;text-align: right;"><strong>${formattedTotal}</strong></td>
                       </tr>
                       <tr>
                           <td style="width: 60%;"><strong>PENALTY</strong></td>
@@ -302,11 +309,11 @@ function SOA({route, navigation}: Props) {
                       <tr>
                           <td style="width: 60%;"><strong>TOTAL AMOUNT AFTER DUE DATE</strong></td>
                           <td></td>
-                          <td style="width: 20%;text-align: right;"><strong>₱${
-                            soaData?.total_amount +
-                            soaData?.balance_from_prev_bill +
-                            soaData?.amount * 0.1
-                          }</strong></td>
+                          <td style="width: 20%;text-align: right;"><strong>₱${(
+                            parseFloat(soaData?.total_amount) +
+                            parseFloat(soaData?.balance_from_prev_bill) +
+                            parseFloat(soaData?.amount) * 0.1
+                          ).toFixed(2)}</strong></td>
                       </tr>
                   </table>
                   <div style="border-bottom: 1px dotted #E7EBF4;"></div>

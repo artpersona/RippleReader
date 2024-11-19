@@ -17,7 +17,10 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
 import commonstyles from '../../../styles/commonstyles';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {
+  launchCamera,
+  //  launchImageLibrary
+} from 'react-native-image-picker';
 import ImageView from 'react-native-image-viewing';
 import Toast from 'react-native-toast-message';
 import {moderateScale} from 'react-native-size-matters';
@@ -79,7 +82,7 @@ function MeterReadingOffline({navigation, route}: Props) {
     // convert image to base64
 
     const params: {[key: string]: any} = {
-      //   account_id: id,
+      account_id: account.account_id,
       project_id: account.project_id,
       cluster_id: account.cluster_id,
       meter_id: account.meter_id,
@@ -153,27 +156,10 @@ function MeterReadingOffline({navigation, route}: Props) {
   };
 
   const handleCamera = () => {
-    // launchCamera(
-    //   {
-    //     mediaType: 'photo',
-    //     includeBase64: false,
-    //     maxHeight: 500,
-    //     maxWidth: 500,
-    //   },
-    //   (response: any) => {
-    //     if (response.didCancel) {
-    //       return;
-    //     }
-    //     setImage(response.assets[0].uri);
-    //     setImageData(response.assets[0]);
-    // setHasNewImage(true);
-    //   },
-    // );
-
-    launchImageLibrary(
+    launchCamera(
       {
         mediaType: 'photo',
-        includeBase64: true,
+        includeBase64: false,
         maxHeight: 500,
         maxWidth: 500,
       },
@@ -186,6 +172,23 @@ function MeterReadingOffline({navigation, route}: Props) {
         setHasNewImage(true);
       },
     );
+
+    // launchImageLibrary(
+    //   {
+    //     mediaType: 'photo',
+    //     includeBase64: true,
+    //     maxHeight: 500,
+    //     maxWidth: 500,
+    //   },
+    //   (response: any) => {
+    //     if (response.didCancel) {
+    //       return;
+    //     }
+    //     setImage(response.assets[0].uri);
+    //     setImageData(response.assets[0]);
+    //     setHasNewImage(true);
+    //   },
+    // );
   };
 
   return (
@@ -400,7 +403,7 @@ const styles = StyleSheet.create({
     color: colors.homeComponent,
   },
   input: {
-    height: 50,
+    height: 150,
     borderColor: '#EAF5FD',
     borderWidth: 2,
     borderRadius: 5,
