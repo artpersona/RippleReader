@@ -25,6 +25,9 @@ const styles = StyleSheet.create({
   bgPrimary: {
     backgroundColor: colors.primary,
   },
+  bgError: {
+    backgroundColor: colors.danger,
+  },
   colorPrimary: {
     color: colors.primary,
   },

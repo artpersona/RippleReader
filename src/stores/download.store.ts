@@ -95,7 +95,6 @@ const useDownloadStore = create(
       refreshPendingDownloads: () => {
         console.log('refreshPendingDownloads');
         const {downloadClusters, syncSessionDownloadedData} = get() as any;
-        // Redownload the data for the clusters that are pending
         const pendingClusters = downloadClusters.filter(
           (cluster: any) => cluster.pending,
         );
@@ -240,6 +239,7 @@ const useDownloadStore = create(
       syncReadingList: async () => {
         const {pendingActions} = get() as any;
         const tempActions = [...pendingActions];
+
         Promise.all(
           tempActions.map(async (action: any) => {
             if (action.status === 'queued') {
@@ -261,6 +261,7 @@ const useDownloadStore = create(
                 }
               }
               const readingData = await submitReadingAPI(formData);
+              console.log('readingData', readingData);
               const soaData = await getSOAAPI(readingData.soa_id);
 
               return {
@@ -273,11 +274,10 @@ const useDownloadStore = create(
           }),
         )
           .then((data: any) => {
-            console.log('then data is: ', data);
             set({pendingActions: data});
           })
           .catch(e => {
-            console.log('error', e);
+            console.log('syncing error', e);
           });
       },
     }),

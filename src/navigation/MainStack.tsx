@@ -23,8 +23,8 @@ const MainStack = () => {
     (async () => {
       if (isConnected) {
         await refreshPendingDownloads();
-        await syncReadingList();
       }
+      await syncReadingList();
     })();
   }, [isConnected, syncReadingList, refreshPendingDownloads]);
 

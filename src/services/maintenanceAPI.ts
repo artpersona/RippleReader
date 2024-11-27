@@ -3,14 +3,14 @@ import {postRequest, getRequest} from './request';
 import {RESPONSE_RETURN_VALUE} from './serviceapi';
 
 export const getDisconnectionListAPI = (search: string, clusters: string) => {
-  let URL = 'api/support/reconnection';
+  let URL = 'api/support/disconnection';
   const queryParams = '?search=' + search + '&clusters=' + clusters;
   URL += queryParams;
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 
 export const getReconnectionListAPI = (search: string, clusters: string) => {
-  let URL = 'api/support/disconnection';
+  let URL = 'api/support/reconnection';
   const queryParams = '?search=' + search + '&clusters=' + clusters;
   URL += queryParams;
 

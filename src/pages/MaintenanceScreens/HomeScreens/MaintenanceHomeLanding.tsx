@@ -114,7 +114,7 @@ function MaintenanceHomeLanding({navigation}: Props) {
               const tabWidth = width / 2 - 16;
               sliderRight.value = position * tabWidth + offset * tabWidth;
             }}>
-            <View key="1">
+            <View key="0">
               <FlatList
                 data={disconnectionList}
                 renderItem={({item}: any) => (
@@ -132,7 +132,7 @@ function MaintenanceHomeLanding({navigation}: Props) {
                 }
               />
             </View>
-            <View key="2">
+            <View key="1">
               <FlatList
                 data={reconnectionList}
                 renderItem={({item}: any) => (

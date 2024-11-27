@@ -34,7 +34,6 @@ function HomeOffline({navigation}: Props) {
 
   useEffect(() => {
     if (downloadClusters && downloadClusters.length > 0) {
-      console.log('download cluster are: ', downloadClusters);
       const tempClusters = downloadClusters
         .filter((cluster: any) => cluster.isDownloaded)
         .map((cluster: any) => {

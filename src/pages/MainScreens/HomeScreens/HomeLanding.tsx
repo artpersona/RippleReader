@@ -117,7 +117,7 @@ function HomeLanding({navigation}: Props) {
             <View key="1">
               <FlatList
                 data={readingList}
-                keyExtractor={(item: any) => item.id.toString()}
+                keyExtractor={(item: any) => item?.id?.toString()}
                 renderItem={({item}: any) => (
                   <AccountCard
                     item={item}

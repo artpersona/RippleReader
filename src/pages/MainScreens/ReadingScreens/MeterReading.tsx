@@ -17,10 +17,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
 import commonstyles from '../../../styles/commonstyles';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {
-  launchCamera,
-  // launchImageLibrary
-} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageView from 'react-native-image-viewing';
 import {submitReadingAPI} from '../../../services/meterReadingAPI';
 import {NavigationRoutes} from '../../../utils';
@@ -29,6 +26,7 @@ import {moderateScale} from 'react-native-size-matters';
 import {useUserStore} from '../../../stores';
 import useDownloadStore from '../../../stores/download.store';
 import {CommonActions} from '@react-navigation/native';
+import ReadingConfirmatoryModal from '../../../components/ReadingConfirmatoryModal';
 
 type Props = {
   navigation: any;
@@ -44,8 +42,9 @@ function MeterReading({navigation, route}: Props) {
   const [visible, setIsVisible] = React.useState(false);
   const [meterReading, setMeterReading] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [modalVisible, setModalVisible] = React.useState(false);
 
-  const handleSubmit = async () => {
+  const submitValidator = () => {
     if (!meterReading) {
       Alert.alert('Please enter a meter reading');
       return;
@@ -60,6 +59,12 @@ function MeterReading({navigation, route}: Props) {
       Alert.alert('Please take a photo of the meter reading');
       return;
     }
+
+    setModalVisible(true);
+  };
+
+  const handleSubmit = async () => {
+    setModalVisible(false);
     const formattedImage = {
       uri: imageData.uri,
       type: imageData.type,
@@ -83,8 +88,6 @@ function MeterReading({navigation, route}: Props) {
       attachment: formattedImage,
       previous_reading_id: account.last_reading_id,
     };
-
-    console.log('params is: ', params);
 
     const formData = new FormData();
     for (const key in params) {
@@ -180,9 +183,8 @@ function MeterReading({navigation, route}: Props) {
     launchCamera(
       {
         mediaType: 'photo',
-        includeBase64: false,
-        maxHeight: 500,
-        maxWidth: 500,
+        includeBase64: true,
+        quality: 1,
       },
       (response: any) => {
         if (response.didCancel) {
@@ -322,7 +324,7 @@ function MeterReading({navigation, route}: Props) {
         <Button
           mode="contained"
           style={[commonstyles.button, commonstyles.bgPrimary]}
-          onPress={handleSubmit}
+          onPress={submitValidator}
           loading={loading}
           contentStyle={commonstyles.buttonContent}>
           Submit Reading
@@ -338,6 +340,18 @@ function MeterReading({navigation, route}: Props) {
         imageIndex={0}
         visible={visible}
         onRequestClose={() => setIsVisible(false)}
+      />
+
+      <ReadingConfirmatoryModal
+        isVisible={modalVisible}
+        onSubmit={handleSubmit}
+        onCancel={() => setModalVisible(false)}
+        data={{
+          previousReading: parseInt(account.last_reading, 10),
+          currentReading: parseInt(meterReading, 10),
+          totalConsumption:
+            parseInt(meterReading, 10) - parseInt(account.last_reading, 10),
+        }}
       />
     </View>
   );

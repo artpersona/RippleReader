@@ -26,6 +26,7 @@ function TaskQueue({}: Props) {
     setFilterData,
     downloadClusters,
     removePrintedActions,
+    syncReadingList,
   } = useDownloadStore() as any;
   const [activeList, setActiveList] = useState([]);
   const [activeFilterCount, setActiveFilterCount] = useState(0);
@@ -43,6 +44,10 @@ function TaskQueue({}: Props) {
   const navigateToStatusFilter = () => {
     navigation.navigate(NavigationRoutes.QueueStatusFilter);
   };
+
+  useEffect(() => {
+    syncReadingList();
+  }, []);
 
   useEffect(() => {
     if (downloadClusters) {
@@ -188,6 +193,7 @@ function TaskQueue({}: Props) {
 const styles = StyleSheet.create({
   wrapper: {
     marginHorizontal: 10,
+    flex: 1,
   },
   container: {
     flex: 1,

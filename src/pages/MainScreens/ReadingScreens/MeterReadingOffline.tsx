@@ -17,15 +17,13 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
 import commonstyles from '../../../styles/commonstyles';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import {
-  launchCamera,
-  //  launchImageLibrary
-} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImageView from 'react-native-image-viewing';
 import Toast from 'react-native-toast-message';
 import {moderateScale} from 'react-native-size-matters';
 import useDownloadStore from '../../../stores/download.store';
 import {NavigationRoutes} from '../../../utils';
+import ReadingConfirmatoryModal from '../../../components/ReadingConfirmatoryModal';
 
 type Props = {
   navigation: any;
@@ -41,6 +39,7 @@ function MeterReadingOffline({navigation, route}: Props) {
   const [visible, setIsVisible] = React.useState(false);
   const [meterReading, setMeterReading] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [modalVisible, setModalVisible] = React.useState(false);
 
   useEffect(() => {
     if (offlineReading) {
@@ -51,6 +50,25 @@ function MeterReadingOffline({navigation, route}: Props) {
       );
     }
   }, [offlineReading]);
+
+  const submitValidator = () => {
+    if (!meterReading) {
+      Alert.alert('Please enter a meter reading');
+      return;
+    }
+
+    if (parseInt(meterReading, 10) < parseInt(account.last_reading, 10)) {
+      Alert.alert('Meter reading cannot be less than the previous reading');
+      return;
+    }
+
+    if (!image) {
+      Alert.alert('Please take a photo of the meter reading');
+      return;
+    }
+
+    setModalVisible(true);
+  };
 
   const handleSubmit = async () => {
     if (!meterReading) {
@@ -112,8 +130,6 @@ function MeterReadingOffline({navigation, route}: Props) {
       }
     }
 
-    // setLoading(true);
-
     if (
       parseInt(meterReading, 10) - parseInt(account.last_reading, 10) >
       1000
@@ -159,9 +175,8 @@ function MeterReadingOffline({navigation, route}: Props) {
     launchCamera(
       {
         mediaType: 'photo',
-        includeBase64: false,
-        maxHeight: 500,
-        maxWidth: 500,
+        includeBase64: true,
+        quality: 1,
       },
       (response: any) => {
         if (response.didCancel) {
@@ -308,7 +323,7 @@ function MeterReadingOffline({navigation, route}: Props) {
         <Button
           mode="contained"
           style={[commonstyles.button, commonstyles.bgPrimary]}
-          onPress={handleSubmit}
+          onPress={submitValidator}
           loading={loading}
           contentStyle={commonstyles.buttonContent}>
           Update Reading
@@ -324,6 +339,18 @@ function MeterReadingOffline({navigation, route}: Props) {
         imageIndex={0}
         visible={visible}
         onRequestClose={() => setIsVisible(false)}
+      />
+
+      <ReadingConfirmatoryModal
+        isVisible={modalVisible}
+        onSubmit={handleSubmit}
+        onCancel={() => setModalVisible(false)}
+        data={{
+          previousReading: parseInt(account.last_reading, 10),
+          currentReading: parseInt(meterReading, 10),
+          totalConsumption:
+            parseInt(meterReading, 10) - parseInt(account.last_reading, 10),
+        }}
       />
     </View>
   );
