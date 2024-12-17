@@ -21,6 +21,7 @@ function FilterMeterScreen({navigation}: Props) {
     tempClusters,
     activeClusters,
     setActiveClusters,
+    activeProject,
   } = useMeterReadingStore() as any;
   const [hasUnsavedClusters, setHasUnsavedClusters] = React.useState(false);
   const handleSelect = (id: number) => {
@@ -60,8 +61,10 @@ function FilterMeterScreen({navigation}: Props) {
   };
 
   useEffect(() => {
-    loadClusters();
-  }, []);
+    if (activeProject !== '') {
+      loadClusters(activeProject);
+    }
+  }, [activeProject]);
 
   useEffect(() => {
     const sortedActiveClusters = [...activeClusters].sort();

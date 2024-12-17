@@ -74,90 +74,106 @@ function MaintenanceHomeLanding({navigation}: Props) {
       />
 
       <View style={styles.content}>
-        <CustomSearch onChangeText={onChangeText} />
+        <>
+          <CustomSearch onChangeText={onChangeText} />
 
-        <View style={styles.tabControl}>
-          <TouchableWithoutFeedback onPress={() => onTabPress(0)}>
-            <View style={styles.tabOption}>
-              <Text style={styles.optionText}>Disconnection</Text>
-            </View>
-          </TouchableWithoutFeedback>
+          <View style={styles.tabControl}>
+            <TouchableWithoutFeedback onPress={() => onTabPress(0)}>
+              <View style={styles.tabOption}>
+                <Text style={styles.optionText}>Disconnection</Text>
+              </View>
+            </TouchableWithoutFeedback>
 
-          <TouchableWithoutFeedback onPress={() => onTabPress(1)}>
-            <View style={styles.tabOption}>
-              <Text style={styles.optionText}>Reconnection</Text>
-            </View>
-          </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => onTabPress(1)}>
+              <View style={styles.tabOption}>
+                <Text style={styles.optionText}>Reconnection</Text>
+              </View>
+            </TouchableWithoutFeedback>
 
-          <Animated.View
-            style={[
-              styles.animatedSelector,
-              {
-                left: sliderRight,
-              },
-            ]}
-          />
-        </View>
-        {loading && (
-          <ActivityIndicator
-            size={'large'}
-            color={colors.homeComponent}
-            style={styles.loader}
-          />
-        )}
-        {!loading && (
-          <PagerView
-            style={styles.flex1}
-            ref={pagerRef}
-            onPageScroll={event => {
-              const {offset, position} = event.nativeEvent;
-              const tabWidth = width / 2 - 16;
-              sliderRight.value = position * tabWidth + offset * tabWidth;
-            }}>
-            <View key="0">
-              <FlatList
-                data={disconnectionList}
-                renderItem={({item}: any) => (
-                  <SupportCard
-                    item={item}
-                    onPress={() =>
-                      navigation.navigate(NavigationRoutes.ACTION_SCREEN, {
-                        account: item,
-                      })
-                    }
-                  />
-                )}
-                ListEmptyComponent={
-                  <ListEmpty message="No support tickets found" />
-                }
-              />
-            </View>
-            <View key="1">
-              <FlatList
-                data={reconnectionList}
-                renderItem={({item}: any) => (
-                  <SupportCard
-                    item={item}
-                    onPress={() =>
-                      navigation.navigate(NavigationRoutes.ACTION_SCREEN, {
-                        account: item,
-                      })
-                    }
-                  />
-                )}
-                ListEmptyComponent={
-                  <ListEmpty message="No support tickets found" />
-                }
-              />
-            </View>
-          </PagerView>
-        )}
+            <Animated.View
+              style={[
+                styles.animatedSelector,
+                {
+                  left: sliderRight,
+                },
+              ]}
+            />
+          </View>
+          {loading && (
+            <ActivityIndicator
+              size={'large'}
+              color={colors.homeComponent}
+              style={styles.loader}
+            />
+          )}
+          {!loading && (
+            <PagerView
+              style={styles.flex1}
+              ref={pagerRef}
+              onPageScroll={event => {
+                const {offset, position} = event.nativeEvent;
+                const tabWidth = width / 2 - 16;
+                sliderRight.value = position * tabWidth + offset * tabWidth;
+              }}>
+              <View key="0">
+                <FlatList
+                  data={disconnectionList}
+                  renderItem={({item}: any) => (
+                    <SupportCard
+                      item={item}
+                      onPress={() =>
+                        navigation.navigate(NavigationRoutes.ACTION_SCREEN, {
+                          account: item,
+                        })
+                      }
+                    />
+                  )}
+                  ListEmptyComponent={
+                    <ListEmpty message="No support tickets found" />
+                  }
+                />
+              </View>
+              <View key="1">
+                <FlatList
+                  data={reconnectionList}
+                  renderItem={({item}: any) => (
+                    <SupportCard
+                      item={item}
+                      onPress={() =>
+                        navigation.navigate(NavigationRoutes.ACTION_SCREEN, {
+                          account: item,
+                        })
+                      }
+                    />
+                  )}
+                  ListEmptyComponent={
+                    <ListEmpty message="No support tickets found" />
+                  }
+                />
+              </View>
+            </PagerView>
+          )}
+        </>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  currentlyInText: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 14,
+    color: colors.homeComponent,
+  },
+  dropdown: {
+    marginTop: 5,
+    padding: 10,
+    backgroundColor: colors.primary,
+    color: colors.white,
+  },
+  projectContainer: {
+    marginBottom: 10,
+  },
   loader: {
     marginTop: 50,
   },

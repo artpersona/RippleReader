@@ -3,6 +3,7 @@ import {
   getReadingListAPI,
   getCompletedListAPI,
   getClustersAPI,
+  getSitesAPI,
 } from '../services/meterReadingAPI';
 
 interface MeterReadingState {
@@ -13,9 +14,15 @@ interface MeterReadingState {
   tempClusters: any[];
   searchText: string;
   loading: boolean;
+  activeProject: string;
+  projects: any[];
   clearStore: () => void;
-  loadMeterReaderLists: (search: string, cluster: string) => void;
-  loadClusters: () => void;
+  loadMeterReaderLists: (
+    search: string,
+    cluster: string,
+    activeClusterID: number,
+  ) => void;
+  loadClusters: (siteID: number) => void;
   setTempClusters: (clusters: any) => void;
   setActiveClusters: (clusters: any) => void;
   setSearchText: (text: string) => void;
@@ -37,24 +44,45 @@ const initialState: Omit<
   tempClusters: [],
   searchText: '',
   loading: false,
+  activeProject: '',
+  projects: [],
 };
 
 const useMeterReadingStore = create<MeterReadingState>(set => ({
   ...initialState,
   clearStore: () => set({...initialState}),
-  loadMeterReaderLists: (search = '', cluster = '') => {
+
+  loadUserProjects: () => {
+    getSitesAPI().then((res: any) => {
+      const defaultProject = res.find(
+        (project: any) => project.is_default === '1',
+      );
+      set({activeProject: defaultProject?.project_id || ''});
+      set({projects: res});
+    });
+  },
+
+  setActiveProject: (project: string) => {
+    set({activeProject: project});
+  },
+
+  loadMeterReaderLists: (
+    search = '',
+    cluster = '',
+    activeProjectID: number,
+  ) => {
     set({loading: true});
 
-    getReadingListAPI(search, cluster).then((res: any) => {
+    getReadingListAPI(search, cluster, activeProjectID).then((res: any) => {
       set({readingList: res});
     });
-    getCompletedListAPI(search, cluster).then((res: any) => {
+    getCompletedListAPI(search, cluster, activeProjectID).then((res: any) => {
       set({completedList: res});
       set({loading: false});
     });
   },
-  loadClusters: () => {
-    getClustersAPI(false).then((res: any) => {
+  loadClusters: (siteID: number) => {
+    getClustersAPI(false, siteID).then((res: any) => {
       set({clusters: res});
     });
   },

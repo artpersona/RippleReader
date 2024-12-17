@@ -12,12 +12,18 @@ import {
 } from '../pages';
 import useDownloadStore from '../stores/download.store';
 import {useUserStore} from '../stores';
+import useMeterReadingStore from '../stores/meterReading.store';
 import {useEffect} from 'react';
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
   const {syncReadingList, refreshPendingDownloads} = useDownloadStore() as any;
   const {isConnected} = useUserStore() as any;
+  const {loadUserProjects} = useMeterReadingStore() as any;
+
+  useEffect(() => {
+    loadUserProjects();
+  }, [loadUserProjects]);
 
   useEffect(() => {
     (async () => {

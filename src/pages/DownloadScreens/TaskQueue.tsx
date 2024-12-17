@@ -71,8 +71,6 @@ function TaskQueue({}: Props) {
 
   useEffect(() => {
     let tempActiveList = [...pendingActions] as any;
-    console.log('filterData', filterData);
-    console.log('pendingActions', tempActiveList);
     if (filterData) {
       const count = Object.values(filterData).filter(
         value => value !== null && value !== '',
@@ -184,6 +182,7 @@ function TaskQueue({}: Props) {
           renderItem={renderItem}
           data={activeList}
           ListEmptyComponent={<ListEmpty message="No queued action found" />}
+          contentContainerStyle={styles.pb20P}
         />
       </View>
     </View>
@@ -191,6 +190,9 @@ function TaskQueue({}: Props) {
 }
 
 const styles = StyleSheet.create({
+  pb20P: {
+    paddingBottom: '20%',
+  },
   wrapper: {
     marginHorizontal: 10,
     flex: 1,

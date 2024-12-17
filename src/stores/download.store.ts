@@ -14,10 +14,12 @@ import {
 // };
 
 const initialState = {
+  activeProject: '',
   downloadClusters: [],
   downloadedClusterData: [],
   sessionDownloadedData: [],
   pendingActions: [],
+  activeKey: '',
   showDownloadsView: false,
   downloading: false,
   filterData: {
@@ -41,10 +43,18 @@ const useDownloadStore = create(
         set({filterData: filterData});
       },
 
-      loadClusters: () => {
+      setActiveProject: (projectID: string) => {
+        set({activeProject: projectID});
+      },
+
+      setActiveKey: (key: string) => {
+        set({activeKey: key});
+      },
+      loadClusters: (site_id: number) => {
         const {downloadedClusterData, downloadClusters} = get() as any;
-        getClustersAPI(true)
+        getClustersAPI(true, 4)
           .then((res: any) => {
+            console.log('res', res);
             const clusters = res.map((cluster: any) => {
               const hasDownloadedData = downloadedClusterData[cluster.id];
               const existingCluster = downloadClusters.find(

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect} from 'react';
 import {View, StyleSheet, FlatList, Text} from 'react-native';
-import {CustomHeader} from '../../../components';
+import {CustomHeader, ListEmpty} from '../../../components';
 import {colors} from '../../../common';
 import useMeterReadingStore from '../../../stores/meterReading.store';
 import FilterItem from './components/FilterItem';
@@ -21,6 +21,7 @@ function FilterScreen({navigation}: Props) {
     tempClusters,
     activeClusters,
     setActiveClusters,
+    activeProject,
   } = useMeterReadingStore() as any;
   const [hasUnsavedClusters, setHasUnsavedClusters] = React.useState(false);
   const handleSelect = (id: number) => {
@@ -60,8 +61,10 @@ function FilterScreen({navigation}: Props) {
   };
 
   useEffect(() => {
-    loadClusters();
-  }, []);
+    if (activeProject !== '') {
+      loadClusters(activeProject);
+    }
+  }, [activeProject]);
 
   useEffect(() => {
     const sortedActiveClusters = [...activeClusters].sort();
@@ -86,6 +89,7 @@ function FilterScreen({navigation}: Props) {
           renderItem={renderItem}
           data={clusters}
           contentContainerStyle={styles.contentContainer}
+          ListEmptyComponent={<ListEmpty message="No clusters available" />}
         />
       </View>
       {(activeClusters.length > 0 || hasUnsavedClusters) && (

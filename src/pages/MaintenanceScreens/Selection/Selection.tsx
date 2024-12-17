@@ -6,12 +6,16 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import {NavigationRoutes} from '../../../utils';
 import {moderateScale} from 'react-native-size-matters';
-
+import {Dropdown} from 'react-native-element-dropdown';
+import useMeterReadingStore from '../../../stores/meterReading.store';
 type Props = {
   navigation: any;
 };
 
 function Selection({navigation}: Props) {
+  const {projects, activeProject, setActiveProject} =
+    useMeterReadingStore() as any;
+
   return (
     <View style={styles.container}>
       <CustomHeader
@@ -21,6 +25,26 @@ function Selection({navigation}: Props) {
         }}
       />
       <View style={styles.mainContent}>
+        {projects && projects.length > 0 && (
+          <View style={styles.projectContainer}>
+            <Text style={styles.currentlyInText}>You are currently in</Text>
+            <Dropdown
+              data={projects}
+              labelField="name"
+              valueField="project_id"
+              value={activeProject}
+              onChange={(value: any) => {
+                console.log(value);
+                setActiveProject(value.project_id);
+              }}
+              style={styles.dropdown}
+              placeholderStyle={{color: colors.white}}
+              selectedTextStyle={{color: colors.white}}
+              iconColor="white"
+            />
+          </View>
+        )}
+
         <Text style={styles.subHeader}>
           Providing comprehensive functionality for managing disconnections and
           replacements of water meters with ease and efficiency.
@@ -51,6 +75,20 @@ function Selection({navigation}: Props) {
 }
 
 const styles = StyleSheet.create({
+  currentlyInText: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 14,
+    color: colors.homeComponent,
+  },
+  dropdown: {
+    marginTop: 5,
+    padding: 10,
+    backgroundColor: colors.primary,
+    color: colors.white,
+  },
+  projectContainer: {
+    marginBottom: 10,
+  },
   cardTitle: {
     fontFamily: 'Poppins-SemiBold',
     color: colors.primary,

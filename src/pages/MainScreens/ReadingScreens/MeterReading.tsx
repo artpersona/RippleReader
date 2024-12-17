@@ -146,7 +146,6 @@ function MeterReading({navigation, route}: Props) {
             {
               name: NavigationRoutes.MAIN_LANDING,
             },
-
             {
               name: NavigationRoutes.TASKQUEUE,
             },
@@ -156,6 +155,7 @@ function MeterReading({navigation, route}: Props) {
     } else {
       setLoading(true);
 
+      console.log('form data is: ', formData);
       submitReadingAPI(formData)
         .then((res: any) => {
           console.log('res is', res);

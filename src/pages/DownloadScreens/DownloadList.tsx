@@ -18,7 +18,7 @@ function DownloadList({}: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadClusters();
+    loadClusters(-4);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

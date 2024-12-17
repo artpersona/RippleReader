@@ -12,19 +12,20 @@ type Props = {
 };
 
 function HomeOffline({navigation}: Props) {
-  const {downloadedClusterData, downloadClusters} = useDownloadStore() as any;
+  const {downloadedClusterData, downloadClusters, activeKey, setActiveKey} =
+    useDownloadStore() as any;
   const [activeList, setActiveList] = useState([]);
-  const [activeKey, setActiveKey] = useState('');
   const [clusterList, setClusterList] = useState([]);
 
   useEffect(() => {
     if (
       downloadedClusterData &&
-      Object.keys(downloadedClusterData).length > 0
+      Object.keys(downloadedClusterData).length > 0 &&
+      activeKey === ''
     ) {
       setActiveKey(Object.keys(downloadedClusterData)[0]);
     }
-  }, [downloadedClusterData]);
+  }, [downloadedClusterData, activeKey, setActiveKey]);
 
   useEffect(() => {
     if (activeKey) {
@@ -44,11 +45,11 @@ function HomeOffline({navigation}: Props) {
           };
         });
       setClusterList(tempClusters);
-      if (tempClusters.length > 0) {
+      if (tempClusters.length > 0 && activeKey === '') {
         setActiveKey(tempClusters[0].value);
       }
     }
-  }, [downloadClusters]);
+  }, [downloadClusters, setActiveKey, activeKey]);
 
   const handleClusterChange = (clusterId: string) => {
     setActiveKey(clusterId);

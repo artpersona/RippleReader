@@ -6,6 +6,8 @@ const colors = {
   tertiary: '#044381',
   white: '#FFFFFF',
   danger: '#FB6867',
+  mutedRed: '#eda09f',
+  vibrantRed: '#ff2d2b',
   black: '#000000',
 
   logoText: '#02377A',

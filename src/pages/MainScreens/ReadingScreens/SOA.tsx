@@ -10,6 +10,7 @@ import RNPrint from 'react-native-print';
 import {getSOAAPI} from '../../../services/meterReadingAPI';
 import {moderateScale} from 'react-native-size-matters';
 import dayjs from 'dayjs';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 
 type Props = {
   navigation: any;
@@ -53,16 +54,16 @@ function SOA({route, navigation}: Props) {
       <html>
         <head>
           <style>
-          @page {
-              size: A4;
-              margin: 10mm;
-            }
+          
             body {
               color: #044381;
+              background-color: white;
             }
             table {
               color: #044381;
               font-size: 12px;
+              border:'none';
+              background-color: white;
             }
             .dot-table td {
               max-width: 200px;
@@ -77,9 +78,8 @@ function SOA({route, navigation}: Props) {
             <table style="margin: auto;">
                       <tr>
                           <td width="70">
-                              <img src="${
-                                soaData?.logo
-                              }" width="60" style="float: left;">
+                          
+                              <img src="https://tubigpilipinas.gtindustries.ph/assets/images/site/logos/4/logo.png" width="60" style="float: left;">
                           </td>
                           <td width="570">
                               <span style="color: #044381;font-weight: bold; font-size: 20px;line-height: 25px;">${
@@ -388,12 +388,23 @@ function SOA({route, navigation}: Props) {
     }
   }, [soaData]);
 
-  function printSOA() {
-    RNPrint.print({
+  async function printSOA() {
+    let options = {
       html: htmlString,
+      fileName: 'SOA',
+      directory: 'Documents',
+      height: 842, // A4 height in points (11.69 inches * 72 points per inch)
+      width: 595, // A4 width in points (8.27 inches * 72 points per inch)
+    };
+
+    let file = (await RNHTMLtoPDF.convert(options)) as any;
+
+    RNPrint.print({
+      filePath: file.filePath,
+      jobName: 'SOA Print Job', // Optional, descriptive name
+      isLandscape: false, // Ensures it's portrait mode
     });
   }
-
   useEffect(() => {
     const backAction = () => {
       if (route?.params?.fromBilling) {

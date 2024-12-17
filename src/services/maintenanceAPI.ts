@@ -2,25 +2,46 @@
 import {postRequest, getRequest} from './request';
 import {RESPONSE_RETURN_VALUE} from './serviceapi';
 
-export const getDisconnectionListAPI = (search: string, clusters: string) => {
+export const getDisconnectionListAPI = (
+  search: string,
+  clusters: string,
+  siteID: number,
+) => {
   let URL = 'api/support/disconnection';
-  const queryParams = '?search=' + search + '&clusters=' + clusters;
+  const queryParams =
+    '?search=' + search + '&clusters=' + clusters + '&site_id=' + siteID;
   URL += queryParams;
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 
-export const getReconnectionListAPI = (search: string, clusters: string) => {
+export const getReconnectionListAPI = (
+  search: string,
+  clusters: string,
+  siteID: number,
+) => {
   let URL = 'api/support/reconnection';
-  const queryParams = '?search=' + search + '&clusters=' + clusters;
+  const queryParams =
+    '?search=' + search + '&clusters=' + clusters + '&site_id=' + siteID;
   URL += queryParams;
 
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 
-export const getOtherListAPI = (search: string, clusters: string) => {
+export const getOtherListAPI = (
+  search: string,
+  clusters: string,
+  siteID: number,
+) => {
   let URL = 'api/support/other-services';
   const queryParams =
-    '?search=' + search + '&clusters=' + clusters + '&is_user=' + 0;
+    '?search=' +
+    search +
+    '&clusters=' +
+    clusters +
+    '&is_user=' +
+    0 +
+    '&site_id=' +
+    siteID;
   URL += queryParams;
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };

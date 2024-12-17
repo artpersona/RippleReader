@@ -2,31 +2,58 @@
 import {postRequest, getRequest} from './request';
 import {RESPONSE_RETURN_VALUE} from './serviceapi';
 
+export const getSitesAPI = () => {
+  const URL = '/api/meter-reader/sites';
+  return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
+};
+
 export const getCCFTypesAPI = () => {
   const URL = '/api/support/types?is_user=true';
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 
-export const getReadingListAPI = (search: string, clusters: string) => {
+export const getReadingListAPI = (
+  search: string,
+  clusters: string,
+  activeProjectID: number,
+) => {
   let URL = 'api/meter-reader/accounts/';
-  const queryParams = '?search=' + search + '&clusters=' + clusters;
+  const queryParams =
+    '?search=' +
+    search +
+    '&clusters=' +
+    clusters +
+    '&site_id=' +
+    parseInt(activeProjectID.toString(), 10);
   URL += queryParams;
   console.log('URL', URL);
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 
-export const getCompletedListAPI = (search: string, clusters: string) => {
+export const getCompletedListAPI = (
+  search: string,
+  clusters: string,
+  activeProjectID: number,
+) => {
   let URL = 'api/meter-reader/accounts/completed';
-  const queryParams = '?search=' + search + '&clusters=' + clusters;
+  const queryParams =
+    '?search=' +
+    search +
+    '&clusters=' +
+    clusters +
+    '&site_id=' +
+    parseInt(activeProjectID.toString(), 10);
   URL = URL + queryParams;
 
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
 
-export const getClustersAPI = (includeCount: boolean) => {
+export const getClustersAPI = (includeCount: boolean, siteID: number) => {
   let URL = 'api/meter-reader/clusters';
-  if (includeCount) {
-    URL = URL + '?include_count=true';
+  URL = URL + `?include_count=${includeCount}`;
+
+  if (siteID) {
+    URL = URL + '&site_id=' + siteID;
   }
   return getRequest(URL, RESPONSE_RETURN_VALUE) as any;
 };
