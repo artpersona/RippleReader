@@ -32,14 +32,14 @@ type Props = {
 function MaintenanceHomeLanding({navigation}: Props) {
   const sliderRight = useSharedValue(0);
   const pagerRef = React.useRef(null) as any;
-  const {loadMeterReaderLists, activeClusters, searchText, loading} =
+  const {activeClusters, searchText, loading, activeProject} =
     useMeterReadingStore() as any;
 
   const {disconnectionList, reconnectionList, loadMaintenanceList} =
     useMaintenanceStore() as any;
 
   const onTabPress = (index: number) => {
-    loadMeterReaderLists();
+    loadMaintenanceList('', '', activeProject);
     if (index === 0) {
       sliderRight.value = withTiming(0);
     }
@@ -54,6 +54,7 @@ function MaintenanceHomeLanding({navigation}: Props) {
       loadMaintenanceList(
         searchText,
         activeClusters.length > 0 ? activeClusters.join(',') : '',
+        activeProject,
       );
     }, [activeClusters, searchText]),
   );

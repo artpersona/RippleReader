@@ -22,7 +22,8 @@ type Props = {
 };
 
 function OtherActionsLanding({navigation}: Props) {
-  const {activeClusters, searchText, loading} = useMeterReadingStore() as any;
+  const {activeClusters, searchText, loading, activeProject} =
+    useMeterReadingStore() as any;
   const {otherActionsList, loadOtherActionsList, ccfTypes} =
     useMaintenanceStore() as any;
 
@@ -33,6 +34,7 @@ function OtherActionsLanding({navigation}: Props) {
       loadOtherActionsList(
         searchText,
         activeClusters.length > 0 ? activeClusters.join(',') : '',
+        activeProject,
       );
     }, [activeClusters, searchText]),
   );
