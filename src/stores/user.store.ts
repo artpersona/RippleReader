@@ -29,10 +29,14 @@ const useUserStore = create<UserState>()(
       ...initialState,
       setUser: (user: boolean) => set({user}),
       logout: async () => {
-        useMeterReadingStore.getState().clearStore();
-        useMaintenanceStore.getState().clearStore();
-        await clearUserSession();
-        set({user: false});
+        try {
+          useMeterReadingStore.getState().clearStore();
+          useMaintenanceStore.getState().clearStore();
+          await clearUserSession();
+          set({user: false});
+        } catch (e) {
+          console.log('Error logging out', e);
+        }
       },
       setConnectionStatus: (isConnected: boolean) => set({isConnected}),
     }),

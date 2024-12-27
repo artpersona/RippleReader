@@ -86,24 +86,24 @@ function AccountLanding({navigation, route}: Props) {
       {!loading && (
         <View style={styles.mainContainer}>
           <Text style={styles.previousText}>
-            Prevous Reading: {account.last_reading}
+            Prevous Reading: {account?.last_reading ?? 'No reading records yet'}
           </Text>
 
           <View style={styles.detailsContainer}>
             <View style={[styles.row, styles.border]}>
               <Text style={styles.label}>Name: </Text>
-              <Text style={styles.value}>{account.account_name}</Text>
+              <Text style={styles.value}>{account?.account_name}</Text>
             </View>
 
             <View style={[styles.row, styles.border]}>
               <Text style={styles.label}>Address: </Text>
-              <Text style={styles.value}>{account.address}</Text>
+              <Text style={styles.value}>{account?.address}</Text>
             </View>
 
             <View style={styles.row}>
               <Text style={styles.label}>Last Reading: </Text>
               <Text style={styles.value}>
-                {account.last_reading_date
+                {account?.last_reading_date
                   ? account.last_reading_date
                   : 'No reading records yet'}
               </Text>

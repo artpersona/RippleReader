@@ -9,6 +9,7 @@ import {
   TaskQueue,
   QueueFilterSelector,
   QueueStatusSelector,
+  SiteList,
 } from '../pages';
 import useDownloadStore from '../stores/download.store';
 import {useUserStore} from '../stores';
@@ -44,10 +45,13 @@ const MainStack = () => {
         name={NavigationRoutes.MORE_LANDING}
         component={MoreLanding}
       />
+
       <Stack.Screen
         name={NavigationRoutes.DOWNLOAD_SCREEN}
         component={DownloadList}
       />
+
+      <Stack.Screen name={NavigationRoutes.SITE_LIST} component={SiteList} />
 
       <Stack.Screen
         name={NavigationRoutes.DOWNLOAD_LANDING}

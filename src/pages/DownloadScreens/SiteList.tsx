@@ -1,30 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
-import {CustomHeader, ListEmpty} from '../../components';
+import React, {useEffect} from 'react';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {CustomHeader} from '../../components';
 import {colors} from '../../common';
-import ClusterItem from './component/ClusterItem';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import useDownloadStore from '../../stores/download.store';
-type Props = {
-  route: any;
-};
+import useMeterReadingStore from '../../stores/meterReading.store';
+import SiteItem from './component/SiteItem';
+type Props = {};
 
-function DownloadList({route}: Props) {
-  const {downloadClusters, loadClusters, clusterLoading} =
-    useDownloadStore() as any;
+function SiteList({}: Props) {
+  const {loadUserProjects, projects} = useMeterReadingStore() as any;
 
   useEffect(() => {
-    if (route.params?.siteId) {
-      loadClusters(parseInt(route.params?.siteId, 10));
-    }
+    loadUserProjects();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [route.params?.siteId]);
+  }, []);
 
   return (
     <View style={styles.whiteBG}>
@@ -42,29 +31,17 @@ function DownloadList({route}: Props) {
         <View style={styles.notesText}>
           <Text style={styles.title}>Offline Reading Data</Text>
           <Text style={styles.subtitle}>
-            Download cluster data to read offline or on low bandwith
+            Download Site Data to read offline or on low bandwith
           </Text>
         </View>
       </View>
 
       <ScrollView style={styles.container}>
-        {clusterLoading && (
-          <ActivityIndicator
-            size="large"
-            color={colors.primary}
-            style={{marginTop: 16}}
-          />
-        )}
-        {!clusterLoading && (
-          <>
-            {downloadClusters.map((cluster: any) => {
-              return <ClusterItem key={cluster.id} cluster={cluster} />;
-            })}
-            {downloadClusters.length === 0 && (
-              <ListEmpty message="No cluster data available" />
-            )}
-          </>
-        )}
+        <>
+          {projects.map((cluster: any) => {
+            return <SiteItem key={cluster.id} site={cluster} />;
+          })}
+        </>
       </ScrollView>
     </View>
   );
@@ -107,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DownloadList;
+export default SiteList;

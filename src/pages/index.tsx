@@ -32,11 +32,13 @@ import TestScreen from './Test';
 // Download screen
 import DownloadList from './DownloadScreens/DownloadList';
 import DownloadLanding from './DownloadScreens/DownloadLanding';
+import SiteList from './DownloadScreens/SiteList';
 import TaskQueue from './DownloadScreens/TaskQueue';
 import QueueFilterSelector from './MainScreens/HomeScreens/QueueFilterSelector';
 import QueueStatusSelector from './MainScreens/HomeScreens/QueueStatusSelector';
 
 export {
+  SiteList,
   QueueStatusSelector,
   QueueFilterSelector,
   MeterReadingOffline,

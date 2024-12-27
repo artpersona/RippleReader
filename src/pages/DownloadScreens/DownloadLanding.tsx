@@ -22,10 +22,10 @@ function DownloadLanding({navigation}: Props) {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.itemCard}
-          onPress={() => navigation.navigate(NavigationRoutes.DOWNLOAD_SCREEN)}>
+          onPress={() => navigation.navigate(NavigationRoutes.SITE_LIST)}>
           <View style={styles.right}>
             <Ionicons name="download" size={40} color={'white'} />
-            <Text style={styles.itemText}>Download Cluster Data</Text>
+            <Text style={styles.itemText}>Download Site Data</Text>
           </View>
           <Ionicons name="chevron-forward" size={25} color={'white'} />
         </TouchableOpacity>

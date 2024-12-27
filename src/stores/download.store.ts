@@ -21,6 +21,7 @@ const initialState = {
   pendingActions: [],
   activeKey: '',
   showDownloadsView: false,
+  clusterLoading: false,
   downloading: false,
   filterData: {
     clusterID: null,
@@ -51,10 +52,10 @@ const useDownloadStore = create(
         set({activeKey: key});
       },
       loadClusters: (site_id: number) => {
+        set({clusterLoading: true});
         const {downloadedClusterData, downloadClusters} = get() as any;
-        getClustersAPI(true, 4)
+        getClustersAPI(true, site_id)
           .then((res: any) => {
-            console.log('res', res);
             const clusters = res.map((cluster: any) => {
               const hasDownloadedData = downloadedClusterData[cluster.id];
               const existingCluster = downloadClusters.find(
@@ -67,6 +68,7 @@ const useDownloadStore = create(
                   count: cluster.count,
                   isDownloaded: hasDownloadedData ? true : false,
                   pending: hasDownloadedData ? false : existingCluster.pending,
+                  site_id: site_id,
                 };
               }
               return {
@@ -75,6 +77,7 @@ const useDownloadStore = create(
                 count: cluster.count,
                 isDownloaded: hasDownloadedData ? true : false,
                 pending: false,
+                site_id: site_id,
               };
             });
 
@@ -85,6 +88,9 @@ const useDownloadStore = create(
           })
           .catch((e: any) => {
             console.log('error', e);
+          })
+          .finally(() => {
+            set({clusterLoading: false});
           });
       },
 

@@ -35,6 +35,7 @@ const NavigationRoutes = {
   CUSTOMER_CARE: 'CustomerCare',
 
   // Offline Support
+  SITE_LIST: 'SiteList',
   DOWNLOAD_SCREEN: 'DownloadScreen',
   DOWNLOAD_LANDING: 'DownloadLanding',
   TASKQUEUE: 'TaskQueue',
