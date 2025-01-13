@@ -1,7 +1,10 @@
 import {create} from 'zustand';
 import {persist, createJSONStorage} from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {downloadReadingListAPI} from '../services/downloadAPI';
+import {
+  downloadReadingListAPI,
+  downloadComputingDataAPI,
+} from '../services/downloadAPI';
 import {
   getClustersAPI,
   submitReadingAPI,
@@ -23,6 +26,7 @@ const initialState = {
   showDownloadsView: false,
   clusterLoading: false,
   downloading: false,
+  computationData: null,
   filterData: {
     clusterID: null,
     statusName: null,
@@ -223,6 +227,145 @@ const useDownloadStore = create(
         set({downloadedClusterData: newDownloadedClusterData});
         tempActions.push(newAction);
         set({pendingActions: tempActions});
+      },
+
+      donwloadComputingData: async (projectIds: any) => {
+        try {
+          const data = await downloadComputingDataAPI(projectIds);
+          set({computationData: data});
+        } catch (e) {
+          console.log('error', e);
+        }
+      },
+
+      getBillingRate: (
+        building_type_id: string,
+        meter_size_id: string,
+        consumption: number,
+        rateManagementData: any,
+      ) => {
+        let consumption_ctr = 0;
+        if (consumption > 0) {
+          if (consumption > 40) {
+            consumption_ctr = 5;
+          } else {
+            consumption_ctr = Math.ceil(consumption / 10);
+          }
+        } else {
+          consumption_ctr = 1;
+        }
+
+        let amount = 0;
+        for (let i = 1; i <= consumption_ctr; i++) {
+          let consumptionPartial = i * 10;
+          let multiplier = 10;
+          if (i === consumption_ctr) {
+            consumptionPartial = consumption;
+            if (consumption === 0) {
+              multiplier = 1;
+            } else {
+              if (consumption > 40) {
+                multiplier = consumption - 40;
+              } else {
+                multiplier = consumption % 10;
+              }
+            }
+          }
+          const computationRate = rateManagementData.find(
+            (rate: any) =>
+              rate.building_type_id === building_type_id &&
+              rate.meter_size_id === meter_size_id &&
+              consumptionPartial >= parseInt(rate.range_from, 10) &&
+              consumptionPartial <= parseInt(rate.range_to, 10),
+          );
+          console.log('building_type_id', building_type_id);
+          console.log('meter_size_id', meter_size_id);
+          console.log('rateManagementData', rateManagementData);
+          console.log('computationRate', computationRate);
+          if (consumptionPartial <= 10) {
+            amount += parseFloat(computationRate.rate);
+          } else {
+            amount += parseFloat(computationRate.rate) * multiplier;
+          }
+        }
+        return amount;
+      },
+
+      generateSOAOffline: (readingData: any, activeProject: any) => {
+        console.log('generating!', readingData);
+        const {computationData, getBillingRate} = get() as any;
+
+        const activeProjectData = computationData.find((computedata: any) => {
+          return computedata.projectData.id == activeProject;
+        });
+        const totalUnpaid = readingData?.total_unpaid ?? 0;
+        console.log('active project data: ', activeProjectData);
+        const rate = getBillingRate(
+          readingData.building_type_id,
+          readingData.meter_size_id,
+          readingData.consumption,
+          activeProjectData.rateManagementData,
+        );
+        const discountType = activeProjectData.discountTypesData.find(
+          (discount: any) => discount.id === readingData.discount_type_id,
+        );
+        const billingCycle = activeProjectData.billingCycleData.find(
+          (cycle: any) => cycle.cluster_id === readingData.cluster_id,
+        );
+
+        const amount = parseFloat(rate.toFixed(2));
+        let discountAmount = 0;
+        if (discountType) {
+          if (discountType.type == 10) {
+            discountAmount = discountType.value;
+          } else if (discountType.type == 20) {
+            discountAmount = amount * (discountType.value / 100);
+          }
+        }
+
+        let basic_charge = amount - discountAmount;
+        let vat_amount = basic_charge * 0.12;
+        const total_amount = basic_charge + vat_amount;
+        const penalty = total_amount * 0.1;
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + billingCycle.due_after_billing);
+        const formattedDueDate = dueDate.toISOString().split('T')[0];
+
+        const disconnectionDate = new Date(dueDate);
+        disconnectionDate.setDate(
+          disconnectionDate.getDate() + billingCycle.disconnection_after_due,
+        );
+        const formattedDisconnectionDate = disconnectionDate
+          .toISOString()
+          .split('T')[0];
+
+        const item = {
+          soa_number: 'TEMPORARY SOA',
+          project_location: 'TEMPORARY LOCATION',
+          project_name: activeProjectData.projectData.name,
+          date_generated_raw: new Date().toISOString(),
+          account_number: readingData.account_number,
+          account_name: readingData.account_name,
+          address: readingData.address,
+          serial_number: 'TEMPORARY SERIAL NUMBER',
+          building_type_name: 'TEMPORARY BUILDING TYPE',
+          reading_date: new Date().toISOString(),
+          present_reading: readingData.present_reading,
+          previous_reading: readingData.previous_reading,
+          consumption: readingData.consumption,
+          amount: amount,
+          basic_charge: basic_charge,
+          vat_amount: vat_amount,
+          discount: discountAmount,
+          balance_from_prev_bill: 'Not Available',
+          total_amount: total_amount,
+          due_date: formattedDueDate,
+          disconnection_date: formattedDisconnectionDate,
+          penalty: penalty,
+          meter_reading_id: 'TEMPORARY METER READING ID',
+        };
+
+        return item;
       },
 
       downloadClusterData: async (clusterId: string) => {

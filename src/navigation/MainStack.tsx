@@ -18,10 +18,15 @@ import {useEffect} from 'react';
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
-  const {syncReadingList, refreshPendingDownloads} = useDownloadStore() as any;
+  const {
+    syncReadingList,
+    refreshPendingDownloads,
+    donwloadComputingData,
+    computationData,
+  } = useDownloadStore() as any;
   const {isConnected} = useUserStore() as any;
-  const {loadUserProjects} = useMeterReadingStore() as any;
-
+  const {loadUserProjects, projects} = useMeterReadingStore() as any;
+  console.log('computationData', computationData);
   useEffect(() => {
     loadUserProjects();
   }, [loadUserProjects]);
@@ -31,9 +36,24 @@ const MainStack = () => {
       if (isConnected) {
         await refreshPendingDownloads();
       }
+
+      let tempProjects = [...projects];
+
+      tempProjects = tempProjects.reduce((acc: any, project: any) => {
+        acc.push(project.project_id);
+        return acc;
+      }, []);
+
+      await donwloadComputingData(tempProjects);
       await syncReadingList();
     })();
-  }, [isConnected, syncReadingList, refreshPendingDownloads]);
+  }, [
+    isConnected,
+    syncReadingList,
+    refreshPendingDownloads,
+    donwloadComputingData,
+    projects,
+  ]);
 
   return (
     <Stack.Navigator

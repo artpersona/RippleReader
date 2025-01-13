@@ -36,7 +36,7 @@ type Props = {
 function MeterReading({navigation, route}: Props) {
   const {account, id} = route.params;
   const {isConnected} = useUserStore() as any;
-  const {addReadingAction} = useDownloadStore() as any;
+  const {addReadingAction, generateSOAOffline} = useDownloadStore() as any;
   const [image, setImage] = React.useState('');
   const [imageData, setImageData] = React.useState('' as any);
   const [visible, setIsVisible] = React.useState(false);
@@ -87,8 +87,10 @@ function MeterReading({navigation, route}: Props) {
       status: 20,
       attachment: formattedImage,
       previous_reading_id: account.last_reading_id,
+      building_type_id: account.building_type_id,
+      meter_size_id: account.meter_size_id,
     };
-
+    console.log('params', account);
     const formData = new FormData();
     for (const key in params) {
       if (key === 'attachment') {
@@ -137,25 +139,27 @@ function MeterReading({navigation, route}: Props) {
       accountDetails: account,
       readingDetails: params,
     };
-    if (!isConnected) {
+    if (isConnected) {
       addReadingAction(params, details);
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [
-            {
-              name: NavigationRoutes.MAIN_LANDING,
-            },
-            {
-              name: NavigationRoutes.TASKQUEUE,
-            },
-          ],
-        }),
-      );
+      navigation.navigate(NavigationRoutes.SOA, {
+        offlineSOA: generateSOAOffline(params, account.project_id),
+      });
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 0,
+      //     routes: [
+      //       {
+      //         name: NavigationRoutes.MAIN_LANDING,
+      //       },
+      //       {
+      //         name: NavigationRoutes.TASKQUEUE,
+      //       },
+      //     ],
+      //   }),
+      // );
     } else {
       setLoading(true);
 
-      console.log('form data is: ', formData);
       submitReadingAPI(formData)
         .then((res: any) => {
           console.log('res is', res);
@@ -180,27 +184,11 @@ function MeterReading({navigation, route}: Props) {
   };
 
   const handleCamera = () => {
-    launchCamera(
-      {
-        mediaType: 'photo',
-        includeBase64: true,
-        quality: 1,
-      },
-      (response: any) => {
-        if (response.didCancel) {
-          return;
-        }
-        setImage(response.assets[0].uri);
-        setImageData(response.assets[0]);
-      },
-    );
-
-    // launchImageLibrary(
+    // launchCamera(
     //   {
     //     mediaType: 'photo',
     //     includeBase64: true,
-    //     maxHeight: 500,
-    //     maxWidth: 500,
+    //     quality: 1,
     //   },
     //   (response: any) => {
     //     if (response.didCancel) {
@@ -210,6 +198,22 @@ function MeterReading({navigation, route}: Props) {
     //     setImageData(response.assets[0]);
     //   },
     // );
+
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        includeBase64: true,
+        maxHeight: 500,
+        maxWidth: 500,
+      },
+      (response: any) => {
+        if (response.didCancel) {
+          return;
+        }
+        setImage(response.assets[0].uri);
+        setImageData(response.assets[0]);
+      },
+    );
   };
 
   return (

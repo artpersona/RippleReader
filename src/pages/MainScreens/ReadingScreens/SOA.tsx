@@ -11,6 +11,7 @@ import {getSOAAPI} from '../../../services/meterReadingAPI';
 import {moderateScale} from 'react-native-size-matters';
 import dayjs from 'dayjs';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import {useUserStore} from '../../../stores';
 
 type Props = {
   navigation: any;
@@ -18,11 +19,15 @@ type Props = {
 };
 
 function SOA({route, navigation}: Props) {
+  const {isConnected} = useUserStore() as any;
   const [soaData, setSoaData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [htmlString, setHtmlString] = useState('');
 
   useEffect(() => {
+    if (isConnected) {
+      return;
+    }
     (async () => {
       setLoading(true);
       if (route.params.soa_id) {
@@ -36,7 +41,13 @@ function SOA({route, navigation}: Props) {
         }
       }
     })();
-  }, [route.params.soa_id]);
+  }, [route.params.soa_id, isConnected]);
+
+  useEffect(() => {
+    if (isConnected && route.params?.offlineSOA) {
+      setSoaData(route.params.offlineSOA);
+    }
+  }, [isConnected, route.params.offlineSOA]);
 
   useEffect(() => {
     if (soaData) {
@@ -422,6 +433,8 @@ function SOA({route, navigation}: Props) {
     return () => backHandler.remove();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log('soa data is: ', soaData);
 
   return (
     <View style={styles.container}>

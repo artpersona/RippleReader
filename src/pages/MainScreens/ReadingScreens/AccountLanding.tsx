@@ -49,7 +49,7 @@ function AccountLanding({navigation, route}: Props) {
   };
 
   useEffect(() => {
-    if (isConnected) {
+    if (!isConnected) {
       if (id) {
         getAccountDetailsAPI(id)
           .then((res: any) => {
