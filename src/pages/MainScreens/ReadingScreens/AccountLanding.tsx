@@ -49,10 +49,11 @@ function AccountLanding({navigation, route}: Props) {
   };
 
   useEffect(() => {
-    if (!isConnected) {
+    if (isConnected) {
       if (id) {
         getAccountDetailsAPI(id)
           .then((res: any) => {
+            console.log('res is: ', res);
             setAccount(res);
             setLoading(false);
           })
@@ -62,7 +63,6 @@ function AccountLanding({navigation, route}: Props) {
           });
       }
     } else {
-      console.log('pasok offline data: ', offlineData);
       setAccount(offlineData);
       setLoading(false);
     }

@@ -52,6 +52,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-toast-message": "^2.2.0",
     "react-native-vector-icons": "^10.0.3",
+    "react-native-view-shot": "^4.0.3",
     "zustand": "^4.5.0"
   },
   "devDependencies": {

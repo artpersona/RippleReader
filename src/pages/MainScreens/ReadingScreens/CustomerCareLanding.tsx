@@ -20,6 +20,7 @@ function CustomerCareLanding({route, navigation}: Props) {
       if (id) {
         getAccountTickets(id)
           .then((res: any) => {
+            console.log('res is: ', res);
             setTickets(res);
           })
           .catch((error: any) => {

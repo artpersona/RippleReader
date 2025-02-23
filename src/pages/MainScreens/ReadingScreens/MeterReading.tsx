@@ -50,7 +50,7 @@ function MeterReading({navigation, route}: Props) {
       return;
     }
 
-    if (parseInt(meterReading, 10) < parseInt(account.last_reading, 10)) {
+    if (parseInt(meterReading, 10) < parseInt(account?.last_reading, 10)) {
       Alert.alert('Meter reading cannot be less than the previous reading');
       return;
     }
@@ -76,19 +76,17 @@ function MeterReading({navigation, route}: Props) {
 
     const params: {[key: string]: any} = {
       account_id: id,
-      project_id: account.project_id,
-      cluster_id: account.cluster_id,
-      meter_id: account.meter_id,
+      project_id: account?.project_id,
+      cluster_id: account?.cluster_id,
+      meter_id: account?.meter_id,
       user_id: 1,
       reading_datetime: new Date().toISOString(),
       present_reading: parseInt(meterReading, 10),
       consumption:
-        parseInt(meterReading, 10) - parseInt(account.last_reading, 10),
+        parseInt(meterReading, 10) - parseInt(account?.last_reading, 10),
       status: 20,
       attachment: formattedImage,
-      previous_reading_id: account.last_reading_id,
-      building_type_id: account.building_type_id,
-      meter_size_id: account.meter_size_id,
+      previous_reading_id: account?.last_reading_id,
     };
     console.log('params', account);
     const formData = new FormData();
@@ -104,10 +102,10 @@ function MeterReading({navigation, route}: Props) {
       }
     }
 
-    params.previous_reading = account.last_reading;
+    params.previous_reading = account?.last_reading;
 
     if (
-      parseInt(meterReading, 10) - parseInt(account.last_reading, 10) >
+      parseInt(meterReading, 10) - parseInt(account?.last_reading, 10) >
       1000
     ) {
       Alert.alert(
@@ -139,10 +137,10 @@ function MeterReading({navigation, route}: Props) {
       accountDetails: account,
       readingDetails: params,
     };
-    if (isConnected) {
+    if (!isConnected) {
       addReadingAction(params, details);
       navigation.navigate(NavigationRoutes.SOA, {
-        offlineSOA: generateSOAOffline(params, account.project_id),
+        offlineSOA: generateSOAOffline(params, account?.project_id),
       });
       // navigation.dispatch(
       //   CommonActions.reset({
@@ -184,27 +182,11 @@ function MeterReading({navigation, route}: Props) {
   };
 
   const handleCamera = () => {
-    // launchCamera(
-    //   {
-    //     mediaType: 'photo',
-    //     includeBase64: true,
-    //     quality: 1,
-    //   },
-    //   (response: any) => {
-    //     if (response.didCancel) {
-    //       return;
-    //     }
-    //     setImage(response.assets[0].uri);
-    //     setImageData(response.assets[0]);
-    //   },
-    // );
-
-    launchImageLibrary(
+    launchCamera(
       {
         mediaType: 'photo',
         includeBase64: true,
-        maxHeight: 500,
-        maxWidth: 500,
+        quality: 1,
       },
       (response: any) => {
         if (response.didCancel) {
@@ -214,6 +196,22 @@ function MeterReading({navigation, route}: Props) {
         setImageData(response.assets[0]);
       },
     );
+
+    // launchImageLibrary(
+    //   {
+    //     mediaType: 'photo',
+    //     includeBase64: true,
+    //     maxHeight: 500,
+    //     maxWidth: 500,
+    //   },
+    //   (response: any) => {
+    //     if (response.didCancel) {
+    //       return;
+    //     }
+    //     setImage(response.assets[0].uri);
+    //     setImageData(response.assets[0]);
+    //   },
+    // );
   };
 
   return (
@@ -261,32 +259,32 @@ function MeterReading({navigation, route}: Props) {
           <View style={styles.row}>
             <View style={styles.details}>
               <Text style={styles.detailsLabel}>Account Number</Text>
-              <Text style={styles.detailsValue}>{account.account_number}</Text>
+              <Text style={styles.detailsValue}>{account?.account_number}</Text>
             </View>
 
             <View style={styles.details}>
               <Text style={styles.detailsLabel}>Account Name</Text>
-              <Text style={styles.detailsValue}>{account.account_name}</Text>
+              <Text style={styles.detailsValue}>{account?.account_name}</Text>
             </View>
           </View>
 
           <View style={styles.row}>
             <View style={styles.details}>
               <Text style={styles.detailsLabel}>Address</Text>
-              <Text style={styles.detailsValue}>{account.address}</Text>
+              <Text style={styles.detailsValue}>{account?.address}</Text>
             </View>
 
             <View style={styles.details}>
               <Text style={styles.detailsLabel}>Previous Reading</Text>
-              <Text style={styles.detailsValue}>{account.last_reading}</Text>
+              <Text style={styles.detailsValue}>{account?.last_reading}</Text>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.details}>
               <Text style={styles.detailsLabel}>Previous Reading Date</Text>
               <Text style={styles.detailsValue}>
-                {account.last_reading_date
-                  ? account.last_reading_date
+                {account?.last_reading_date
+                  ? account?.last_reading_date
                   : 'No initial reading yet'}
               </Text>
             </View>
@@ -351,10 +349,10 @@ function MeterReading({navigation, route}: Props) {
         onSubmit={handleSubmit}
         onCancel={() => setModalVisible(false)}
         data={{
-          previousReading: parseInt(account.last_reading, 10),
+          previousReading: parseInt(account?.last_reading, 10),
           currentReading: parseInt(meterReading, 10),
           totalConsumption:
-            parseInt(meterReading, 10) - parseInt(account.last_reading, 10),
+            parseInt(meterReading, 10) - parseInt(account?.last_reading, 10),
         }}
       />
     </View>

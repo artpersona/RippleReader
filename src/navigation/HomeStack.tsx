@@ -33,7 +33,7 @@ const HomeStack = () => {
       }}>
       <Stack.Screen
         name={NavigationRoutes.HOME_LANDING}
-        component={!isConnected ? HomeLanding : HomeOffline}
+        component={isConnected ? HomeLanding : HomeOffline}
       />
       <Stack.Screen
         name={NavigationRoutes.ACCOUNT_LANDING}

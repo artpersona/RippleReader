@@ -26,7 +26,6 @@ const MainStack = () => {
   } = useDownloadStore() as any;
   const {isConnected} = useUserStore() as any;
   const {loadUserProjects, projects} = useMeterReadingStore() as any;
-  console.log('computationData', computationData);
   useEffect(() => {
     loadUserProjects();
   }, [loadUserProjects]);
