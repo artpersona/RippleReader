@@ -47,9 +47,10 @@ const HomeStack = () => {
         name={NavigationRoutes.OFFLINE_READING}
         component={MeterReadingOffline}
       />
+      <Stack.Screen name={NavigationRoutes.SOA} component={SOA} />
+
       {isConnected && (
         <>
-          <Stack.Screen name={NavigationRoutes.SOA} component={SOA} />
           <Stack.Screen
             name={NavigationRoutes.CUSTOMER_CARE}
             component={CustomerCare}

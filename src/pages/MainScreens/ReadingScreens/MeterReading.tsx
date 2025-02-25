@@ -25,7 +25,6 @@ import Toast from 'react-native-toast-message';
 import {moderateScale} from 'react-native-size-matters';
 import {useUserStore} from '../../../stores';
 import useDownloadStore from '../../../stores/download.store';
-import {CommonActions} from '@react-navigation/native';
 import ReadingConfirmatoryModal from '../../../components/ReadingConfirmatoryModal';
 
 type Props = {
@@ -88,7 +87,16 @@ function MeterReading({navigation, route}: Props) {
       attachment: formattedImage,
       previous_reading_id: account?.last_reading_id,
     };
-    console.log('params', account);
+
+    if (!isConnected) {
+      params.building_type_id = account?.building_type_id;
+      params.meter_size_id = account?.meter_size_id;
+      params.total_unpaid = account?.total_unpaid ?? 0;
+      params.account_name = account?.account_name ?? '';
+      params.account_number = account?.account_number ?? '';
+      params.account_address = account?.address ?? '';
+    }
+
     const formData = new FormData();
     for (const key in params) {
       if (key === 'attachment') {
@@ -138,7 +146,14 @@ function MeterReading({navigation, route}: Props) {
       readingDetails: params,
     };
     if (!isConnected) {
-      addReadingAction(params, details);
+      const readingActionToSave = {...params};
+      delete readingActionToSave.building_type_id;
+      delete readingActionToSave.meter_size_id;
+      delete readingActionToSave.total_unpaid;
+      delete readingActionToSave.account_name;
+      delete readingActionToSave.account_number;
+      delete readingActionToSave.account_address;
+      addReadingAction(readingActionToSave, details);
       navigation.navigate(NavigationRoutes.SOA, {
         offlineSOA: generateSOAOffline(params, account?.project_id),
       });
@@ -186,7 +201,7 @@ function MeterReading({navigation, route}: Props) {
       {
         mediaType: 'photo',
         includeBase64: true,
-        quality: 1,
+        quality: 0.8,
       },
       (response: any) => {
         if (response.didCancel) {
@@ -203,6 +218,7 @@ function MeterReading({navigation, route}: Props) {
     //     includeBase64: true,
     //     maxHeight: 500,
     //     maxWidth: 500,
+    //     quality: 0.8,
     //   },
     //   (response: any) => {
     //     if (response.didCancel) {

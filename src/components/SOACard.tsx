@@ -131,7 +131,9 @@ function SOACard({soaData}: Props) {
 
           <View style={styles.computationRow}>
             <Text style={styles.compTitle}>VAT</Text>
-            <Text style={styles.compTitle}>{soaData?.vat_amount}</Text>
+            <Text style={styles.compTitle}>
+              {parseFloat(soaData?.vat_amount).toFixed(2)}
+            </Text>
           </View>
 
           {parseInt(soaData?.discount, 10) > 0 && (

@@ -298,8 +298,6 @@ const useDownloadStore = create(
         const activeProjectData = computationData.find((computedata: any) => {
           return computedata.projectData.id == activeProject;
         });
-        const totalUnpaid = readingData?.total_unpaid ?? 0;
-        console.log('active project data: ', activeProjectData);
         const rate = getBillingRate(
           readingData.building_type_id,
           readingData.meter_size_id,
@@ -357,7 +355,9 @@ const useDownloadStore = create(
           basic_charge: basic_charge,
           vat_amount: vat_amount,
           discount: discountAmount,
-          balance_from_prev_bill: 'Not Available',
+          balance_from_prev_bill: parseFloat(readingData?.total_unpaid).toFixed(
+            2,
+          ),
           total_amount: total_amount,
           due_date: formattedDueDate,
           disconnection_date: formattedDisconnectionDate,
