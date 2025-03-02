@@ -11,8 +11,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../../common';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationRoutes} from '../../../utils';
-import {Button} from 'react-native-paper';
-import commonstyles from '../../../styles/commonstyles';
 
 type Props = {
   item: any;
@@ -42,12 +40,6 @@ function QueueItem({item}: Props) {
       offlineReading: item.details?.readingDetails,
     });
   };
-
-  async function printSOA() {
-    navigation.navigate(NavigationRoutes.SOA, {
-      offlineSOA: item?.soaData,
-    });
-  }
 
   return (
     <TouchableOpacity
@@ -103,17 +95,6 @@ function QueueItem({item}: Props) {
           />
         </View>
       </View>
-      {(item.status === 'completed' || item.status === 'printed') && (
-        <View style={styles.actionButtons}>
-          <Button
-            mode="contained"
-            style={[commonstyles.button, commonstyles.bgPrimary]}
-            onPress={printSOA}
-            contentStyle={commonstyles.buttonContent}>
-            View SOA
-          </Button>
-        </View>
-      )}
     </TouchableOpacity>
   );
 }

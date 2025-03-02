@@ -18,12 +18,8 @@ import {useEffect} from 'react';
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
-  const {
-    syncReadingList,
-    refreshPendingDownloads,
-    donwloadComputingData,
-    computationData,
-  } = useDownloadStore() as any;
+  const {syncReadingList, refreshPendingDownloads, donwloadComputingData} =
+    useDownloadStore() as any;
   const {isConnected} = useUserStore() as any;
   const {loadUserProjects, projects} = useMeterReadingStore() as any;
   useEffect(() => {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, ScrollView, BackHandler} from 'react-native';
+import {View, StyleSheet, ScrollView, BackHandler, Image} from 'react-native';
 import SOABg from '../../../assets/svg/soa_bg.svg';
 import {CustomHeader} from '../../../components';
 import {colors, height} from '../../../common';
@@ -11,6 +11,8 @@ import {moderateScale} from 'react-native-size-matters';
 import {useUserStore} from '../../../stores';
 import SOACard from '../../../components/SOACard';
 import ViewShot from 'react-native-view-shot';
+import {captureRef} from 'react-native-view-shot';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 
 type Props = {
   navigation: any;
@@ -51,16 +53,40 @@ function SOA({route, navigation}: Props) {
 
   async function printSOA() {
     try {
-      const uri = await viewShotRef.current.capture();
-      await RNPrint.print({
-        filePath: uri,
-        jobName: 'SOA Print job',
-        isLandscape: false,
+      const uri = await captureRef(viewShotRef, {
+        format: 'png',
+        quality: 1,
+        result: 'base64',
       });
+
+      const imageUri = `data:image/png;base64,${uri}`;
+      const imageData = Image.getSize(imageUri);
+
+      const pdfOptions = {
+        html: `
+          <html>
+            <head>
+              <style>
+                body { margin: 0; padding: 0; text-align: center; background-color: white; }
+                img { max-width: 100%; height: auto; max-height: 100vh; }
+              </style>
+            </head>
+            <body>
+              <img src="data:image/jpeg;base64,${uri}" />
+            </body>
+          </html>
+        `,
+        fileName: 'Statement_of_Account',
+        base64: true, // Set to true if you want base64 output
+      };
+
+      const pdf = (await RNHTMLtoPDF.convert(pdfOptions)) as any;
+      await RNPrint.print({filePath: pdf.filePath});
     } catch (error) {
       console.error('Print Error:', error);
     }
   }
+
   useEffect(() => {
     const backAction = () => {
       if (route?.params?.fromBilling) {

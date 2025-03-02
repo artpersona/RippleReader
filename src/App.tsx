@@ -9,6 +9,7 @@ import {moderateScale} from 'react-native-size-matters';
 import NetworkMonitor from './components/NetworkMonitor';
 import NetInfo from '@react-native-community/netinfo';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+
 import {useUserStore} from './stores';
 const MyStatusBar = ({backgroundColor, ...props}: any) => (
   <View style={[styles.statusBar, {backgroundColor}]}>
@@ -39,6 +40,7 @@ function App(): React.JSX.Element {
     // Unsubscribe
     return unsubscribe();
   }, []);
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <MyStatusBar backgroundColor={colors.tertiary} barStyle="light-content" />
