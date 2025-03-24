@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {
   View,
   StyleSheet,
@@ -20,6 +20,8 @@ import ViewShot from 'react-native-view-shot';
 import {captureRef} from 'react-native-view-shot';
 import useBluetoothStore from '../../../stores/bluetooth.store';
 import {Printer, PrinterConstants} from 'react-native-esc-pos-printer';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import RNPrint from 'react-native-print';
 
 type Props = {
   navigation: any;
@@ -89,28 +91,29 @@ function SOA({route, navigation}: Props) {
         );
 
         await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
+        await printerInstance.addFeedLine();
 
         const uri = await captureRef(viewShotRef, {
-          format: 'png',
-          quality: 1,
           result: 'base64',
-          width: 576,
         });
+
+        await printerInstance.addFeedLine(); // Extra space before image
 
         await printerInstance.addImage({
           source: {
-            uri: `data:image/png;base64,${uri}`,
+            uri: `data:image/jpeg;base64,${uri}`,
           },
           color: PrinterConstants.COLOR_1,
           mode: PrinterConstants.MODE_MONO,
           halftone: PrinterConstants.HALFTONE_DITHER, // Better grayscale handling
           brightness: 0.5, // Increase contrast (0.5–0.8 is a good range)
-          width: 576,
+          width: 574, // Match printer's width
         });
+        await printerInstance.addFeedLine(10); // Add some space after the image
+        await printerInstance.addCut();
 
-        await printerInstance.addText('End of Statement of Account');
-        await printerInstance.addFeedLine(2);
         const result = await printerInstance.sendData();
+
         await printerInstance.disconnect();
         ToastAndroid.show('Printing Successful', ToastAndroid.SHORT);
         return result;
@@ -131,6 +134,30 @@ function SOA({route, navigation}: Props) {
     }
     try {
       await print();
+      // const uri = await captureRef(viewShotRef, {
+      //   format: 'png',
+      //   quality: 1,
+      //   result: 'base64',
+      // });
+      // const pdfOptions = {
+      //   html: `
+      //     <html>
+      //       <head>
+      //         <style>
+      //           body { margin: 0; padding: 0; text-align: center; background-color: white; }
+      //           img { max-width: 100%; height: auto; max-height: 100vh; }
+      //         </style>
+      //       </head>
+      //       <body>
+      //         <img src="data:image/jpeg;base64,${uri}" />
+      //       </body>
+      //     </html>
+      //   `,
+      //   fileName: 'Statement_of_Account',
+      //   base64: true, // Set to true if you want base64 output
+      // };
+      // const pdf = (await RNHTMLtoPDF.convert(pdfOptions)) as any;
+      // await RNPrint.print({filePath: pdf.filePath});
     } catch (error) {
       console.error('Print Error:', error);
     }
@@ -188,7 +215,6 @@ function SOA({route, navigation}: Props) {
             format: 'jpg',
             quality: 1,
             fileName: soaData?.soa_number ?? '',
-            width: 79,
           }}>
           <SOACard soaData={soaData} />
         </ViewShot>
