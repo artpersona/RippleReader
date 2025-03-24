@@ -25,6 +25,7 @@ const NavigationRoutes = {
   OFFLINE_READING: 'OfflineReading',
   SOA: 'SOA',
   FILTER_SCREEN: 'FilterScreen',
+  DEVICE_MANAGER: 'DeviceManager',
 
   // Meter Maintenance
   SELECTION: 'Selection',

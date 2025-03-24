@@ -10,6 +10,7 @@ import {
   QueueFilterSelector,
   QueueStatusSelector,
   SiteList,
+  ScannedDevices,
 } from '../pages';
 import useDownloadStore from '../stores/download.store';
 import {useUserStore} from '../stores';
@@ -80,6 +81,10 @@ const MainStack = () => {
       <Stack.Screen
         name={NavigationRoutes.QueueStatusFilter}
         component={QueueStatusSelector}
+      />
+      <Stack.Screen
+        name={NavigationRoutes.DEVICE_MANAGER}
+        component={ScannedDevices}
       />
 
       <Stack.Screen name={NavigationRoutes.TASKQUEUE} component={TaskQueue} />

@@ -9,8 +9,8 @@ import {moderateScale} from 'react-native-size-matters';
 import NetworkMonitor from './components/NetworkMonitor';
 import NetInfo from '@react-native-community/netinfo';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
-
 import {useUserStore} from './stores';
+import useBluetoothStore from './stores/bluetooth.store';
 const MyStatusBar = ({backgroundColor, ...props}: any) => (
   <View style={[styles.statusBar, {backgroundColor}]}>
     <SafeAreaView>
@@ -20,7 +20,10 @@ const MyStatusBar = ({backgroundColor, ...props}: any) => (
 );
 
 function App(): React.JSX.Element {
+  const {initializeBluetoothManager, bluetoothManager} =
+    useBluetoothStore() as any;
   const {setConnectionStatus} = useUserStore() as any;
+
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -29,6 +32,12 @@ function App(): React.JSX.Element {
       background: 'lightgray',
     },
   };
+
+  useEffect(() => {
+    if (bluetoothManager === null) {
+      initializeBluetoothManager();
+    }
+  }, [bluetoothManager]);
 
   // Subscribe
   useEffect(() => {

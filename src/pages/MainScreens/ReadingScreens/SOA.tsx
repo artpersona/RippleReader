@@ -1,18 +1,25 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, ScrollView, BackHandler, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  BackHandler,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
 import SOABg from '../../../assets/svg/soa_bg.svg';
 import {CustomHeader} from '../../../components';
 import {colors, height} from '../../../common';
 import {Button} from 'react-native-paper';
 import commonstyles from '../../../styles/commonstyles';
-import RNPrint from 'react-native-print';
 import {getSOAAPI} from '../../../services/meterReadingAPI';
 import {moderateScale} from 'react-native-size-matters';
 import {useUserStore} from '../../../stores';
 import SOACard from '../../../components/SOACard';
 import ViewShot from 'react-native-view-shot';
 import {captureRef} from 'react-native-view-shot';
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import useBluetoothStore from '../../../stores/bluetooth.store';
+import {Printer, PrinterConstants} from 'react-native-esc-pos-printer';
 
 type Props = {
   navigation: any;
@@ -21,6 +28,9 @@ type Props = {
 
 function SOA({route, navigation}: Props) {
   const viewShotRef = React.useRef(null) as any;
+
+  const {requestBluetoothPermissions, connectedDevice} =
+    useBluetoothStore() as any;
 
   const {isConnected} = useUserStore() as any;
   const [soaData, setSoaData] = useState<any>(null);
@@ -51,37 +61,76 @@ function SOA({route, navigation}: Props) {
     }
   }, [isConnected, route.params.offlineSOA]);
 
-  async function printSOA() {
+  async function startDeviceScan() {
+    const permissionGranted = await requestBluetoothPermissions();
+    if (!permissionGranted) {
+      Alert.alert('Permission Required', 'Please enable bluetooth permissions');
+      return;
+    } else {
+      navigation.navigate('DeviceManager');
+    }
+  }
+
+  const print = async () => {
+    const printerInstance = new Printer({
+      target: connectedDevice.target,
+      deviceName: connectedDevice.deviceName,
+    });
+
     try {
-      const uri = await captureRef(viewShotRef, {
-        format: 'png',
-        quality: 1,
-        result: 'base64',
+      setLoading(true);
+
+      await printerInstance.connect();
+
+      await printerInstance.addQueueTask(async () => {
+        await Printer.tryToConnectUntil(
+          printerInstance,
+          status => status.online.statusCode === PrinterConstants.TRUE,
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
+
+        const uri = await captureRef(viewShotRef, {
+          format: 'png',
+          quality: 1,
+          result: 'base64',
+          width: 576,
+        });
+
+        await printerInstance.addImage({
+          source: {
+            uri: `data:image/png;base64,${uri}`,
+          },
+          color: PrinterConstants.COLOR_1,
+          mode: PrinterConstants.MODE_MONO,
+          halftone: PrinterConstants.HALFTONE_DITHER, // Better grayscale handling
+          brightness: 0.5, // Increase contrast (0.5–0.8 is a good range)
+          width: 576,
+        });
+
+        await printerInstance.addText('End of Statement of Account');
+        await printerInstance.addFeedLine(2);
+        const result = await printerInstance.sendData();
+        await printerInstance.disconnect();
+        ToastAndroid.show('Printing Successful', ToastAndroid.SHORT);
+        return result;
       });
+    } catch (e) {
+      const errorMessage =
+        typeof e === 'object' && e !== null ? JSON.stringify(e) : e;
+      alert(`Error: ${errorMessage}`);
+      await printerInstance.disconnect();
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      const imageUri = `data:image/png;base64,${uri}`;
-      const imageData = Image.getSize(imageUri);
-
-      const pdfOptions = {
-        html: `
-          <html>
-            <head>
-              <style>
-                body { margin: 0; padding: 0; text-align: center; background-color: white; }
-                img { max-width: 100%; height: auto; max-height: 100vh; }
-              </style>
-            </head>
-            <body>
-              <img src="data:image/jpeg;base64,${uri}" />
-            </body>
-          </html>
-        `,
-        fileName: 'Statement_of_Account',
-        base64: true, // Set to true if you want base64 output
-      };
-
-      const pdf = (await RNHTMLtoPDF.convert(pdfOptions)) as any;
-      await RNPrint.print({filePath: pdf.filePath});
+  async function printSOA() {
+    if (!connectedDevice) {
+      return startDeviceScan();
+    }
+    try {
+      await print();
     } catch (error) {
       console.error('Print Error:', error);
     }
@@ -152,7 +201,9 @@ function SOA({route, navigation}: Props) {
           contentStyle={commonstyles.buttonContent}
           labelStyle={styles.paymentLabel}
           loading={loading}>
-          Print Statement of Account
+          {connectedDevice
+            ? 'Print Statement of Account'
+            : 'Connect to Printer'}
         </Button>
       </View>
     </View>

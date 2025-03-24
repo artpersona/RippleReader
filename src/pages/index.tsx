@@ -18,6 +18,7 @@ import MeterReadingOffline from './MainScreens/ReadingScreens/MeterReadingOfflin
 import SOA from './MainScreens/ReadingScreens/SOA';
 import CustomerCare from './MainScreens/ReadingScreens/CustomerCare';
 import CustomerCareLanding from './MainScreens/ReadingScreens/CustomerCareLanding';
+import ScannedDevices from './MainScreens/ReadingScreens/ScannedDevices';
 // Maintenance
 import MaintenanceHomeLanding from './MaintenanceScreens/HomeScreens/MaintenanceHomeLanding';
 import Selection from './MaintenanceScreens/Selection/Selection';
@@ -63,4 +64,5 @@ export {
   MaintenanceHomeLanding,
   OtherActionsLanding,
   ProfileLanding,
+  ScannedDevices,
 };

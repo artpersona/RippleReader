@@ -13,11 +13,22 @@ function SOACard({soaData}: Props) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
-        <Nabua width={50} height={50} />
+        <Nabua width={70} height={70} />
         <View>
           <Text style={styles.projectName}>{soaData?.project_name}</Text>
           <Text style={styles.eSoaText}>Electronic Statement of Account</Text>
           <Text style={styles.locationText}>{soaData?.project_location}</Text>
+          <View style={styles.contacts}>
+            <Text style={[styles.eSoaText, styles.contactText]}>
+              VAT Reg. TIN: 010-390-506-000
+            </Text>
+            <Text style={[styles.eSoaText, styles.contactText]}>
+              Contact No. (054) 341-0188
+            </Text>
+            <Text style={[styles.eSoaText, styles.contactText]}>
+              0970 538 9543 (Smart) / 0956 311 8142 (Globe)
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -252,8 +263,7 @@ function SOACard({soaData}: Props) {
             Pay your water bill by the due date to avoid penalties. Service may
             be disconnected if there are arrears before the stated disconnection
             date. For bill inquiries, visit our office or call our hotlines by
-            the 10th of the month. You can also message us at
-            facebook.com/tubignabuainc.
+            the 10th of the month.
           </Text>
         </View>
       </View>
@@ -262,6 +272,9 @@ function SOACard({soaData}: Props) {
 }
 
 const styles = StyleSheet.create({
+  contacts: {
+    marginTop: 5,
+  },
   locationText: {
     fontFamily: 'Poppins-Regular',
     fontSize: moderateScale(10),
@@ -410,15 +423,20 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     fontSize: moderateScale(12),
     color: colors.historyLabel,
+    width: '90%',
+  },
+  contactText: {
+    fontSize: moderateScale(10),
   },
   projectName: {
-    marginVertical: 5,
     fontFamily: 'Poppins-SemiBold',
     fontSize: moderateScale(16),
     color: colors.historyLabel,
   },
   headerContainer: {
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 20,
   },
   flex1: {
     flexGrow: 1,
